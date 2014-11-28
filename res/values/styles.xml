@@ -46,7 +46,6 @@
     
     <style name="Text.Display3" >        
         <item name="android:textSize">56sp</item>
-        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/accent</item>
     </style>
     

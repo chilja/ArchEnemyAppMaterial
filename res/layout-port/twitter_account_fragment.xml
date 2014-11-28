@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <FrameLayout
+	    android:id="@+id/placeholder"
+	    android:layout_width="match_parent"
+        android:layout_height="@dimen/placeholder_height"
+        android:background="@android:color/transparent"/>
+    
+	<RelativeLayout
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:background="@android:color/transparent"
+	    android:padding="16dp" >
+	    
+	   	<FrameLayout 
+            android:id="@+id/text"
+		    android:layout_width="202dp"
+		    android:layout_height="202dp"/>
+	    
+	    <include layout="@layout/twitter_button" 
+		    android:layout_width="202dp"
+		    android:layout_height="48dp"
+		    android:layout_below="@+id/text"
+		    android:layout_centerHorizontal="true" />
+	
+	</RelativeLayout>
+	
+</LinearLayout>
