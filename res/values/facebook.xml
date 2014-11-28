@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook">Facebook</string>
+	
+	<string name="fb_error_dialog_title">Error</string>
+	<string name="fb_error_dialog_button_text">OK</string>
+	<string name="fb_error_dialog_default_text">No response from server</string>
+	<string name="fb_error_authentication_retry">An error occurred that requires your attention. %1$s</string>
+	<string name="fb_error_authentication_reopen">An error occurred, please re-login</string>
+	<string name="fb_error_permission">Please allow us to post on your behalf</string>
+	<string name="fb_error_server">The server is busy, please retry later</string>
+	<string name="fb_error_bad_request">An error occurred, please contact the developer with the following message: %1$s</string>
+	<string name="fb_error_unknown">An unknown error occurred, please contact the developer with the following message: %1$s</string>
+	
+	<string name="fb_share_error_log_in">Please log in with Facebook to share</string>
+    
+    <string name="facebook_login_header">Receive posts from the official accounts</string>
+
+	
+</resources>
