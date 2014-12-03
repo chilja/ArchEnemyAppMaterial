@@ -3,10 +3,9 @@
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
 	android:paddingLeft="8dp"
-	android:paddingRight="8dp"
-	android:paddingTop="8dp">
-		
-   	<FrameLayout
+	android:paddingRight="8dp">
+	
+	<FrameLayout 
 	    android:id="@+id/placeholder"
 	    android:layout_width="match_parent"
         android:layout_height="@dimen/placeholder_height" 
@@ -17,8 +16,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:minHeight="72dp"
+		android:padding="4dp"
 		android:elevation="8dp"
-		android:background="@drawable/box_black">
+		android:background="@drawable/box">
 		  
 	    <ImageView 
 	        android:id="@+id/imageView"	 
@@ -33,13 +33,12 @@
 	        android:layout_width="40dp"
 	        android:layout_height="40dp"
 	        android:layout_margin="16dp"
-	        android:scaleType="centerCrop"
 	        android:layout_below="@+id/imageView"/>
 	
 	    <net.archenemy.archenemyapp.view.RobotoFont
 		    android:id="@+id/messageView"
 		    style="@style/Tweet"
-		    android:layout_marginTop="16dp"
+		    android:layout_marginTop="8dp"
 		    android:paddingRight="16dp"
 			android:layout_below="@+id/imageView"
 			android:layout_toRightOf="@+id/avatarView"/>	

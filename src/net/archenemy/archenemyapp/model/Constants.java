@@ -3,20 +3,6 @@ package net.archenemy.archenemyapp.model;
 import net.archenemy.archenemyapp.R;
 
 public abstract class Constants {
-	
-	//colors
-	public static final int ACCENT = R.color.accent;
-	public static final int ACCENT_TRANSP = R.color.accent_transparent;
-	public static final int PRIMARY = R.color.primary;
-	
-	public static final int TEXT_PRIMARY = R.color.text_primary;
-	public static final int TEXT_SECONDARY = R.color.text_secondary;
-	public static final int TEXT_DISABLED = R.color.text_disabled;
-	public static final int DIVIDER = R.color.divider;
-	
-	public static final int BLACK_TRANSP = R.color.black_transparent;
-	
-	public static final int TRANSPARENT = android.R.color.transparent;
 		
 	public static final String FACEBOOK = "FACEBOOK";
 	public static final String TWITTER = "TWITTER";

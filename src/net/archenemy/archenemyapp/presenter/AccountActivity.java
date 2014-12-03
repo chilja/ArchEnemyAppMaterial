@@ -2,24 +2,19 @@ package net.archenemy.archenemyapp.presenter;
 
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.view.SlidingTabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import net.archenemy.archenemyapp.model.TwitterAdapter;
+import net.archenemy.archenemyapp.model.FacebookAdapter;
 
 public class AccountActivity extends FacebookActivity 
- implements FacebookAccountFragment.OnFacebookLoginListener,
- TwitterAccountFragment.OnTwitterLoginListener{
+ implements FacebookAdapter.OnFacebookLoginListener,
+ TwitterAdapter.OnTwitterLoginListener{
 	
 	private FacebookAccountFragment mFacebookAccount;
 	private TwitterAccountFragment mTwitterAccount;

@@ -17,7 +17,7 @@ public class FacebookUser implements
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected String mProfileId ;
+	protected String mProfileId;
 	protected transient ProfilePictureView mImageView;
 	private String mName;
 	private BaseAdapter mAdapter;

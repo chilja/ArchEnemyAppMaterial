@@ -44,6 +44,10 @@ import com.facebook.widget.WebDialog.OnCompleteListener;
 public class FacebookAdapter 
 	implements ProviderAdapter{
 	
+	public interface OnFacebookLoginListener {
+		void onFacebookLogin();
+	}
+	
 	protected static final String TAG = "FacebookAdapter";
 	
 	// Activity code to flag an incoming activity result is due 
@@ -66,12 +70,12 @@ public class FacebookAdapter
 	private static final String TAG_DATE = "created_time";
 	private static final String TAG_FROM = "from";
 	
-	private ProgressDialog mProgressDialog;
-	
 	// flag for pending reauthorization request
 	private boolean mPendingPublishReauthorization = false;
 	
 	private static FacebookAdapter mFacebookAdapter;
+	
+	private com.facebook.widget.LoginButton mFacebookLoginButton;
 		
 	public static FacebookAdapter getInstance() {
 		if (mFacebookAdapter == null) {
@@ -137,9 +141,9 @@ public class FacebookAdapter
 	    return true;
 	}
 
-	private ArrayList<FeedElement> parseJson (JSONObject jsonObj, Activity activity){
+	private ArrayList<Post> parseJson (JSONObject jsonObj, Activity activity){
 		
-		ArrayList<FeedElement> feedElements = new ArrayList<FeedElement>();
+		ArrayList<Post> feedElements = new ArrayList<Post>();
 		JSONArray posts = null;
 		Log.i(TAG, "Parse response...");
 		if (jsonObj != null) {    		                    
@@ -158,8 +162,8 @@ public class FacebookAdapter
 						String name = fromObj.getString(TAG_NAME);
 						String id = fromObj.getString(TAG_ID);
 	            
-						FeedElement element = 
-								new Post(activity,name, id, message, date, picture, link);
+						Post element = 
+								new Post(activity,name, id, message, date, picture, link, null);
 						feedElements.add(element);
 					} catch (JSONException e) {
 						//ignore objects with missing tags
@@ -287,7 +291,7 @@ public class FacebookAdapter
 		                JSONObject graphResponse = response
 		                                           .getGraphObject()
 		                                           .getInnerJSONObject();
-		        		ArrayList<FeedElement> elements = parseJson(graphResponse, activity);
+		        		ArrayList<Post> elements = parseJson(graphResponse, activity);
 		                callback.onFeedRequestCompleted(elements, id);
 		            }
 		        }
@@ -346,63 +350,63 @@ public class FacebookAdapter
 	}
 	
 	public void publishStory(Bundle shareParams, final Activity activity) {
-		if (Utility.isConnectedToNetwork(activity, true)){
-		setPendingPublish(false);
-		
-	    Session session = Session.getActiveSession();
-	
-	    if (session != null){
-	
-	        // Check for publish permissions    
-	        List<String> permissions = session.getPermissions();
-	        if (!isSubsetOf(PERMISSIONS, permissions)) {
-	            setPendingPublish(true);
-	            Session.NewPermissionsRequest newPermissionsRequest = new Session
-	                    .NewPermissionsRequest(activity, PERMISSIONS);
-	            session.requestNewPublishPermissions(newPermissionsRequest);
-	            return;
-	        }
-	
-	        Request.Callback callback= new Request.Callback() {
-	            public void onCompleted(Response response) {
-	            	
-	            	//Dismiss progress dialog
-	            	if (mProgressDialog != null) {
-	                    mProgressDialog.dismiss();
-	                    mProgressDialog = null;
-	                }
-	                
-	                String successMessage = activity.getString(R.string.fb_result_dialog_button_text);	               
-	                FacebookRequestError error = response.getError();
-	                
-	                //Show result toast
-	                if (error != null) {
-	                    Toast.makeText(activity
-	                         .getApplicationContext(),
-	                         error.getErrorMessage(),
-	                         Toast.LENGTH_SHORT).show();
-	                    } else {
-	                        Toast.makeText(activity
-	                             .getApplicationContext(), 
-	                             successMessage,
-	                             Toast.LENGTH_SHORT).show();
-	                }
-	            }
-	        };
-	
-	        Request request = new Request(session, "me/feed", shareParams, 
-	                              HttpMethod.POST, callback);
-	
-	        RequestAsyncTask requestTask = new RequestAsyncTask(request);
-	        
-	        //Show progress dialog
-	        mProgressDialog = ProgressDialog.show(activity, "", 
-	                activity.getResources()
-	                .getString(R.string.fb_progress_dialog_text), true);
-			Log.i(TAG, "Publish story");
-	        requestTask.execute();	
-	    }
-		}
+//		if (Utility.isConnectedToNetwork(activity, true)){
+//		setPendingPublish(false);
+//		
+//	    Session session = Session.getActiveSession();
+//	
+//	    if (session != null){
+//	
+//	        // Check for publish permissions    
+//	        List<String> permissions = session.getPermissions();
+//	        if (!isSubsetOf(PERMISSIONS, permissions)) {
+//	            setPendingPublish(true);
+//	            Session.NewPermissionsRequest newPermissionsRequest = new Session
+//	                    .NewPermissionsRequest(activity, PERMISSIONS);
+//	            session.requestNewPublishPermissions(newPermissionsRequest);
+//	            return;
+//	        }
+//	
+//	        Request.Callback callback= new Request.Callback() {
+//	            public void onCompleted(Response response) {
+//	            	
+//	            	//Dismiss progress dialog
+//	            	if (mProgressDialog != null) {
+//	                    mProgressDialog.dismiss();
+//	                    mProgressDialog = null;
+//	                }
+//	                
+//	                String successMessage = activity.getString(R.string.fb_result_dialog_button_text);	               
+//	                FacebookRequestError error = response.getError();
+//	                
+//	                //Show result toast
+//	                if (error != null) {
+//	                    Toast.makeText(activity
+//	                         .getApplicationContext(),
+//	                         error.getErrorMessage(),
+//	                         Toast.LENGTH_SHORT).show();
+//	                    } else {
+//	                        Toast.makeText(activity
+//	                             .getApplicationContext(), 
+//	                             successMessage,
+//	                             Toast.LENGTH_SHORT).show();
+//	                }
+//	            }
+//	        };
+//	
+//	        Request request = new Request(session, "me/feed", shareParams, 
+//	                              HttpMethod.POST, callback);
+//	
+//	        RequestAsyncTask requestTask = new RequestAsyncTask(request);
+//	        
+//	        //Show progress dialog
+//	        mProgressDialog = ProgressDialog.show(activity, "", 
+//	                activity.getResources()
+//	                .getString(R.string.fb_progress_dialog_text), true);
+//			Log.i(TAG, "Publish story");
+//	        requestTask.execute();	
+//	    }
+//		}
 	}
 
 	private void handleError(FacebookRequestError error, final Activity activity) {
@@ -502,9 +506,21 @@ public class FacebookAdapter
 		void onUserRequestCompleted(GraphUser user);
 	}
 	public interface FeedCallback {
-		void onFeedRequestCompleted(ArrayList<FeedElement> elements, String id);
+		void onFeedRequestCompleted(ArrayList<Post> elements, String id);
 	}
-
+	@Override
+	public void logOut() {		
+		Session session = Session.getActiveSession();
+		if (session!= null) {
+			session.closeAndClearTokenInformation();
+		}
+	}
+	
+	public void logIn (Activity activity) {
+		  //widget to perform login
+	  	mFacebookLoginButton = new com.facebook.widget.LoginButton(activity);
+	  	mFacebookLoginButton.performClick();
+	}
 }
 
 

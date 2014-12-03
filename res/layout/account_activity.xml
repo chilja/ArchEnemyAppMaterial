@@ -51,7 +51,7 @@
 		android:orientation="horizontal"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/tab_height" 
-		android:translationY="@dimen/tab_translation_y"/>
+		android:translationY="@dimen/tab_translation_y_accounts"/>
     	
 	<include layout="@layout/toolbar_secondary"
 		android:id="@+id/toolbar"/>

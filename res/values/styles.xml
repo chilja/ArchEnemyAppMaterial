@@ -72,7 +72,6 @@
     </style> 
     
     <style name="Name" parent="Text.Caption">        
-        <item name="android:textColor">@color/accent</item>
         <item name="android:singleLine">true</item>
         <item name="android:gravity">bottom|left</item>
     </style>

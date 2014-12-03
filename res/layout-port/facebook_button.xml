@@ -1,4 +1,0 @@
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/facebookButton"  
-   	style="@style/RaisedButton"
-   	android:drawableLeft="@drawable/com_facebook_inverse_icon"/>

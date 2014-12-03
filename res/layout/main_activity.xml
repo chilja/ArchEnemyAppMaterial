@@ -2,7 +2,15 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:animateLayoutChanges="true">
+	android:animateLayoutChanges="true"
+	android:background="@color/black">
+	
+     <ImageView 
+        android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:translationY="@dimen/header_height"		
+		android:scaleType="fitCenter" 
+		android:src="@drawable/symbol_port"/>
 
  	<FrameLayout 
         android:layout_width="match_parent"
@@ -18,9 +26,9 @@
 		        android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:src="@drawable/band"
-				android:scaleType="centerCrop"
-				android:background="@color/black"/>
+				android:scaleType="centerCrop"/>
 	    </FrameLayout>
+	    
 	    
 		<FrameLayout
 			android:id="@+id/fragmentContainer"
@@ -30,6 +38,18 @@
 			android:elevation="16dp"/>
 		                	
 	</FrameLayout>
+	
+	<include layout="@layout/toolbar"
+        	android:id="@+id/toolbar"
+        	android:animateLayoutChanges="true"/>
+	
+	<FrameLayout 
+	    android:id="@+id/tabsBackground"
+	    android:layout_width="match_parent"
+		android:layout_height="@dimen/tab_background_height"
+		android:background="@color/accent_dark"
+		android:elevation="16dp"
+		android:alpha="0.0" />
     
 	<LinearLayout 
 	    android:id="@+id/tabs"
@@ -39,7 +59,7 @@
 		android:layout_gravity="top"
 		android:gravity="bottom"
 		android:translationY="@dimen/max_tab_translation_y"
-		android:elevation="24dp"
+		android:elevation="16dp"
 		android:animateLayoutChanges="true">
 					
       	<ImageView
@@ -68,8 +88,7 @@
 
    	</LinearLayout>    
 
-	<include layout="@layout/toolbar"
-          	android:id="@+id/toolbar"/>	
+	
           	
 </FrameLayout>
 

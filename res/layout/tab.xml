@@ -2,13 +2,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="180dp"
 	android:layout_height="@dimen/tab_height"
-	android:padding="8dp">
+	android:background="?android:attr/selectableItemBackground"
+	>
 	<ImageView	
 		android:id="@+id/tabIcon"
-		android:layout_width="32dp"
-		android:layout_height="32dp"
+		android:layout_width="44dp"
+		android:layout_height="44dp"
 		android:layout_gravity="center"
 		android:gravity="center"
-		android:animateLayoutChanges="true"
-		android:background="?android:attr/selectableItemBackground"/>
+		android:padding="8dp"
+		android:animateLayoutChanges="true"/>
 </FrameLayout>

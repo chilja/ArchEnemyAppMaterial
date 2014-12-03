@@ -3,6 +3,7 @@ package net.archenemy.archenemyapp.presenter;
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.Constants;
 import net.archenemy.archenemyapp.model.FacebookAdapter;
+import net.archenemy.archenemyapp.model.FacebookAdapter.OnFacebookLoginListener;
 import net.archenemy.archenemyapp.model.Utility;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,10 +29,6 @@ public class FacebookAccountFragment extends AccountFragment
 
 	protected FacebookAdapter mFacebookAdapter;
 	
-	private com.facebook.widget.LoginButton mFacebookLoginButton;
-	
-	private OnFacebookLoginListener mOnLoginListener;
-	
 	public int getTitle() {
 		return TITLE;
 	}
@@ -48,11 +45,11 @@ public class FacebookAccountFragment extends AccountFragment
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		try {
-            mOnLoginListener = (OnFacebookLoginListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnFacebookLoginListener");
-        }
+//		try {
+//            mOnLoginListener = (OnFacebookLoginListener) activity;
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException(activity.toString() + " must implement OnFacebookLoginListener");
+//        }
 	}
 		
 	@Override
@@ -60,8 +57,6 @@ public class FacebookAccountFragment extends AccountFragment
 	    super.onCreate(savedInstanceState);
 	    mFacebookAdapter = FacebookAdapter.getInstance();
 	    mProviderAdapter = mFacebookAdapter;
-		  //widget to perform login
-	  	mFacebookLoginButton = new com.facebook.widget.LoginButton(getActivity());
 	}
 
 	@Override
@@ -105,8 +100,7 @@ public class FacebookAccountFragment extends AccountFragment
 	}
 	
 	public void onFacebookLogin() {
-	    if (mFacebookAdapter.isLoggedIn()) {
-	    	
+	    if (mFacebookAdapter.isLoggedIn()) {	    	
 	    	//set the logged in state
 	    	setLoggedIn();
 	        mFacebookAdapter.makeMeRequest(this, getActivity()); 
@@ -122,6 +116,7 @@ public class FacebookAccountFragment extends AccountFragment
             // Set the text to the user's name.
 			mName = user.getName();
             mUserNameView.setText(mName);
+            fadeIn();
         }	
 	}
 	
@@ -141,11 +136,12 @@ public class FacebookAccountFragment extends AccountFragment
 	    		
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 
-                builder.setMessage(message)
+                builder.setTitle(message)
+                	.setIcon(getIconResId())
                        .setCancelable(true)
                        .setPositiveButton(logout, new DialogInterface.OnClickListener() {
                            public void onClick(DialogInterface dialog, int which) {
-                        	   mFacebookLoginButton.performClick();
+                        	   mProviderAdapter.logOut();
                         	   setLoggedOut();		
                        		}
                            }
@@ -154,12 +150,8 @@ public class FacebookAccountFragment extends AccountFragment
                 builder.create().show();
 	    		
 	    	}else{
-	    		mFacebookLoginButton.performClick(); 
+	    		mFacebookAdapter.logIn(getActivity()); 
 	    	}
 	    }		
-	}
-	
-	public interface OnFacebookLoginListener {
-		void onFacebookLogin();
-	}
+	}	
 }

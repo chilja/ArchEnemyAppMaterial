@@ -11,7 +11,14 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import android.util.Log;
@@ -33,7 +40,7 @@ public class BitmapUtility {
 	    final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 	
 	    // Use 1/8th of the available memory for this memory cache.
-	    final int cacheSize = maxMemory / 16;
+	    final int cacheSize = maxMemory / 8;
 	
 	    mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
 	        @Override
@@ -45,6 +52,28 @@ public class BitmapUtility {
 	    };
     
 	}
+	
+	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
+                .getHeight(), Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final float roundPx = pixels*2;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
 
 	private static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
 	    if (getBitmapFromMemCache(key) == null) {
@@ -80,9 +109,27 @@ public class BitmapUtility {
 			task.execute(bitmapUrl);
 		}
 	}
+	
+	public static void loadBitmap(
+			String bitmapUrl, ImageView imageView, int radius) {
+		if (imageView != null && bitmapUrl != null) {       
+			//check cache
+			Bitmap bitmap = getBitmapFromMemCache(bitmapUrl.toString());
+			if (bitmap != null) {
+					imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, radius));
+				return;
+			}
+			BitmapFromUrlTask task = new BitmapFromUrlTask(imageView, radius*2);
+			task.execute(bitmapUrl);
+		}
+	}
 
-	public static void loadBitmap(Activity activity, int resId, ImageView imageView, int reqWidth, int reqHeight) {		
-	    BitmapFromResourcesTask task = new BitmapFromResourcesTask(activity, imageView, reqWidth, reqHeight);
+	public static void loadBitmap(
+			Activity activity, int resId, ImageView imageView, int reqWidth, int reqHeight) {	
+		
+	    BitmapFromResourcesTask task = 
+	    		new BitmapFromResourcesTask(activity, imageView, reqWidth, reqHeight);
+	    
 	    task.execute(resId);
 	}
 
@@ -156,12 +203,22 @@ public class BitmapUtility {
 		final int mReqWidth; 
 		final int mReqHeight;
 		URL mUrl;
+		final boolean mRound;
 		
 		private BitmapFromUrlTask(ImageView imageView, int reqWidth, int reqHeight) {
 			mImageViewReference = new WeakReference<ImageView>(imageView);
 			mReqWidth = reqWidth;
 			mReqHeight = reqHeight;
 			mTasks.add(this);
+			 mRound = false;
+		}
+		
+		private BitmapFromUrlTask(ImageView imageView, int radius) {
+			mImageViewReference = new WeakReference<ImageView>(imageView);
+			mReqWidth = radius;
+			mReqHeight = radius;
+			mTasks.add(this);
+			mRound = true;
 		}
 		
 		@Override
@@ -183,7 +240,11 @@ public class BitmapUtility {
 			if (mImageViewReference != null && bitmap != null) {
 	            final ImageView imageView = mImageViewReference.get();
 	            if (imageView != null) {
+	            	if (mRound) {
+	            		imageView.setImageBitmap(getRoundedCornerBitmap(bitmap, mReqWidth));
+	            	} else {
 	                imageView.setImageBitmap(bitmap);
+	            	}
 	            }
 	        }
 			addBitmapToMemoryCache(mUrl.toString(), bitmap);

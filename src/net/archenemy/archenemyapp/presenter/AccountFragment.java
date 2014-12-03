@@ -34,15 +34,15 @@ public abstract class AccountFragment extends BaseFragment {
 	}
 	
 	protected void fadeIn() {
-		Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-		fadeIn.setFillAfter(true);
-		mText.startAnimation(fadeIn);
+//		Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+//		fadeIn.setFillAfter(true);
+//		mText.startAnimation(fadeIn);
 	}
 	
 	protected void fadeOut() {
-		Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-		fadeOut.setFillAfter(true);
-		mText.startAnimation(fadeOut);
+//		Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+//		fadeOut.setFillAfter(true);
+//		mText.startAnimation(fadeOut);
 	}
 
 	protected void init() {
@@ -68,11 +68,11 @@ public abstract class AccountFragment extends BaseFragment {
 		mLoginButton.setEnabled(true);
 		mLoginButton.setText(R.string.button_log_in);
 		if(mShowUserInfo) {	
-			fadeOut();
+//			fadeOut();
 			mSubtext.setText(R.string.account_logged_out);
-			mSubtext.setTextColor(getResources().getColor(Constants.TEXT_PRIMARY));
+			mSubtext.setTextColor(getResources().getColor(R.color.text_primary));
 			mUserNameView.setText(null);  
-			fadeIn();
+//			fadeIn();
 		}
 
 	}
@@ -81,20 +81,20 @@ public abstract class AccountFragment extends BaseFragment {
 		mLoginButton.setEnabled(true);
 		mLoginButton.setText(R.string.button_log_out);
 		if(mShowUserInfo) {	
-			fadeOut();
+//			fadeOut();
 			mSubtext.setText(R.string.account_logged_in);
-			mSubtext.setTextColor(getResources().getColor(Constants.TEXT_PRIMARY));			
+			mSubtext.setTextColor(getResources().getColor(R.color.text_primary));			
 		}
 	}
 	
 	protected void setOffline() {
 		mLoginButton.setEnabled(false);	
 		if(mShowUserInfo) {	
-			fadeOut();
+//			fadeOut();
 			mSubtext.setText(R.string.account_offline);
-			mSubtext.setTextColor(getResources().getColor(Constants.ACCENT));
+			mSubtext.setTextColor(getResources().getColor(R.color.accent));
 			mUserNameView.setText(null);
-			fadeIn();
+//			fadeIn();
 		}
 	}
 	

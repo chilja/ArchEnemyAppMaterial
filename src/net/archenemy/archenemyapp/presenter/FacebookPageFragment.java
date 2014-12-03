@@ -5,34 +5,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.archenemy.archenemyapp.R;
+import net.archenemy.archenemyapp.model.ArchEnemyDataAdapter;
+import net.archenemy.archenemyapp.model.SocialMediaUser;
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.archenemy.archenemyapp.R;
-import net.archenemy.archenemyapp.model.ArchEnemyDataAdapter;
-import net.archenemy.archenemyapp.model.DataAdapter;
-import net.archenemy.archenemyapp.model.SocialMediaUser;
-import net.archenemy.archenemyapp.presenter.TwitterAccountFragment.OnTwitterLoginListener;
-
 public class FacebookPageFragment extends PageFragment 
 	implements Serializable{
 	
+	public static final String TAG = "FacebookPageFragment";
+	private static final long serialVersionUID = 1L;
+	
 	public interface OnScrolledListener {
-//        public void onScrollStateChanged(RecyclerView recyclerView, int newState);
-        public void onFacebookPageScrolled( int dy);
+        public void onFacebookPageScrolled(int scrollY, int dy);
+        public void onFacebookScrollStateChanged(int newState);
     }
    
     public interface OnRefreshFeedListener {
 	    public void onRefeshFacebookFeed();
     }
-
-	private static final long serialVersionUID = 1L;	
-	public static final String TAG = "FacebookPageFragment";	
+		
 	private static ArrayList<SocialMediaUser> mSocialMediaUsers;
 	private OnScrolledListener mOnScrolledListener;
 	private OnRefreshFeedListener mOnRefreshFeedListener;
@@ -82,7 +79,7 @@ public class FacebookPageFragment extends PageFragment
 	@Override
 	public void setRefreshing(boolean isRefreshing) {
 		if (mSwipeRefreshLayout != null) {
-//			mSwipeRefreshLayout.setRefreshing(isRefreshing);	
+			mSwipeRefreshLayout.setRefreshing(isRefreshing);	
 		}
 	}
 
@@ -92,7 +89,12 @@ public class FacebookPageFragment extends PageFragment
 	}
 
 	@Override
-	protected void onScrolled( int dy) {
-		mOnScrolledListener.onFacebookPageScrolled( dy);	
+	protected void onScrolled(RecyclerView recyclerView, int dy) {
+		mOnScrolledListener.onFacebookPageScrolled(getScrollY(recyclerView), dy);	
+	}
+
+	@Override
+	protected void onScrollStateChanged(int newState) {
+		mOnScrolledListener.onFacebookScrollStateChanged(newState);
 	}
 }

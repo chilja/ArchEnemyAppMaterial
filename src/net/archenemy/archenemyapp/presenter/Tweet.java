@@ -5,8 +5,10 @@ import java.util.Date;
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.BitmapUtility;
 import net.archenemy.archenemyapp.model.Utility;
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,6 +24,7 @@ public class Tweet
 	private String mImageUrl ;
 	private String mAvatarUrl;
 	private boolean mIsPlaceholder = false;
+	private float mDensity;
 	
 	public Tweet(){
 		//placeholder
@@ -60,20 +63,24 @@ public class Tweet
 
 	@Override
 	public void bindViewHolder(
-			android.support.v7.widget.RecyclerView.ViewHolder holder) {
+			android.support.v7.widget.RecyclerView.ViewHolder holder, Activity activity) {
 		if (holder instanceof ViewHolder) {
 			ViewHolder myHolder = (ViewHolder) holder;
+			
 			if (mIsPlaceholder){
 				myHolder.showPlaceholder();
 			}
 			if (!mIsPlaceholder){
+				float density = activity.getResources().getDisplayMetrics().density;
+				int width = activity.getResources().getDisplayMetrics().widthPixels;
 				myHolder.showTweet();
 				myHolder.setMessage(mMessage);
-				myHolder.setImageUrl(mImageUrl);
+				myHolder.setImageUrl(mImageUrl, width);
 				myHolder.setDate(mDate);
-				myHolder.setAvatarUrl(mAvatarUrl);
+				myHolder.setAvatarUrl(mAvatarUrl, density);
 			}			
-		}		
+		}
+		
 	}
 	
 	public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -99,11 +106,11 @@ public class Tweet
 			mMessageView.setText(message);
 		}
 		
-		private void setImageUrl(String imageUrl) {
+		private void setImageUrl(String imageUrl, int width) {
 			// URL provided? -> load bitmap
 	    	if (imageUrl != null){
 	    		mImageView.setImageBitmap(null);
-	    		BitmapUtility.loadBitmap(imageUrl, mImageView, 380, 380);
+	    		BitmapUtility.loadBitmap(imageUrl, mImageView, width, width);
 	    		mImageView.setVisibility(View.VISIBLE);
 	    	// no picture -> hide image view	
 	    	} else {
@@ -112,10 +119,10 @@ public class Tweet
 	    	}
 		}
 		
-		private void setAvatarUrl(String avatarUrl) {
+		private void setAvatarUrl(String avatarUrl, float density) {
 		// URL provided? -> load bitmap
 	    	if (avatarUrl != null){
-	    		BitmapUtility.loadBitmap(avatarUrl, mAvatarView, 100, 100);
+	    		BitmapUtility.loadBitmap(avatarUrl, mAvatarView,(int) (40 * density));
 	    	}
 		}
 		
@@ -130,6 +137,15 @@ public class Tweet
 		private void showTweet(){
 			mPlaceholder.setVisibility(View.GONE);
 			mTweet.setVisibility(View.VISIBLE);
+		}
+		
+		private void setLink(final String link, final Activity activity) {
+			mImageView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Utility.startBrowserActivity(activity, link);					
+				}				
+			});
 		}
     }
 }

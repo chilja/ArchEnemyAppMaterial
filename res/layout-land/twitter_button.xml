@@ -1,5 +1,0 @@
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/twitterButton"
-	style="@style/RaisedButton"  
-	android:drawableLeft="@drawable/ic_stat_twitter">
-</Button>

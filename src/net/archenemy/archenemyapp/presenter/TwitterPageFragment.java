@@ -19,8 +19,8 @@ public class TwitterPageFragment extends PageFragment
 	implements Serializable {
 	
 	public interface OnScrolledListener {
-//        public void onScrollStateChanged(RecyclerView recyclerView, int newState);
-        public void onTwitterPageScrolled( int dy);
+		public void onTwitterScrollStateChanged(int newState);
+        public void onTwitterPageScrolled(int scrollY, int dy);
     }
    
     public interface OnRefreshFeedListener {
@@ -82,7 +82,7 @@ public class TwitterPageFragment extends PageFragment
 	@Override
 	public void setRefreshing(boolean isRefreshing) {
 		if (mSwipeRefreshLayout != null) {
-//			mSwipeRefreshLayout.setRefreshing(isRefreshing);	
+			mSwipeRefreshLayout.setRefreshing(isRefreshing);	
 		}
 	}
 	
@@ -93,7 +93,12 @@ public class TwitterPageFragment extends PageFragment
 	}
 
 	@Override
-	protected void onScrolled( int dy) {
-		mOnScrolledListener.onTwitterPageScrolled( dy);	
+	protected void onScrolled(RecyclerView recyclerView,int dy) {
+		mOnScrolledListener.onTwitterPageScrolled(getScrollY(recyclerView), dy);	
+	}
+
+	@Override
+	protected void onScrollStateChanged(int newState) {
+		mOnScrolledListener.onTwitterScrollStateChanged(newState);		
 	}
 }

@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import net.archenemy.archenemyapp.presenter.FeedElement;
 import net.archenemy.archenemyapp.presenter.Tweet;
 
@@ -20,12 +22,19 @@ import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
 import twitter4j.User;
 import twitter4j.conf.ConfigurationBuilder;
+
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthToken;
-//import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 public class TwitterAdapter 
 	implements ProviderAdapter{
+	
+	public interface OnTwitterLoginListener {
+		void onTwitterLogin();
+	}
 	
 	public static final String TAG = "TwitterAdapter";
 	
@@ -36,6 +45,10 @@ public class TwitterAdapter
 	private ArrayList<FeedTask> mFeedTasks = new ArrayList<FeedTask>();
 	private ArrayList<UserTask> mUserTasks = new ArrayList<UserTask>();
 	
+	private TwitterLoginButton mTwitterLoginButton;
+	
+	private OnTwitterLoginListener mOnLoginListener;
+	
 	private static TwitterAdapter mTwitterAdapter;
 	
 	public static TwitterAdapter getInstance() {
@@ -45,6 +58,7 @@ public class TwitterAdapter
 	}
 	
     private TwitterAdapter() {
+  
 	}
     
     public void onDestroy() {
@@ -79,6 +93,32 @@ public class TwitterAdapter
 	
 	public void logOut() { 
 		com.twitter.sdk.android.Twitter.getSessionManager().clearActiveSession();
+	}
+	
+	public void logIn(Activity activity, OnTwitterLoginListener loginListener ) {
+
+        mOnLoginListener = loginListener;
+        
+	  	mTwitterLoginButton = new TwitterLoginButton(activity);	
+  		mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
+  			@Override
+  			public void success(Result<TwitterSession> result) {
+  				mOnLoginListener.onTwitterLogin();
+  			}
+  			
+			@Override
+			public void failure(
+					com.twitter.sdk.android.core.TwitterException arg0) {			
+			}
+  		});	
+  		mTwitterLoginButton.performClick();
+	}
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {	 
+	    // Pass the activity result to the login button.
+	    if (mTwitterLoginButton != null) {
+	    	mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
+	    }
 	}
 	
 	public void makeUserRequest(Long userId, UserCallback callback) {
@@ -173,6 +213,10 @@ public class TwitterAdapter
 			ArrayList<FeedElement> feedElements= new ArrayList<FeedElement>();
 			for (twitter4j.Status status : statuses) {
 				URLEntity[] urlEntities = status.getURLEntities();
+				// filter retweets 
+				if (status.isRetweet()) {
+					status.getText();
+				}
 				String link = null;
 				if (urlEntities != null && urlEntities.length>0) {
 					URLEntity url = urlEntities[0];

@@ -8,7 +8,7 @@
     <dimen name="header_height_settings">360dp</dimen>
     <dimen name="tab_height">48dp</dimen>
     <dimen name="tab_translation_y">144dp</dimen>
-    <dimen name="tab_translation_y_2">312dp</dimen>
+    <dimen name="tab_translation_y_accounts">154dp</dimen>
        
     <dimen name="placeholder_height">154dp</dimen>
     
@@ -16,5 +16,6 @@
     <dimen name="app_bar_height">56dp</dimen>
     <dimen name="status_bar_height">24dp</dimen>
     <dimen name="max_tab_translation_y">104dp</dimen>
+    <dimen name="tab_background_height">154dp</dimen>
 
 </resources>
