@@ -1,6 +1,10 @@
 package net.archenemy.archenemyapp.model;
 
-import net.archenemy.archenemyapp.R;
+/**
+ * <p>Abstract class holding constants</p>
+ *
+ * @author chiljagossow
+ */
 
 public abstract class Constants {
 		

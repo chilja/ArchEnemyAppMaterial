@@ -1,13 +1,9 @@
 package net.archenemy.archenemyapp.presenter;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.ArchEnemyDataAdapter;
 import net.archenemy.archenemyapp.model.SocialMediaUser;
+
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -15,54 +11,68 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class TwitterPageFragment extends PageFragment 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Page displaying Tweets
+ * @author chiljagossow
+ *
+ */
+public class TwitterPageFragment extends PageFragment
 	implements Serializable {
-	
-	public interface OnScrolledListener {
-		public void onTwitterScrollStateChanged(int newState);
-        public void onTwitterPageScrolled(int scrollY, int dy);
-    }
-   
-    public interface OnRefreshFeedListener {
-	   public void onRefeshTwitterFeed();
-    }
-		
-	/**
-	 * 
-	 */
+
+	public interface OnRefreshFeedListener {
+    public void onRrefeshTwitterFeed();
+  }
+
+  public interface OnScrolledListener {
+  	public void onTwitterPageScrolled(int scrollY, int dy);
+    public void onTwitterScrollStateChanged(int newState);
+  }
+
 	private static final long serialVersionUID = 1L;
 	public static final String TAG = "TwitterPageFragment";
-	private static ArrayList<SocialMediaUser> mSocialMediaUsers;
-	
-	private OnScrolledListener mOnScrolledListener;
-	private OnRefreshFeedListener mOnRefreshFeedListener;
-	
+	private static ArrayList<SocialMediaUser> socialMediaUsers;
+
+	private OnScrolledListener onScrolledListener;
+	private OnRefreshFeedListener onRefreshFeedListener;
+
 	@Override
 	public String getTAG() {
 		return TAG;
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			mOnScrolledListener = (OnScrolledListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnScrolledListener");
-        }
+			this.onScrolledListener = (OnScrolledListener) activity;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(activity.toString() + " must implement OnScrolledListener");
+    }
 		try {
-			mOnRefreshFeedListener = (OnRefreshFeedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnRefreshFeedListener");
-        }
+			this.onRefreshFeedListener = (OnRefreshFeedListener) activity;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(activity.toString() + " must implement OnRefreshFeedListener");
+    }
 	}
 
 	@Override
-	protected List<FeedElement> getListElements() {		
-		List<FeedElement> list = new ArrayList<FeedElement>();	
-		mSocialMediaUsers = ArchEnemyDataAdapter.getInstance().getEnabledSocialMediaUsers(getActivity());
-		for (SocialMediaUser user:mSocialMediaUsers) {
-			list.addAll(user.getTweets());	
+	public void setRefreshing(boolean isRefreshing) {
+		if (this.swipeRefreshLayout != null) {
+			this.swipeRefreshLayout.setRefreshing(isRefreshing);
+		}
+	}
+
+	@Override
+	protected List<FeedElement> getListElements() {
+		List<FeedElement> list = new ArrayList<FeedElement>();
+		socialMediaUsers = ArchEnemyDataAdapter.getInstance().getEnabledSocialMediaUsers(getActivity());
+		for (SocialMediaUser user:socialMediaUsers) {
+			list.addAll(user.getTweets());
 		}
 		Collections.sort(list);
 		//header placeholder
@@ -72,33 +82,24 @@ public class TwitterPageFragment extends PageFragment
 
 	@Override
 	protected ViewHolder getViewHolder(ViewGroup parent) {
-		// create a new view
-        View view = LayoutInflater.from(parent.getContext())
-                               .inflate(R.layout.tweet, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-        return new Tweet.ViewHolder(view);
+    View view = LayoutInflater.from(parent.getContext())
+                           .inflate(R.layout.tweet, parent, false);
+    return new Tweet.ViewHolder(view);
 	}
 
-	@Override
-	public void setRefreshing(boolean isRefreshing) {
-		if (mSwipeRefreshLayout != null) {
-			mSwipeRefreshLayout.setRefreshing(isRefreshing);	
-		}
-	}
-	
 
 	@Override
 	protected void onFeedRefresh() {
-		mOnRefreshFeedListener.onRefeshTwitterFeed();
+		this.onRefreshFeedListener.onRrefeshTwitterFeed();
 	}
 
 	@Override
 	protected void onScrolled(RecyclerView recyclerView,int dy) {
-		mOnScrolledListener.onTwitterPageScrolled(getScrollY(recyclerView), dy);	
+		this.onScrolledListener.onTwitterPageScrolled(getScrollY(recyclerView), dy);
 	}
 
 	@Override
 	protected void onScrollStateChanged(int newState) {
-		mOnScrolledListener.onTwitterScrollStateChanged(newState);		
+		this.onScrolledListener.onTwitterScrollStateChanged(newState);
 	}
 }

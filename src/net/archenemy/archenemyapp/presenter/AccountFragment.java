@@ -1,52 +1,44 @@
 package net.archenemy.archenemyapp.presenter;
 
 import net.archenemy.archenemyapp.R;
-import net.archenemy.archenemyapp.model.Constants;
 import net.archenemy.archenemyapp.model.ProviderAdapter;
 import net.archenemy.archenemyapp.model.Utility;
+
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public abstract class AccountFragment extends BaseFragment {
-	//UI elements
-	protected TextView mUserNameView;
-	protected TextView mSubtext;
-	protected TextView mHeaderText;
-	protected Button mLoginButton;	
-	protected String mName;
-	protected Boolean mShowHeader = false;
-	protected Boolean mShowUserInfo = true;
-	protected View mUserView;
-	protected FrameLayout mText;
-	
-	protected ProviderAdapter mProviderAdapter;
-	
-	public void showHeader(Boolean showHeader) {
-		mShowHeader = showHeader;
+
+	protected TextView userNameView;
+	protected TextView subtext;
+	protected TextView headerText;
+	protected Button loginButton;
+	protected String name;
+	protected Boolean showHeader = false;
+	protected Boolean showUserInfo = true;
+	protected View userView;
+	protected FrameLayout text;
+
+	protected ProviderAdapter providerAdapter;
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		init();
 	}
-	
-	public void showUserInfo(Boolean showUserInfo) {
-		mShowUserInfo = showUserInfo;
+
+	void showHeader(Boolean showHeader) {
+		this.showHeader = showHeader;
 	}
-	
-	protected void fadeIn() {
-//		Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-//		fadeIn.setFillAfter(true);
-//		mText.startAnimation(fadeIn);
-	}
-	
-	protected void fadeOut() {
-//		Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-//		fadeOut.setFillAfter(true);
-//		mText.startAnimation(fadeOut);
+
+	void showUserInfo(Boolean showUserInfo) {
+		this.showUserInfo = showUserInfo;
 	}
 
 	protected void init() {
-		if (mProviderAdapter != null && mProviderAdapter.isLoggedIn()) {
+		if ((this.providerAdapter != null) && this.providerAdapter.isLoggedIn()) {
     		setLoggedIn();
 	    } else {
 	    	setLoggedOut();
@@ -55,51 +47,39 @@ public abstract class AccountFragment extends BaseFragment {
 			setOnline();
 		} else {
 			setOffline();
-		}		
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		init();
-	}
-	
-	protected void setLoggedOut(){
-		mLoginButton.setEnabled(true);
-		mLoginButton.setText(R.string.button_log_in);
-		if(mShowUserInfo) {	
-//			fadeOut();
-			mSubtext.setText(R.string.account_logged_out);
-			mSubtext.setTextColor(getResources().getColor(R.color.text_primary));
-			mUserNameView.setText(null);  
-//			fadeIn();
 		}
-
 	}
 
 	protected void setLoggedIn(){
-		mLoginButton.setEnabled(true);
-		mLoginButton.setText(R.string.button_log_out);
-		if(mShowUserInfo) {	
-//			fadeOut();
-			mSubtext.setText(R.string.account_logged_in);
-			mSubtext.setTextColor(getResources().getColor(R.color.text_primary));			
+		this.loginButton.setEnabled(true);
+		this.loginButton.setText(R.string.button_log_out);
+		if(this.showUserInfo) {
+			this.subtext.setText(R.string.account_logged_in);
+			this.subtext.setTextColor(getResources().getColor(R.color.text_primary));
 		}
 	}
-	
+
+	protected void setLoggedOut(){
+		this.loginButton.setEnabled(true);
+		this.loginButton.setText(R.string.button_log_in);
+		if(this.showUserInfo) {
+			this.subtext.setText(R.string.account_logged_out);
+			this.subtext.setTextColor(getResources().getColor(R.color.text_primary));
+			this.userNameView.setText(null);
+		}
+	}
+
 	protected void setOffline() {
-		mLoginButton.setEnabled(false);	
-		if(mShowUserInfo) {	
-//			fadeOut();
-			mSubtext.setText(R.string.account_offline);
-			mSubtext.setTextColor(getResources().getColor(R.color.accent));
-			mUserNameView.setText(null);
-//			fadeIn();
+		this.loginButton.setEnabled(false);
+		if(this.showUserInfo) {
+			this.subtext.setText(R.string.account_offline);
+			this.subtext.setTextColor(getResources().getColor(R.color.accent));
+			this.userNameView.setText(null);
 		}
 	}
-	
+
 	protected void setOnline() {
-		mLoginButton.setEnabled(true);
-	}	
+		this.loginButton.setEnabled(true);
+	}
 }
 

@@ -1,7 +1,13 @@
 package net.archenemy.archenemyapp.model;
 
-import net.archenemy.archenemyapp.presenter.FeedElement;
+/**
+ * <p>Entity that holds data from social media</p>
+ *
+ * @author chiljagossow
+ */
+
 import net.archenemy.archenemyapp.presenter.Post;
+import net.archenemy.archenemyapp.presenter.Tweet;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -16,83 +22,104 @@ import java.util.Collections;
 
 public class SocialMediaUser {
 
-	private final String mName;
-	private final String mTwitterUserId;
-	private final String mFacebookUserId;
-	private final String mPrefKey;
-	private final int mUserId;
-	private GraphUser mFacebookUser;
-	private User mTwitterUser;
+	private final String name;
+	private final Long twitterUserId;
+	private final String facebookUserId;
+	private final String prefKey;
+	private final int userId;
+	private GraphUser facebookUser;
+	private User twitterUser;
 
-	private ArrayList<Post> mPosts = new ArrayList<Post>();
-	private ArrayList<FeedElement> mTweets = new ArrayList<FeedElement>();
-
+	private ArrayList<Post> posts = new ArrayList<Post>();
+	private ArrayList<Tweet> tweets = new ArrayList<Tweet>();
+	
+	/**
+	 * Creates new instance
+	 * @param name Name of user
+	 * @param prefKey preference key to enable or disable user
+	 * @param userId unique id 
+	 * @param twitterUserId user id of Twitter account (numeric)
+	 * @param facebookUserId user id of Facebook account (numeric)
+	 */
 	public SocialMediaUser(String name,
 			String prefKey,
 			int userId,
-			String twitterUserId,
+			Long twitterUserId,
 			String facebookUserId){
 
-		this.mName = name;
-		this.mUserId = userId;
-		this.mPrefKey = prefKey;
-		this.mTwitterUserId = twitterUserId;
-		this.mFacebookUserId = facebookUserId;
+		this.name = name;
+		this.userId = userId;
+		this.prefKey = prefKey;
+		this.twitterUserId = twitterUserId;
+		this.facebookUserId = facebookUserId;
 	}
 
 	public GraphUser getFacebookUser() {
-		return this.mFacebookUser;
+		return this.facebookUser;
 	}
 
 	public String getFacebookUserId() {
-		return this.mFacebookUserId;
+		return this.facebookUserId;
 	}
 
 	public String getName() {
-		return this.mName;
+		return this.name;
 	}
 
 	public ArrayList<Post> getPosts() {
-		return this.mPosts;
+		return this.posts;
 	}
 
-	public ArrayList<FeedElement> getTweets() {
-		return this.mTweets;
+	public ArrayList<Tweet> getTweets() {
+		return this.tweets;
 	}
 
 	public User getTwitterUser() {
-		return this.mTwitterUser;
+		return this.twitterUser;
 	}
 
 	public Long getTwitterUserId() {
-		return Long.valueOf(this.mTwitterUserId);
+		return this.twitterUserId;
 	}
 
 	public int getUserId() {
-		return this.mUserId;
+		return this.userId;
 	}
 
+	/**
+	 * Checks if user is enabled vie shared preferences
+	 * @param activity Activity for access to shared preferences
+	 * @return
+	 */
 	public boolean isEnabled(Activity activity) {
 		final SharedPreferences pref =
 		        PreferenceManager.getDefaultSharedPreferences(activity);
-			return pref.getBoolean(this.mPrefKey, true);
+			return pref.getBoolean(this.prefKey, true);
 	}
-
+	
 	public void setFacebookUser(GraphUser facebookUser) {
-		this.mFacebookUser = facebookUser;
+		this.facebookUser = facebookUser;
 	}
 
+	/**
+	 * Sets the posts and sorts them ascending according to date
+	 * @param posts
+	 */
 	public void setPosts(ArrayList<Post> posts) {
-		this.mPosts = posts;
-		Collections.sort(this.mPosts);
+		this.posts = posts;
+		Collections.sort(this.posts);
 	}
-
-	public void setTweets(ArrayList<FeedElement> tweets) {
-		this.mTweets = tweets;
-		Collections.sort(this.mTweets);
+	
+	/**
+   * Sets the tweets and sorts them ascending according to date
+   * @param posts
+   */
+	public void setTweets(ArrayList<Tweet> tweets) {
+		this.tweets = tweets;
+		Collections.sort(this.tweets);
 	}
 
 	public void setTwitterUser(User twitterUser) {
-		this.mTwitterUser = twitterUser;
+		this.twitterUser = twitterUser;
 	}
 }

@@ -6,22 +6,26 @@ import java.util.TreeMap;
 
 import android.app.Activity;
 
+/**
+ * <p>Provides access to {@link SocialMediaUser SocialMediaUser}</p>
+ * 
+ * @author chiljagossow
+ */
+
 public abstract class DataAdapter {
 
 	protected static final String TAG = "DataAdapter";
 	
-	protected TreeMap<Integer,SocialMediaUser> mSocialMediaUsers = createSocialMediaUsers();
+	protected TreeMap<Integer,SocialMediaUser> socialMediaUsers = createSocialMediaUsers();
 		
-	public abstract TreeMap<Integer,SocialMediaUser> createSocialMediaUsers();
+	protected abstract TreeMap<Integer,SocialMediaUser> createSocialMediaUsers();
+	
+	/**
+	 * Returns {@link SocialMediaUser SocialMediaUser} that are enabled via preferences
+	 * @param activity
+	 * @return array of {@link SocialMediaUser SocialMediaUser}
+	 */
 		
-	public SocialMediaUser getSocialMediaUser(int userId) {		
-		return mSocialMediaUsers.get(userId);
-	}
-	
-	public TreeMap<Integer,SocialMediaUser> getSocialMediaUsers(){
-		return mSocialMediaUsers;
-	}
-	
 	public ArrayList<SocialMediaUser> getEnabledSocialMediaUsers(Activity activity){
 		TreeMap<Integer,SocialMediaUser> users = getSocialMediaUsers();
 		ArrayList<SocialMediaUser> enabledMembers = new ArrayList<SocialMediaUser>();
@@ -30,5 +34,13 @@ public abstract class DataAdapter {
 			if (users.get(key).isEnabled(activity)) enabledMembers.add(users.get(key));
 		}
 		return enabledMembers;
+	}
+	
+	public SocialMediaUser getSocialMediaUser(int userId) {		
+		return socialMediaUsers.get(userId);
+	}
+	
+	public TreeMap<Integer,SocialMediaUser> getSocialMediaUsers(){
+		return socialMediaUsers;
 	}
 }

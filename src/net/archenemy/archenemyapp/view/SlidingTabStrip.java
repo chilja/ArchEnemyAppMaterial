@@ -1,76 +1,78 @@
 package net.archenemy.archenemyapp.view;
 
-import android.R;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
- 
+
+/**
+ * Tab indicator that slides
+ *
+ */
+
 class SlidingTabStrip extends LinearLayout {
 
-    private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 2;
+  private static final int INDICATOR_HEIGHT_DIPS = 2;
 
-    private final int mSelectedIndicatorThickness;
-    private final Paint mSelectedIndicatorPaint;
- 
-    private int mSelectedPosition;
-    private float mSelectionOffset;
+  private final int indicatorHeight;
+  private final Paint indicatorPaint;
 
-    private int mIndicatorColor;
- 
-    SlidingTabStrip(Context context) {
-        this(context, null);
-    }
- 
-    SlidingTabStrip(Context context,AttributeSet attrs) {
-        super(context, attrs);
-        setWillNotDraw(false);
- 
-        final float density = getResources().getDisplayMetrics().density;
- 
-        mSelectedIndicatorThickness = (int) (SELECTED_INDICATOR_THICKNESS_DIPS * density);
-        mSelectedIndicatorPaint = new Paint();
+  private int selectedPosition;
+  private float selectionOffset;
+
+  private int indicatorColor;
+
+  public SlidingTabStrip(Context context) {
+    this(context, null);
+  }
+
+  public SlidingTabStrip(Context context,AttributeSet attrs) {
+    super(context, attrs);
+    setWillNotDraw(false);
+
+    final float density = getResources().getDisplayMetrics().density;
+
+    indicatorHeight = (int) (INDICATOR_HEIGHT_DIPS * density);
+    indicatorPaint = new Paint();
+  }
+
+  @Override
+  protected void onDraw(Canvas canvas) {
+    final int height = getHeight();
+    final int childCount = getChildCount();
+
+    if (childCount > 0) {
+      View selectedTab = getChildAt(selectedPosition);
+      int left = selectedTab.getLeft();
+      int right = selectedTab.getRight();
+
+      if ((selectionOffset > 0f) && (selectedPosition < (getChildCount() - 1))) {
+
+        // Draw the indicator
+        View nextTab = getChildAt(selectedPosition + 1);
+        left = (int) ((selectionOffset * nextTab.getLeft()) +
+                ((1.0f - selectionOffset) * left));
+        right = (int) ((selectionOffset * nextTab.getRight()) +
+                ((1.0f - selectionOffset) * right));
+      }
+
+      canvas.drawRect(left, height - indicatorHeight, right,
+          height, indicatorPaint);
     }
 
-    void setIndicatorColor(int color) {
-        mIndicatorColor = color;
-        mSelectedIndicatorPaint.setColor(mIndicatorColor);
-        invalidate();
-    }
- 
-    void onViewPagerPageChanged(int position, float positionOffset) {
-        mSelectedPosition = position;
-        mSelectionOffset = positionOffset;
-        invalidate();
-    }
- 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        final int height = getHeight();
-        final int childCount = getChildCount();
+  }
 
-        if (childCount > 0) {
-            View selectedTitle = getChildAt(mSelectedPosition);
-            int left = selectedTitle.getLeft();
-            int right = selectedTitle.getRight();
- 
-            if (mSelectionOffset > 0f && mSelectedPosition < (getChildCount() - 1)) {
- 
-                // Draw the selection partway between the tabs
-                View nextTab = getChildAt(mSelectedPosition + 1);
-                left = (int) (mSelectionOffset * nextTab.getLeft() +
-                        (1.0f - mSelectionOffset) * left);
-                right = (int) (mSelectionOffset * nextTab.getRight() +
-                        (1.0f - mSelectionOffset) * right);
-            }
- 
-            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
-                    height, mSelectedIndicatorPaint);
-        }
- 
-    }
+  void onViewPagerPageChanged(int position, float positionOffset) {
+    selectedPosition = position;
+    selectionOffset = positionOffset;
+    invalidate();
+  }
+
+  void setIndicatorColor(int color) {
+    indicatorColor = color;
+    indicatorPaint.setColor(indicatorColor);
+    invalidate();
+  }
 }
