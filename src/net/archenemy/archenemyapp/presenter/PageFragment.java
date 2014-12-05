@@ -164,22 +164,24 @@ public abstract class PageFragment extends BaseFragment
 
 	protected abstract List<FeedElement> getListElements();
 
-	protected int getScrollY(RecyclerView recyclerView) {
-
-    final View firstChild = recyclerView.getChildAt(0);
-    if (firstChild == null) {
-        return 0;
-    }
-
-    final int firstVisiblePosition = recyclerView.getChildPosition(recyclerView.findChildViewUnder(0.0F, 0.0F));
-    final int top = firstChild.getTop();
-
-    int headerHeight = 0;
-    if (firstVisiblePosition >= 1) {
-        headerHeight = 154 * 3;
-    }
-
-    return top - (firstVisiblePosition * firstChild.getHeight()) - headerHeight;
+	protected int getScrollY() {
+	  if (recyclerView != null) {
+      final View firstChild = recyclerView.getChildAt(0);
+      if (firstChild == null) {
+          return 0;
+      }
+  
+      final int firstVisiblePosition = recyclerView.getChildPosition(recyclerView.findChildViewUnder(0.0F, 0.0F));
+      final int top = firstChild.getTop();
+  
+      int headerHeight = 0;
+      if (firstVisiblePosition >= 1) {
+          headerHeight = 154 * 3;
+      }
+  
+      return top - (firstVisiblePosition * firstChild.getHeight()) - headerHeight;
+	  }
+	  return 0;
 	}
 
 	protected abstract ViewHolder getViewHolder(ViewGroup parent);

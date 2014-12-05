@@ -105,7 +105,7 @@ public class PostElement implements
 
 		public void setMessage(String message) {
 			int length = message.length();
-			int maxTeaserLength = 20;
+			int maxTeaserLength = 16;
 			if (length > maxTeaserLength) {
 				teaserView.setText(message.substring(0, maxTeaserLength) + "...");
 				messageView.setText(message);

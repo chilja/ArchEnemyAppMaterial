@@ -103,6 +103,6 @@ public class TwitterPageFragment extends PageFragment
 
 	@Override
 	protected void onScrolled(RecyclerView recyclerView,int dy) {
-		onScrolledListener.onTwitterPageScrolled(getScrollY(recyclerView), dy);
+		onScrolledListener.onTwitterPageScrolled(getScrollY(), dy);
 	}
 }

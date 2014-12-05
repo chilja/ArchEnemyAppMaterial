@@ -60,7 +60,7 @@ public class AccountActivity extends FacebookActivity
     fragments[TWITTER] = twitterAccount;
 
 		viewPager = (ViewPager) findViewById(R.id.viewpager);
-    viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), fragments));
+    viewPager.setAdapter(new BaseFragmentPagerAdapter(getSupportFragmentManager(), fragments));
     slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
     slidingTabLayout.setIndicatorColor(getResources().getColor(R.color.accent));
     slidingTabLayout.setCustomTabView(R.layout.tab, R.id.tabIcon);

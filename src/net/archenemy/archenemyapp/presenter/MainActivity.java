@@ -411,9 +411,11 @@ public class MainActivity
   	// set new tab translation
   	switch (menuIndex) {
   	case FACEBOOK:
+  	  facebookScrollY = facebookPageFragment.getScrollY();
   		setCurrentTabTranslationY(facebookScrollY, -1);
   		break;
   	case TWITTER:
+  	  twitterScrollY = twitterPageFragment.getScrollY();
   		setCurrentTabTranslationY(twitterScrollY, -1);
   	}
 

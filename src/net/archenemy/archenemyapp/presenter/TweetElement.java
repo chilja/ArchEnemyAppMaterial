@@ -6,6 +6,7 @@ import net.archenemy.archenemyapp.model.Tweet;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,9 +32,11 @@ public class TweetElement
 
 		private FrameLayout placeholder;
 		private RelativeLayout tweet;
+		private View view;
 
     public ViewHolder(View view) {
       super(view);
+      this.view = view;
       messageView = (TextView) view.findViewById(R.id.messageView);
       dateView = (TextView) view.findViewById(R.id.dateView);
     	imageView = (ImageView) view.findViewById(R.id.imageView);
@@ -70,6 +73,15 @@ public class TweetElement
 		private void setMessage(String message) {
 		  messageView.setText(message);
 		}
+		
+		private void setLink(final String link, final Activity activity) {
+      view.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          Utility.startBrowserActivity(activity, link);
+        }
+      });
+    }
 
 		private void showPlaceholder(){
 			placeholder.setVisibility(View.VISIBLE);
@@ -113,6 +125,7 @@ public class TweetElement
 				myHolder.setImageUrl(tweet.getImageUrl(), width);
 				myHolder.setDate(tweet.getDate());
 				myHolder.setAvatarUrl(tweet.getAvatarUrl(), density);
+				myHolder.setLink(tweet.getLink(), activity);
 			}
 		}
 	}

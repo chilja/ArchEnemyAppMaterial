@@ -9,11 +9,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class PageAdapter extends FragmentPagerAdapter {
+public class BaseFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	private BaseFragment[] fragments;
 
-  public PageAdapter(FragmentManager fm, BaseFragment[] fragments) {
+  public BaseFragmentPagerAdapter(FragmentManager fm, BaseFragment[] fragments) {
 		super(fm);
 		this.fragments = fragments;
 	}

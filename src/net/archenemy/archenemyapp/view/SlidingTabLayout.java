@@ -1,6 +1,6 @@
 package net.archenemy.archenemyapp.view;
 
-import net.archenemy.archenemyapp.presenter.PageAdapter;
+import net.archenemy.archenemyapp.presenter.BaseFragmentPagerAdapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -139,7 +139,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
           tabIcon  = (ImageView) tabView.findViewById(tabViewImageViewId);
         }
 
-        tabIcon.setImageResource(((PageAdapter)adapter).getIconResId(i));
+        tabIcon.setImageResource(((BaseFragmentPagerAdapter)adapter).getIconResId(i));
         tabView.setOnClickListener(tabClickListener);
         tabStrip.addView(tabView);
       }

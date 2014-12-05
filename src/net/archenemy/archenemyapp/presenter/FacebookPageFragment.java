@@ -105,6 +105,6 @@ public class FacebookPageFragment extends PageFragment
 
 	@Override
 	protected void onScrolled(RecyclerView recyclerView, int dy) {
-		onScrolledListener.onFacebookPageScrolled(getScrollY(recyclerView), dy);
+		onScrolledListener.onFacebookPageScrolled(getScrollY(), dy);
 	}
 }
