@@ -3,7 +3,6 @@ package net.archenemy.archenemyapp.presenter;
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.Constants;
 import net.archenemy.archenemyapp.model.FacebookAdapter;
-import net.archenemy.archenemyapp.model.Utility;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,8 +15,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.facebook.FacebookRequestError;
 import com.facebook.model.GraphUser;
 
+/**
+ * Facebook account
+ * @author chiljagossow
+ *
+ */
 public class FacebookAccountFragment extends AccountFragment
 	implements FacebookAdapter.UserCallback{
 
@@ -29,7 +34,7 @@ public class FacebookAccountFragment extends AccountFragment
     	  // Log out dialog
     		final String logout = getResources().getString(R.string.button_log_out);
         final String cancel = getResources().getString(R.string.button_cancel);
-        
+
         String message;
         if (FacebookAccountFragment.this.name != null) {
         	message = getResources().getString(R.string.account_logged_in) + ": " + FacebookAccountFragment.this.name;
@@ -45,23 +50,23 @@ public class FacebookAccountFragment extends AccountFragment
           .setPositiveButton(logout, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-          	   FacebookAccountFragment.this.providerAdapter.logOut();
-          	   setLoggedOut();
+              FacebookAccountFragment.this.providerAdapter.logOut();
+      	      setLoggedOut();
          		}
           })
           .setNegativeButton(cancel, null);
         builder.create().show();
-        
+
     	}else{
     	  // Log in process
-    		FacebookAccountFragment.this.facebookAdapter.logIn(getActivity());
+    	  FacebookAdapter.getInstance().logIn(getActivity());
     	}
     }
 	}
-	
+
 	public static final String TAG = "FacebookAccountFragment";
 
-	protected FacebookAdapter facebookAdapter;
+	private FacebookActivity facebookActivity;
 
 	@Override
   public int getIconResId() {
@@ -74,10 +79,19 @@ public class FacebookAccountFragment extends AccountFragment
 	}
 
 	@Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    try {
+      facebookActivity = (FacebookActivity) activity;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(activity.toString() + " must extend FacebookActivity");
+    }
+  }
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    this.facebookAdapter = FacebookAdapter.getInstance();
-    this.providerAdapter = this.facebookAdapter;
+    providerAdapter = FacebookAdapter.getInstance();
 	}
 
 	@Override
@@ -87,44 +101,47 @@ public class FacebookAccountFragment extends AccountFragment
 		super.onCreateView(inflater, container, savedInstanceState);
 	  final View view = inflater.inflate(R.layout.facebook_account_fragment, container, false);
 
-		this.loginButton = (Button) view.findViewById(R.id.facebookButton);
-		this.loginButton.setOnClickListener(new OnClickListener());
+		loginButton = (Button) view.findViewById(R.id.facebookButton);
+		loginButton.setOnClickListener(new OnClickListener());
 
-	  this.text = (FrameLayout) view.findViewById(R.id.text);
+	  text = (FrameLayout) view.findViewById(R.id.text);
 
-	  if (this.showHeader) {
+	  if (showHeader) {
     	final View accountInfoView = inflater.inflate(R.layout.account_info, null);
-    	this.headerText = (TextView) accountInfoView.findViewById(R.id.headerText);
-    	this.headerText.setText(R.string.facebook_login_header);;
-    	this.text.addView(accountInfoView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    	headerText = (TextView) accountInfoView.findViewById(R.id.headerText);
+    	headerText.setText(R.string.facebook_login_header);;
+    	text.addView(accountInfoView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-		if (this.showUserInfo) {
+		if (showUserInfo) {
 			final View userInfoView = inflater.inflate(R.layout.account_user, null);
-			this.userNameView = (TextView) userInfoView.findViewById(R.id.userNameView);
-			this.subtext = (TextView) userInfoView.findViewById(R.id.subTextView);
+			userNameView = (TextView) userInfoView.findViewById(R.id.userNameView);
+			subtext = (TextView) userInfoView.findViewById(R.id.subTextView);
 			if (savedInstanceState != null) {
-        this.name = savedInstanceState.getString(Constants.FACEBOOK_USER_NAME, this.name);
+        name = savedInstanceState.getString(Constants.FACEBOOK_USER_NAME, name);
       }
 
-			if (this.name != null) {
-				this.userNameView.setText(this.name);
+			if (name != null) {
+				userNameView.setText(name);
 			} else {
-				if (Utility.isConnectedToNetwork(getActivity(), false) && this.providerAdapter.isLoggedIn()) {
-				  this.facebookAdapter.makeMeRequest(this, getActivity());
+				if (Utility.isConnectedToNetwork(getActivity(), false) && providerAdapter.isLoggedIn()) {
+				  FacebookAdapter.getInstance().makeMeRequest(this);
 				}
 			}
-			this.text.addView(userInfoView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+			text.addView(userInfoView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 		}
 
 		return view;
 	}
 
+	/**
+	 * Should be called from activity upon Facebook login to update state
+	 */
 	public void onFacebookLogin() {
-    if (this.facebookAdapter.isLoggedIn()) {
-    	//set the logged in state and request user 
+    if (FacebookAdapter.getInstance().isLoggedIn()) {
+    	//set the logged in state and request user
     	setLoggedIn();
-      this.facebookAdapter.makeMeRequest(this, getActivity());
+      FacebookAdapter.getInstance().makeMeRequest(this);
 
     } else {
     	// set the logged out state
@@ -132,11 +149,14 @@ public class FacebookAccountFragment extends AccountFragment
     }
 	}
 
-	@Override
-  public void onUserRequestCompleted(GraphUser user) {
+  @Override
+  public void onUserRequestCompleted(GraphUser user, FacebookRequestError error) {
+    if (error != null) {
+      facebookActivity.handleError(error);
+    }
 		if (user != null) {
-			this.name = user.getName();
-      this.userNameView.setText(this.name);
+			name = user.getName();
+      userNameView.setText(name);
     }
 	}
 }

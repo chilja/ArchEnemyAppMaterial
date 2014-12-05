@@ -20,6 +20,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base fragment for feed pages
+ * @author chiljagossow
+ *
+ */
 public abstract class PageFragment extends BaseFragment
 	implements Serializable {
 
@@ -33,12 +38,12 @@ public abstract class PageFragment extends BaseFragment
 
     @Override
     public int getItemCount() {
-      return this.listElements.size();
+      return listElements.size();
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-    	this.listElements.get(position).bindViewHolder(holder, getActivity());
+    	listElements.get(position).bindViewHolder(holder, getActivity());
     }
 
     @Override
@@ -58,13 +63,12 @@ public abstract class PageFragment extends BaseFragment
 		@Override
 		public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 			super.onScrollStateChanged(recyclerView, newState);
-			PageFragment.this.onScrollStateChanged(newState);
 		}
 	}
 
 	private static final long serialVersionUID = 1L;
 	public static final String TAG = "FacebookPageFragment";
-	
+
 	protected transient RecyclerView recyclerView;
 	protected transient FeedAdapter adapter;
 	protected transient RecyclerView.LayoutManager layoutManager;
@@ -78,21 +82,21 @@ public abstract class PageFragment extends BaseFragment
 	    ViewGroup container, Bundle savedInstanceState) {
 
 		super.onCreateView(inflater, container, savedInstanceState);
-		this.parentView = inflater.inflate(R.layout.page_fragment, container, false);
+		parentView = inflater.inflate(R.layout.page_fragment, container, false);
 
 		socialMediaUsers = ArchEnemyDataAdapter.getInstance().getEnabledSocialMediaUsers(getActivity());
 
-    this.layoutManager = new LinearLayoutManager(getActivity());
-	 	this.recyclerView = (RecyclerView) this.parentView.findViewById(R.id.recyclerView);
-    this.recyclerView.setLayoutManager(this.layoutManager);
-    this.recyclerView.setOnScrollListener(new ScrollListener());
+    layoutManager = new LinearLayoutManager(getActivity());
+	 	recyclerView = (RecyclerView) parentView.findViewById(R.id.recyclerView);
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setOnScrollListener(new ScrollListener());
 
-    this.swipeRefreshLayout = (SwipeRefreshLayout) this.parentView.findViewById(R.id.swipeRefresh);
-    this.swipeRefreshLayout.setColorSchemeColors(
+    swipeRefreshLayout = (SwipeRefreshLayout) parentView.findViewById(R.id.swipeRefresh);
+    swipeRefreshLayout.setColorSchemeColors(
       getActivity().getResources().getColor(R.color.accent),
       getActivity().getResources().getColor(R.color.accent_dark));
 
-    this.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
          onFeedRefresh();
@@ -101,30 +105,30 @@ public abstract class PageFragment extends BaseFragment
 
     refresh();
 
-	  return this.parentView;
+	  return parentView;
 	}
 
 	@Override
 	public void refresh() {
-		if (this.isAttached) {
-			final int start = this.recyclerView.getBottom();
-			
-			if ((this.listElements == null) || (this.listElements.size() == 1)) {
-        this.swipeRefreshLayout.setTranslationY(start);
+		if (isAttached) {
+			final int start = recyclerView.getBottom();
+
+			if ((listElements == null) || (listElements.size() == 1)) {
+        swipeRefreshLayout.setTranslationY(start);
       }
-			
-			this.listElements = getListElements();
-			if ((this.listElements != null) && (this.listElements.size() > 0) && (getActivity() != null) && (this.recyclerView != null)) {
+
+			listElements = getListElements();
+			if ((listElements != null) && (listElements.size() > 0) && (getActivity() != null) && (recyclerView != null)) {
 				// specify an adapter (see also next example)
-        this.adapter = new FeedAdapter(this.listElements);
-        this.recyclerView.setAdapter(this.adapter);
+        adapter = new FeedAdapter(listElements);
+        recyclerView.setAdapter(adapter);
 			}
-			
-			if (this.adapter != null) {
-				this.adapter.notifyDataSetChanged();
+
+			if (adapter != null) {
+				adapter.notifyDataSetChanged();
 				animateEnterTransition();
 			}
-			
+
 			// Stop the refreshing indicator
 	    setRefreshing(false);
 		}
@@ -140,7 +144,7 @@ public abstract class PageFragment extends BaseFragment
 
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				PageFragment.this.swipeRefreshLayout.setTranslationY(0);
+				swipeRefreshLayout.setTranslationY(0);
 			}
 
 			@Override
@@ -150,8 +154,8 @@ public abstract class PageFragment extends BaseFragment
 			public void onAnimationStart(Animator animation) { }
 
 		};
-		
-		this.swipeRefreshLayout.animate().translationY(0)
+
+		swipeRefreshLayout.animate().translationY(0)
 		.setInterpolator(new DecelerateInterpolator())
 		.setDuration(300)
 		.setListener(listener)
@@ -161,12 +165,12 @@ public abstract class PageFragment extends BaseFragment
 	protected abstract List<FeedElement> getListElements();
 
 	protected int getScrollY(RecyclerView recyclerView) {
-	  
+
     final View firstChild = recyclerView.getChildAt(0);
     if (firstChild == null) {
         return 0;
     }
-    
+
     final int firstVisiblePosition = recyclerView.getChildPosition(recyclerView.findChildViewUnder(0.0F, 0.0F));
     final int top = firstChild.getTop();
 
@@ -183,6 +187,4 @@ public abstract class PageFragment extends BaseFragment
 	protected abstract void onFeedRefresh();
 
 	protected abstract void onScrolled(RecyclerView recyclerView, int dy);
-
-	protected abstract void onScrollStateChanged(int newState);
 }

@@ -11,19 +11,19 @@ import android.widget.TextView;
  *
  */
 public class RobotoFont  extends TextView {
-  
+
   public RobotoFont(Context context) {
     super(context);
   }
-  
+
   public RobotoFont(Context context, AttributeSet attrs) {
     super(context, attrs);
   }
-  
+
   public RobotoFont(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
   }
-  
+
   @Override
   public void setTypeface(Typeface tf, int style) {
     switch (style) {

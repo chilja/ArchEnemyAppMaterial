@@ -2,12 +2,12 @@ package net.archenemy.archenemyapp.presenter;
 
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.ArchEnemyDataAdapter;
-import net.archenemy.archenemyapp.model.BitmapUtility;
 import net.archenemy.archenemyapp.model.Constants;
 import net.archenemy.archenemyapp.model.FacebookAdapter;
+import net.archenemy.archenemyapp.model.Post;
 import net.archenemy.archenemyapp.model.SocialMediaUser;
+import net.archenemy.archenemyapp.model.Tweet;
 import net.archenemy.archenemyapp.model.TwitterAdapter;
-import net.archenemy.archenemyapp.model.Utility;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -16,7 +16,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.facebook.FacebookRequestError;
 import com.facebook.model.GraphUser;
 
 import twitter4j.User;
@@ -184,7 +184,7 @@ public class MainActivity
   	getFacebookUsers();
   	getTwitterUsers();
 
-  	// get start sceen
+  	// get start screen
   	SharedPreferences sharedPreferences =
 	        PreferenceManager.getDefaultSharedPreferences(this);
     String startScreen = sharedPreferences.getString(Constants.PREF_KEY_START, Constants.FACEBOOK);
@@ -215,51 +215,40 @@ public class MainActivity
 	@Override
 	public void onFacebookPageScrolled(int scrollY, int dy) {
 	  synchronized (facebookScrollY) {
-	    int previousTabTranslation = currentTabTranslationY;
 			facebookScrollY = scrollY;
-			setCurrentTabTranslationY(facebookScrollY, dy);
-			updateBackground();
-	    updateToolbar();
-		  if ( ((previousTabTranslation == 0) && (currentTabTranslationY == -tabHeight) )
-          || ( (previousTabTranslation == -tabHeight) && (currentTabTranslationY == 0))) {
-        // show or hide tabs
-        animateTabsTranslation();
-      } else if (previousTabTranslation != currentTabTranslationY ) {
-        translateTabs();
-      }
+			onPageScrolled(facebookScrollY, dy);
 		}
 	}
 
-    @Override
-  public void onFacebookScrollStateChanged(int newState) {
-  	if(newState == RecyclerView.SCROLL_STATE_IDLE) {
-
-  	}
-  }
-
-	//Facebook Callback
+  //Facebook Callback
   @Override
-  public void onFeedRequestCompleted(ArrayList<Post> elements, String id) {
-  	if ((elements != null) && (id != null) && (elements.size() >0)) {
+  public void onFeedRequestCompleted(ArrayList<Post> posts, String id, FacebookRequestError error) {
+    if (error != null) {
+      handleError(error);
+    }
+
+  	if ((posts != null) && (id != null) && (posts.size() >0)) {
+  	  Log.i(TAG, "Received facebook feed");
   		for (SocialMediaUser user: dataAdapter.getEnabledSocialMediaUsers(this)) {
   			if (id.equals(user.getFacebookUserId())) {
-  				user.setPosts(elements);
+  				user.setPosts(posts);
   				break;
   			}
   		}
   	}
+
   	facebookCallbackCount += 1;
   	refreshFacebookMenuItem();
-  	Log.i(TAG, "Received facebook feed");
+
   }
 
 	//Twitter Callback
   @Override
-  public void onFeedRequestCompleted(ArrayList<Tweet> elements, Long id) {
-  	if ((elements != null) && (id != null) && (elements.size() >0)) {
+  public void onFeedRequestCompleted(ArrayList<Tweet> tweets, Long id) {
+  	if ((tweets != null) && (id != null) && (tweets.size() >0)) {
     	for (SocialMediaUser member: dataAdapter.getEnabledSocialMediaUsers(this)) {
     		if (id.equals(member.getTwitterUserId())) {
-    			member.setTweets(elements);
+    			member.setTweets(tweets);
     			break;
     		}
     	}
@@ -271,7 +260,7 @@ public class MainActivity
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-    //handle action bar events
+    //handle toolbar events
 	  switch (item.getItemId()){
 
 	    case R.id.actionRefreshTwitter:
@@ -300,7 +289,7 @@ public class MainActivity
         //if event has not been handled, then pass it on
         return super.onOptionsItemSelected(item);
 	  }
-}
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu (Menu menu) {
@@ -348,18 +337,18 @@ public class MainActivity
   		break;
   	}
 
-  	updateBackground();
+  	updateTabsBackgroundAlpha();
     updateToolbar() ;
     translateTabs();
   }
 
-  @Override
+	@Override
 	public void onRrefeshTwitterFeed() {
 		twitterIsRefreshed = false;
 		refreshTwitterFeed();
 	}
 
-	@Override
+  @Override
 	public void onSaveInstanceState(Bundle bundle) {
     super.onSaveInstanceState(bundle);
     //save current state
@@ -383,34 +372,24 @@ public class MainActivity
     }
   }
 
-  @Override
+	@Override
 	public void onTwitterPageScrolled(int scrollY, int dy) {
     synchronized (twitterScrollY) {
-      int previousTabTranslation = currentTabTranslationY;
-			twitterScrollY = scrollY;
-      setCurrentTabTranslationY(twitterScrollY, dy);
-      updateBackground();
-    	updateToolbar();
-    	if ( ((previousTabTranslation == 0) && (currentTabTranslationY == -tabHeight) )
-    	    || ( (previousTabTranslation == -tabHeight) && (currentTabTranslationY == 0))) {
-    	  // show or hide tabs
-    	  animateTabsTranslation();
-    	} else if (previousTabTranslation != currentTabTranslationY ) {
-    	  translateTabs();
-    	}
-		}
+      twitterScrollY = scrollY;
+      onPageScrolled(twitterScrollY, dy);
+    }
 	}
 
   @Override
-  public void onTwitterScrollStateChanged(int newState) {}
-
-  @Override
-  public void onUserRequestCompleted(GraphUser user) {
+  public void onUserRequestCompleted(GraphUser user, FacebookRequestError error) {
+    if (error != null) {
+      handleError(error);
+    }
   	String userId = user.getId();
   	for (SocialMediaUser member : dataAdapter.getEnabledSocialMediaUsers(this)) {
   		if (member.getFacebookUserId().equals(userId)) {
   			member.setFacebookUser(user);
-  			facebookAdapter.makeFeedRequest(this, member.getFacebookUserId(), this);
+  			facebookAdapter.makeFeedRequest(this, member.getFacebookUserId());
   			break;
   		}
   	}
@@ -432,10 +411,10 @@ public class MainActivity
   	// set new tab translation
   	switch (menuIndex) {
   	case FACEBOOK:
-  		setCurrentTabTranslationY(facebookScrollY, 0);
+  		setCurrentTabTranslationY(facebookScrollY, -1);
   		break;
   	case TWITTER:
-  		setCurrentTabTranslationY(twitterScrollY, 0);
+  		setCurrentTabTranslationY(twitterScrollY, -1);
   	}
 
     //background alpha
@@ -449,27 +428,26 @@ public class MainActivity
     if (currentTabTranslationY > appBarHeight) {
     	if (translationY < 0) {
     	//show
-    		animateYTranslation(toolbar, 0);
+    		animateYTranslation(toolbar, 0, 300);
     	}
     } else {
     	//hide
     	if (translationY != -appBarHeight) {
-    		animateYTranslation(toolbar, -appBarHeight);
+    		animateYTranslation(toolbar, -appBarHeight, 300);
     	}
     }
 
-  	animateYTranslation(tabs, currentTabTranslationY);
-  	animateYTranslation(tabsBackground,currentTabTranslationY - maxTabTranslationY);
+  	animateYTranslation(tabs, currentTabTranslationY, 300);
+  	animateYTranslation(tabsBackground,currentTabTranslationY - maxTabTranslationY, 300);
   	tabsBackground.animate().alpha(alpha).setDuration(300).start();
   }
 
-	private void animateTabsTranslation() {
-	  animateYTranslation(tabs, currentTabTranslationY);
-	  animateYTranslation(tabsBackground, (currentTabTranslationY - maxTabTranslationY));
+  private void animateTabsTranslation() {
+	  animateYTranslation(tabs, currentTabTranslationY, 300);
+	  animateYTranslation(tabsBackground, (currentTabTranslationY - maxTabTranslationY), 300);
   }
 
-
-  private void animateYTranslation(final View view, final int y) {
+	private void animateYTranslation(final View view, final int y, int duration) {
 
 		if (view.getAnimation() == null) {
 
@@ -501,11 +479,12 @@ public class MainActivity
 
     	view.animate().translationY(y)
   		.setInterpolator(new AccelerateDecelerateInterpolator())
-  		.setDuration(300)
+  		.setDuration(duration)
   		.setListener(listener)
   		.start();
 		}
 	}
+
 
   private void clearBackStack() {
   	// Get the number of entries in the back stack
@@ -518,7 +497,7 @@ public class MainActivity
   	}
   }
 
-	private int determineFragmentIndex(int menuIndex) {
+  private int determineFragmentIndex(int menuIndex) {
   	int index;
 
   	switch (menuIndex) {
@@ -551,7 +530,7 @@ public class MainActivity
 			if (!facebookIsRefreshed && facebookAdapter.isLoggedIn()) {
 				for (SocialMediaUser member: dataAdapter.getEnabledSocialMediaUsers(this)) {
         	if (member.getFacebookUser() == null) {
-        		facebookAdapter.makeUserRequest(this, member.getFacebookUserId(), this);
+        		facebookAdapter.makeUserRequest(this, member.getFacebookUserId());
         	}
         }
 			}
@@ -625,6 +604,21 @@ public class MainActivity
     currentTabTranslationY = maxTabTranslationY;
   }
 
+	private void onPageScrolled(Integer scrollY, int dy) {
+    int previousTabTranslation = currentTabTranslationY;
+    setCurrentTabTranslationY(scrollY, dy);
+    updateTabsBackgroundAlpha();
+    updateToolbar();
+    if ( ((previousTabTranslation == 0) && (currentTabTranslationY == -tabHeight) )
+        || ( (previousTabTranslation == -tabHeight) && (currentTabTranslationY == 0))) {
+      // show or hide tabs
+      animateTabsTranslation();
+    } else if (previousTabTranslation != currentTabTranslationY ) {
+      //translation has changed
+      translateTabs();
+    }
+  }
+
 	private void refreshFacebookFeed() {
     //check network connection
     if (Utility.isConnectedToNetwork(this, true)) {
@@ -632,7 +626,7 @@ public class MainActivity
 
   			facebookCallbackCount = 0;
   			for (SocialMediaUser member: dataAdapter.getEnabledSocialMediaUsers(this)) {
-  				facebookAdapter.makeFeedRequest(this, member.getFacebookUserId(), this);
+  				facebookAdapter.makeFeedRequest(this, member.getFacebookUserId());
   				facebookCallbackTotal += 1;
   			}
 
@@ -700,6 +694,7 @@ public class MainActivity
 	  synchronized (currentTabTranslationY) {
   	  int minTranslation = -tabHeight;
       if (dy < 0) {
+        // scrolling up -> show tabs
         minTranslation = 0;
       }
   	  if ( (maxTabTranslationY + scrollY) <= minTranslation ) {
@@ -766,7 +761,7 @@ public class MainActivity
 		tabsBackground.setTranslationY(currentTabTranslationY - maxTabTranslationY);
 	}
 
-	private void updateBackground() {
+	private void updateTabsBackgroundAlpha() {
   	// animate container background
     float alpha = (float)
     		(maxTabTranslationY - currentTabTranslationY)/(maxTabTranslationY);
@@ -779,16 +774,19 @@ public class MainActivity
     if (currentTabTranslationY > appBarHeight) {
     	if (translationY < 0) {
     	//show
-    		animateYTranslation(toolbar, 0);
+    		animateYTranslation(toolbar, 0, 100);
     	}
     } else {
     	//hide
     	if (translationY != -appBarHeight) {
     		if (currentTabTranslationY == 0) {
     			//animation would be too slow
+    		  if (toolbar.getAnimation() != null) {
+            toolbar.getAnimation().cancel();
+          }
     			toolbar.setTranslationY(-appBarHeight);
     		} else {
-    			animateYTranslation(toolbar, -appBarHeight);
+    			animateYTranslation(toolbar, -appBarHeight, 30);
     		}
     	}
     }

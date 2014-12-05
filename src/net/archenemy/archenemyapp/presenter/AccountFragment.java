@@ -2,13 +2,16 @@ package net.archenemy.archenemyapp.presenter;
 
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.ProviderAdapter;
-import net.archenemy.archenemyapp.model.Utility;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+ /**
+  * Abstract class  with basic logic for account fragments
+  * @author chiljagossow
+  *
+  */
 public abstract class AccountFragment extends BaseFragment {
 
 	protected TextView userNameView;
@@ -26,19 +29,46 @@ public abstract class AccountFragment extends BaseFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		init();
+		updateState();
 	}
 
-	void showHeader(Boolean showHeader) {
-		this.showHeader = showHeader;
+	protected void setLoggedIn(){
+		loginButton.setEnabled(true);
+		loginButton.setText(R.string.button_log_out);
+		if(showUserInfo) {
+			subtext.setText(R.string.account_logged_in);
+			subtext.setTextColor(getResources().getColor(R.color.text_primary));
+		}
 	}
 
-	void showUserInfo(Boolean showUserInfo) {
-		this.showUserInfo = showUserInfo;
+	protected void setLoggedOut(){
+		loginButton.setEnabled(true);
+		loginButton.setText(R.string.button_log_in);
+		if(showUserInfo) {
+			subtext.setText(R.string.account_logged_out);
+			subtext.setTextColor(getResources().getColor(R.color.text_primary));
+			userNameView.setText(null);
+		}
 	}
 
-	protected void init() {
-		if ((this.providerAdapter != null) && this.providerAdapter.isLoggedIn()) {
+	protected void setOffline() {
+		loginButton.setEnabled(false);
+		if(showUserInfo) {
+			subtext.setText(R.string.account_offline);
+			subtext.setTextColor(getResources().getColor(R.color.accent));
+			userNameView.setText(null);
+		}
+	}
+
+	protected void setOnline() {
+		loginButton.setEnabled(true);
+	}
+
+	/**
+	 * Updates states to logged in/out or off line
+	 */
+	protected void updateState() {
+		if ((providerAdapter != null) && providerAdapter.isLoggedIn()) {
     		setLoggedIn();
 	    } else {
 	    	setLoggedOut();
@@ -50,36 +80,20 @@ public abstract class AccountFragment extends BaseFragment {
 		}
 	}
 
-	protected void setLoggedIn(){
-		this.loginButton.setEnabled(true);
-		this.loginButton.setText(R.string.button_log_out);
-		if(this.showUserInfo) {
-			this.subtext.setText(R.string.account_logged_in);
-			this.subtext.setTextColor(getResources().getColor(R.color.text_primary));
-		}
+	/**
+	 * Set flag whether login header should be shown
+	 * @param showHeader
+	 */
+	void showHeader(Boolean showHeader) {
+		this.showHeader = showHeader;
 	}
 
-	protected void setLoggedOut(){
-		this.loginButton.setEnabled(true);
-		this.loginButton.setText(R.string.button_log_in);
-		if(this.showUserInfo) {
-			this.subtext.setText(R.string.account_logged_out);
-			this.subtext.setTextColor(getResources().getColor(R.color.text_primary));
-			this.userNameView.setText(null);
-		}
-	}
-
-	protected void setOffline() {
-		this.loginButton.setEnabled(false);
-		if(this.showUserInfo) {
-			this.subtext.setText(R.string.account_offline);
-			this.subtext.setTextColor(getResources().getColor(R.color.accent));
-			this.userNameView.setText(null);
-		}
-	}
-
-	protected void setOnline() {
-		this.loginButton.setEnabled(true);
+	/**
+	 * Set flag whether user info should be shown
+	 * @param showUserInfo
+	 */
+	void showUserInfo(Boolean showUserInfo) {
+		this.showUserInfo = showUserInfo;
 	}
 }
 

@@ -1,4 +1,4 @@
-package net.archenemy.archenemyapp.model;
+package net.archenemy.archenemyapp.presenter;
 
 /**
  * <p>Collection of system functions</p>
@@ -18,11 +18,7 @@ import android.widget.Toast;
 import java.util.Date;
 
 public class Utility {
-  
-  private Utility () {
-    //prevent instantiation
-  }
-  
+
   /**
    * Formats date
    * @param date
@@ -33,14 +29,14 @@ public class Utility {
 				date.getTime(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS);
 	}
 
-	/**
+  /**
 	 * Checks network connection
 	 * @param activity Context for system service
 	 * @param makeToast notify user of unavailability
 	 * @return
 	 */
 	public static boolean isConnectedToNetwork(Activity activity, boolean makeToast){
-		
+
   	final ConnectivityManager connMgr = (ConnectivityManager)
   	        activity.getSystemService(Context.CONNECTIVITY_SERVICE);
     final NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -68,7 +64,7 @@ public class Utility {
 		intent.setType("text/plain");
 		activity.startActivity(Intent.createChooser(intent, "Share text to.."));;
 	}
-	
+
 	/**
 	 * Starts browser activity
 	 * @param activity Calling activity
@@ -82,4 +78,8 @@ public class Utility {
 	    	activity.startActivity(intent);
 		}
 	}
+
+	private Utility () {
+    //prevent instantiation
+  }
 }

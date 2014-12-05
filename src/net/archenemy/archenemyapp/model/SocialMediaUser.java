@@ -1,15 +1,6 @@
 package net.archenemy.archenemyapp.model;
 
-/**
- * <p>Entity that holds data from social media</p>
- *
- * @author chiljagossow
- */
-
-import net.archenemy.archenemyapp.presenter.Post;
-import net.archenemy.archenemyapp.presenter.Tweet;
-
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -18,8 +9,12 @@ import com.facebook.model.GraphUser;
 import twitter4j.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
+/**
+ * <p>Entity that holds data from social media</p>
+ *
+ * @author chiljagossow
+ */
 public class SocialMediaUser {
 
 	private final String name;
@@ -32,12 +27,12 @@ public class SocialMediaUser {
 
 	private ArrayList<Post> posts = new ArrayList<Post>();
 	private ArrayList<Tweet> tweets = new ArrayList<Tweet>();
-	
+
 	/**
 	 * Creates new instance
 	 * @param name Name of user
 	 * @param prefKey preference key to enable or disable user
-	 * @param userId unique id 
+	 * @param userId unique id
 	 * @param twitterUserId user id of Twitter account (numeric)
 	 * @param facebookUserId user id of Facebook account (numeric)
 	 */
@@ -55,68 +50,66 @@ public class SocialMediaUser {
 	}
 
 	public GraphUser getFacebookUser() {
-		return this.facebookUser;
+		return facebookUser;
 	}
 
 	public String getFacebookUserId() {
-		return this.facebookUserId;
+		return facebookUserId;
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public ArrayList<Post> getPosts() {
-		return this.posts;
+		return posts;
 	}
 
 	public ArrayList<Tweet> getTweets() {
-		return this.tweets;
+		return tweets;
 	}
 
 	public User getTwitterUser() {
-		return this.twitterUser;
+		return twitterUser;
 	}
 
 	public Long getTwitterUserId() {
-		return this.twitterUserId;
+		return twitterUserId;
 	}
 
 	public int getUserId() {
-		return this.userId;
+		return userId;
 	}
 
 	/**
-	 * Checks if user is enabled vie shared preferences
+	 * Checks if user is enabled via shared preferences
 	 * @param activity Activity for access to shared preferences
 	 * @return
 	 */
-	public boolean isEnabled(Activity activity) {
+	public boolean isEnabled(Context context) {
 		final SharedPreferences pref =
-		        PreferenceManager.getDefaultSharedPreferences(activity);
-			return pref.getBoolean(this.prefKey, true);
+		        PreferenceManager.getDefaultSharedPreferences(context);
+			return pref.getBoolean(prefKey, true);
 	}
-	
+
 	public void setFacebookUser(GraphUser facebookUser) {
 		this.facebookUser = facebookUser;
 	}
 
 	/**
-	 * Sets the posts and sorts them ascending according to date
+	 * Sets the posts
 	 * @param posts
 	 */
 	public void setPosts(ArrayList<Post> posts) {
 		this.posts = posts;
-		Collections.sort(this.posts);
 	}
-	
+
 	/**
-   * Sets the tweets and sorts them ascending according to date
-   * @param posts
+   * Sets the tweets
+   * @param tweets
    */
 	public void setTweets(ArrayList<Tweet> tweets) {
 		this.tweets = tweets;
-		Collections.sort(this.tweets);
 	}
 
 	public void setTwitterUser(User twitterUser) {

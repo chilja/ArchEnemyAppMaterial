@@ -25,7 +25,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
       int tabStripChildCount = tabStrip.getChildCount();
       if ((tabStripChildCount == 0) || (position < 0) || (position >= tabStripChildCount)) {
-          return;
+        return;
       }
 
       tabStrip.onViewPagerPageChanged(position, positionOffset);
@@ -35,11 +35,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
       int extraOffset = (selectedTab != null)
               ? (int) (positionOffset * selectedTab.getWidth())
               : 0;
+
       scrollToTab(position, extraOffset);
 
       if (viewPagerPageChangeListener != null) {
-          viewPagerPageChangeListener.onPageScrolled(position, positionOffset,
-                  positionOffsetPixels);
+        viewPagerPageChangeListener.onPageScrolled(position, positionOffset,
+                positionOffsetPixels);
       }
     }
 

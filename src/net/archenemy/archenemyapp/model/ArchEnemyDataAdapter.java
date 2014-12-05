@@ -1,12 +1,12 @@
 package net.archenemy.archenemyapp.model;
 
-import android.app.Activity;
+import android.content.Context;
 
 import java.util.TreeMap;
 
 /**
  * <p>Defines Arch Enemy's band members</p>
- * 
+ *
  * @author chiljagossow
  */
 
@@ -16,9 +16,9 @@ public class ArchEnemyDataAdapter extends DataAdapter {
 
   public static final String PREF_KEY_MICHAEL = "pref_key_michael_amott";
   public static final String PREF_KEY_ALYSSA = "pref_key_alyssa_white_gluz";
-  
+
   /**
-   * 
+   * Create singleton
    * @return Singleton
    */
 
@@ -39,7 +39,7 @@ public class ArchEnemyDataAdapter extends DataAdapter {
   	users.put(1,
   		new SocialMediaUser("Arch Enemy", null, 1, 19564489L,"142695605765331") {
 			  @Override
-			  public boolean isEnabled(Activity activity) {
+			  public boolean isEnabled(Context context) {
 			    return true;
 				}
   	});

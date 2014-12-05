@@ -11,15 +11,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+/**
+ * Activity holding fragments for log in/out processes with providers
+ * @author chiljagossow
+ *
+ */
 public class AccountActivity extends FacebookActivity
- implements 
+ implements
    FacebookAdapter.OnFacebookLoginListener,
    TwitterAdapter.TwitterLoginCallback{
 
 	private static final int FACEBOOK = 0;
 	private static final int TWITTER = 1;
 	public static final String TAG = "FacebookActivity";
-	
+
 	private FacebookAccountFragment facebookAccount;
 	private TwitterAccountFragment twitterAccount;
 
@@ -29,8 +34,8 @@ public class AccountActivity extends FacebookActivity
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (this.twitterAccount != null) {
-    	this.twitterAccount.onActivityResult(requestCode, resultCode, data);
+    if (twitterAccount != null) {
+    	twitterAccount.onActivityResult(requestCode, resultCode, data);
     }
 	}
 
@@ -45,26 +50,26 @@ public class AccountActivity extends FacebookActivity
 		final TextView title = (TextView) findViewById(R.id.title);
 		title.setText(R.string.title_activity_accounts);
 
-    this.twitterAccount = new TwitterAccountFragment();
-    this.facebookAccount = new FacebookAccountFragment();
-    this.twitterAccount.showHeader(false);
-    this.facebookAccount.showHeader(false);
+    twitterAccount = new TwitterAccountFragment();
+    facebookAccount = new FacebookAccountFragment();
+    twitterAccount.showHeader(false);
+    facebookAccount.showHeader(false);
 
     final BaseFragment[] fragments = new BaseFragment[2];
     fragments[FACEBOOK] = facebookAccount;
     fragments[TWITTER] = twitterAccount;
-    
-		this.viewPager = (ViewPager) findViewById(R.id.viewpager);
-    this.viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), fragments));
-    this.slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-    this.slidingTabLayout.setIndicatorColor(getResources().getColor(R.color.accent));
-    this.slidingTabLayout.setCustomTabView(R.layout.tab, R.id.tabIcon);
-    this.slidingTabLayout.setViewPager(this.viewPager);
+
+		viewPager = (ViewPager) findViewById(R.id.viewpager);
+    viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), fragments));
+    slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+    slidingTabLayout.setIndicatorColor(getResources().getColor(R.color.accent));
+    slidingTabLayout.setCustomTabView(R.layout.tab, R.id.tabIcon);
+    slidingTabLayout.setViewPager(viewPager);
 	}
 
 	@Override
 	public void onFacebookLogin() {
-		 this.facebookAccount.onFacebookLogin();
+		 facebookAccount.onFacebookLogin();
 	}
 
 	@Override

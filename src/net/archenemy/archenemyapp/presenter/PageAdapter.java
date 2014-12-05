@@ -1,5 +1,8 @@
 package net.archenemy.archenemyapp.presenter;
 
+/**
+ * Custom implementation of a FragmentPagerAdapter
+ */
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,16 +25,16 @@ public class PageAdapter extends FragmentPagerAdapter {
 
   @Override
   public int getCount() {
-    return this.fragments.length;
+    return fragments.length;
   }
 
   public int getIconResId(int position) {
-  	return this.fragments[position].getIconResId();
+  	return fragments[position].getIconResId();
   }
 
   @Override
   public Fragment getItem(int position) {
-  	return this.fragments[position];
+  	return fragments[position];
   }
 
 }

@@ -1,4 +1,4 @@
-package net.archenemy.archenemyapp.model;
+package net.archenemy.archenemyapp.presenter;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -45,7 +45,7 @@ public class BitmapUtility {
 
 		private BitmapFromResourcesTask(
 		    Activity activity, ImageView imageView, int reqWidth, int reqHeight) {
-      this.imageViewReference = new WeakReference<ImageView>(imageView);
+      imageViewReference = new WeakReference<ImageView>(imageView);
       this.reqWidth = reqWidth;
 			this.reqHeight = reqHeight;
 			this.activity = activity;
@@ -54,15 +54,15 @@ public class BitmapUtility {
 
     @Override
     protected Bitmap doInBackground(Integer... params) {
-      this.resId = params[0];
+      resId = params[0];
       return decodeSampledBitmapFromResource(
-          this.activity.getResources(), this.resId, this.reqWidth, this.reqHeight);
+          activity.getResources(), resId, reqWidth, reqHeight);
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-      if ((this.imageViewReference != null) && (bitmap != null)) {
-        final ImageView imageView = this.imageViewReference.get();
+      if ((imageViewReference != null) && (bitmap != null)) {
+        final ImageView imageView = imageViewReference.get();
         if (imageView != null) {
           imageView.setImageBitmap(bitmap);
         }
@@ -83,18 +83,18 @@ public class BitmapUtility {
 		private final boolean round;
 
 		private BitmapFromUrlTask(ImageView imageView, int radius) {
-			this.imageViewReference = new WeakReference<ImageView>(imageView);
-			this.reqWidth = radius;
-			this.reqHeight = radius;
-			this.round = true;
+			imageViewReference = new WeakReference<ImageView>(imageView);
+			reqWidth = radius;
+			reqHeight = radius;
+			round = true;
 			tasks.add(this);
 		}
 
 		private BitmapFromUrlTask(ImageView imageView, int reqWidth, int reqHeight) {
-			this.imageViewReference = new WeakReference<ImageView>(imageView);
+			imageViewReference = new WeakReference<ImageView>(imageView);
 			this.reqWidth = reqWidth;
 			this.reqHeight = reqHeight;
-			this.round = false;
+			round = false;
 			tasks.add(this);
 		}
 
@@ -102,10 +102,10 @@ public class BitmapUtility {
 		protected Bitmap doInBackground(String... urls) {
 			if ((urls != null) && (urls.length > 0)) {
 				try {
-					this.url = new URL(urls[0].trim());
-					return decodeSampledBitmapFromUrl(this.url, this.reqWidth, this.reqHeight);
+					url = new URL(urls[0].trim());
+					return decodeSampledBitmapFromUrl(url, reqWidth, reqHeight);
 				} catch(final Exception ex) {
-				  Log.e(TAG, "Could not load bitmap from" + this.url );
+				  Log.e(TAG, "Could not load bitmap from" + url );
 					return null;
 				}
 			}
@@ -114,17 +114,17 @@ public class BitmapUtility {
 
 		@Override
 		protected void onPostExecute(Bitmap bitmap) {
-			if ((this.imageViewReference != null) && (bitmap != null)) {
-        final ImageView imageView = this.imageViewReference.get();
+			if ((imageViewReference != null) && (bitmap != null)) {
+        final ImageView imageView = imageViewReference.get();
         if (imageView != null) {
-        	if (this.round) {
-        		imageView.setImageBitmap(getCircleBitmap(bitmap, this.reqWidth));
+        	if (round) {
+        		imageView.setImageBitmap(getCircleBitmap(bitmap, reqWidth));
         	} else {
             imageView.setImageBitmap(bitmap);
         	}
         }
       }
-			addBitmapToMemoryCache(this.url.toString(), bitmap);
+			addBitmapToMemoryCache(url.toString(), bitmap);
 			tasks.remove(this);
 		}
 	}
@@ -136,7 +136,7 @@ public class BitmapUtility {
 	private static LruCache<String, Bitmap> memoryCache ;
 
 	static {
-	  
+
     final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
     final int cacheSize = maxMemory / 8;
 
@@ -175,11 +175,11 @@ public class BitmapUtility {
 
     return output;
 	}
-	
+
 	/**
 	 * Loads bitmap from resources.
 	 * @param activity activity to access the recourses
-	 * @param resId resouce id of the bitmap to beloaded
+	 * @param resId resource id of the bitmap to be loaded
 	 * @param imageView imageView the bitmap will be attached to
 	 * @param reqWidth width in pixels
 	 * @param reqHeight height in pixels
@@ -232,7 +232,7 @@ public class BitmapUtility {
 			task.execute(bitmapUrl);
 		}
 	}
-	
+
 	/**
 	 * Cancels all background tasks that haven't completed. Should be called from activity's onDestroy() method.
 	 */
@@ -248,7 +248,9 @@ public class BitmapUtility {
 
 	private static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
     if (getBitmapFromMemCache(key) == null) {
+      if (memoryCache != null) {
         memoryCache.put(key, bitmap);
+      }
     }
 	}
 

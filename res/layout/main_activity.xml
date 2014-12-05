@@ -20,13 +20,15 @@
 		<FrameLayout         
 	        android:layout_width="match_parent"
 			android:layout_height="@dimen/header_height_full"
-			android:id="@+id/header">				
+			android:id="@+id/header">	
+						
 		    <ImageView 
 		        android:id="@+id/headerImage"
 		        android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:src="@drawable/band"
 				android:scaleType="centerCrop"/>
+		    
 	    </FrameLayout>
 	    
 	    
@@ -65,8 +67,8 @@
       	<ImageView
 			android:src="@drawable/facebook_medium"
 			android:id="@+id/facebookTab"
-			android:layout_width="48dp"
-			android:layout_height="48dp"
+			android:layout_width="44dp"
+			android:layout_height="44dp"
 			android:layout_gravity="center_horizontal|bottom"
 			android:gravity="center_horizontal|bottom"
 			android:layout_weight="1"
@@ -77,8 +79,8 @@
         <ImageView
 			android:src="@drawable/twitter"
 			android:id="@+id/twitterTab"
-			android:layout_width="48dp"
-			android:layout_height="48dp"
+			android:layout_width="44dp"
+			android:layout_height="44dp"
 			android:layout_gravity="center_horizontal|bottom"
 			android:gravity="center_horizontal|bottom"
 			android:layout_weight="1"
@@ -87,8 +89,6 @@
 			android:background="?android:attr/selectableItemBackground"/>
 
    	</LinearLayout>    
-
-	
-          	
+      	
 </FrameLayout>
 
