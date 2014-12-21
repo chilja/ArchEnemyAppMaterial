@@ -7,93 +7,125 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
- /**
-  * Abstract class  with basic logic for account fragments
-  * @author chiljagossow
-  *
-  */
+
+/**
+ * Abstract class with basic logic for account fragments.
+ * 
+ * @author chiljagossow
+ * 
+ */
 public abstract class AccountFragment extends BaseFragment {
 
-	protected TextView userNameView;
-	protected TextView subtext;
-	protected TextView headerText;
-	protected Button loginButton;
-	protected String name;
-	protected Boolean showHeader = false;
-	protected Boolean showUserInfo = true;
-	protected View userView;
-	protected FrameLayout text;
+  protected TextView userNameView;
+  protected TextView subtext;
+  protected TextView headerText;
+  protected Button loginButton;
+  protected String name;
+  protected Boolean showHeader = false;
+  protected Boolean showUser = true;
+  protected View fragmentView;
+  protected FrameLayout text;
 
-	protected ProviderAdapter providerAdapter;
+  protected ProviderAdapter providerAdapter;
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		updateState();
-	}
+  @Override
+  public void onResume() {
+    super.onResume();
+    updateState();
+  }
 
-	protected void setLoggedIn(){
-		loginButton.setEnabled(true);
-		loginButton.setText(R.string.button_log_out);
-		if(showUserInfo) {
-			subtext.setText(R.string.account_logged_in);
-			subtext.setTextColor(getResources().getColor(R.color.text_primary));
-		}
-	}
+  /**
+   * Sets corresponding texts for logged in state
+   */
+  protected void setLoggedIn() {
+    if (loginButton != null) {
+      loginButton.setEnabled(true);
+      loginButton.setText(R.string.button_log_out);
+    }
+    if (showUser) {
+      if (subtext != null) {
+        subtext.setText(R.string.account_logged_in);
+        subtext.setTextColor(getResources().getColor(R.color.text_primary));
+      }
+      if (userNameView != null) {
+        userNameView.setText(name);
+      }
+    }
+  }
 
-	protected void setLoggedOut(){
-		loginButton.setEnabled(true);
-		loginButton.setText(R.string.button_log_in);
-		if(showUserInfo) {
-			subtext.setText(R.string.account_logged_out);
-			subtext.setTextColor(getResources().getColor(R.color.text_primary));
-			userNameView.setText(null);
-		}
-	}
+  /**
+   * Sets corresponding texts for logged out state
+   */
+  protected void setLoggedOut() {
+    name = null;
+    if (loginButton != null) {
+      loginButton.setEnabled(true);
+      loginButton.setText(R.string.button_log_in);
+    }
+    if (showUser) {
+      if (subtext != null) {
+        subtext.setText(R.string.account_logged_out);
+        subtext.setTextColor(getResources().getColor(R.color.text_primary));
+      }
+      if (userNameView != null) {
+        userNameView.setText(null);
+      }
+    }
+  }
 
-	protected void setOffline() {
-		loginButton.setEnabled(false);
-		if(showUserInfo) {
-			subtext.setText(R.string.account_offline);
-			subtext.setTextColor(getResources().getColor(R.color.accent));
-			userNameView.setText(null);
-		}
-	}
+  /**
+   * Disables login button and sets corresponding text for off line state
+   */
+  protected void setOffline() {
+    if (loginButton != null) {
+      loginButton.setEnabled(false);
+    }
+    if (showUser) {
+      subtext.setText(R.string.account_offline);
+      subtext.setTextColor(getResources().getColor(R.color.accent));
+      userNameView.setText(null);
+    }
+  }
 
-	protected void setOnline() {
-		loginButton.setEnabled(true);
-	}
+  protected void setOnline() {
+    if (loginButton != null) {
+      loginButton.setEnabled(true);
+    }
+  }
 
-	/**
-	 * Updates states to logged in/out or off line
-	 */
-	protected void updateState() {
-		if ((providerAdapter != null) && providerAdapter.isLoggedIn()) {
-    		setLoggedIn();
-	    } else {
-	    	setLoggedOut();
-    	}
-		if (Utility.isConnectedToNetwork(getActivity(), false)) {
-			setOnline();
-		} else {
-			setOffline();
-		}
-	}
+  /**
+   * Updates state to logged in/out or off line.
+   */
+  protected void updateState() {
+    if (isResumed) {
+      if ((providerAdapter != null) && providerAdapter.isLoggedIn()) {
+        setLoggedIn();
+      } else {
+        setLoggedOut();
+      }
+      if (Utility.isConnectedToNetwork(getActivity(), false)) {
+        setOnline();
+      } else {
+        setOffline();
+      }
+    }
+  }
 
-	/**
-	 * Set flag whether login header should be shown
-	 * @param showHeader
-	 */
-	void showHeader(Boolean showHeader) {
-		this.showHeader = showHeader;
-	}
+  /**
+   * Sets flag indicating whether login header should be shown.
+   * 
+   * @param showHeader
+   */
+  void showHeader(Boolean showHeader) {
+    this.showHeader = showHeader;
+  }
 
-	/**
-	 * Set flag whether user info should be shown
-	 * @param showUserInfo
-	 */
-	void showUserInfo(Boolean showUserInfo) {
-		this.showUserInfo = showUserInfo;
-	}
+  /**
+   * Set flag indicating whether user info should be shown.
+   * 
+   * @param showUserInfo
+   */
+  void showUser(Boolean showUserInfo) {
+    showUser = showUserInfo;
+  }
 }
-

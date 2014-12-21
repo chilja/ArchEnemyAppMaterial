@@ -1,94 +1,111 @@
-<FrameLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:animateLayoutChanges="true"
-	android:background="@color/black">
-	
-     <ImageView 
-        android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:translationY="@dimen/header_height"		
-		android:scaleType="fitCenter" 
-		android:src="@drawable/symbol_port"/>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:animateLayoutChanges="true"
+  android:background="@color/black" >
 
- 	<FrameLayout 
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true" >
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical" >
+
+      <ImageView
+        android:id="@+id/headerImage"
         android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:animateLayoutChanges="true">	 
-			    		
-		<FrameLayout         
-	        android:layout_width="match_parent"
-			android:layout_height="@dimen/header_height_full"
-			android:id="@+id/header">	
-						
-		    <ImageView 
-		        android:id="@+id/headerImage"
-		        android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:src="@drawable/band"
-				android:scaleType="centerCrop"/>
-		    
-	    </FrameLayout>
-	    
-	    
-		<FrameLayout
-			android:id="@+id/fragmentContainer"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent" 
-			android:animateLayoutChanges="true"
-			android:elevation="16dp"/>
-		                	
-	</FrameLayout>
-	
-	<include layout="@layout/toolbar"
-        	android:id="@+id/toolbar"
-        	android:animateLayoutChanges="true"/>
-	
-	<FrameLayout 
-	    android:id="@+id/tabsBackground"
-	    android:layout_width="match_parent"
-		android:layout_height="@dimen/tab_background_height"
-		android:background="@color/accent_dark"
-		android:elevation="16dp"
-		android:alpha="0.0" />
+        android:layout_height="@dimen/header_height_full"
+        android:scaleType="centerCrop"/>
+      <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/symbol_port"
+        android:scaleType="centerCrop"/>
+    </LinearLayout>
+
+    <FrameLayout
+      android:id="@+id/fragmentContainer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:animateLayoutChanges="true"
+      android:elevation="16dp" />
+  </FrameLayout>
+
+  <include
+    android:id="@+id/toolbar"
+    layout="@layout/toolbar"
+    android:animateLayoutChanges="true" />
+
+  <FrameLayout
+    android:id="@+id/tabsBackground"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/tab_background_height"
+    android:alpha="0.0"
+    android:background="@color/accent_dark"
+    android:elevation="16dp" />
+
+  <LinearLayout
+    android:id="@+id/tabs"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/tab_height"
+    android:layout_gravity="top"
+    android:animateLayoutChanges="true"
+    android:elevation="16dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:translationY="@dimen/max_tab_translation_y" >
+
+    <FrameLayout 
+      android:id="@+id/facebookTab"
+      android:layout_width="wrap_content"
+      android:layout_height="48dp"
+      android:background="?android:attr/selectableItemBackground"
+      android:layout_weight="1">
+      <FrameLayout 
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+              android:layout_gravity="center"
+        android:background="@drawable/tab">
+      </FrameLayout>
+      <ImageView
+        android:id="@+id/facebookIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:animateLayoutChanges="true"
+        android:gravity="center"
+        android:padding="4dp"
+        android:src="@drawable/facebook_medium" />
+    </FrameLayout>
     
-	<LinearLayout 
-	    android:id="@+id/tabs"
-        android:layout_width="match_parent"
-		android:layout_height="@dimen/tab_height"
-		android:orientation="horizontal"
-		android:layout_gravity="top"
-		android:gravity="center"
-		android:translationY="@dimen/max_tab_translation_y"
-		android:elevation="16dp"
-		android:animateLayoutChanges="true">
-					
-      	<ImageView
-			android:src="@drawable/facebook_medium"
-			android:id="@+id/facebookTab"
-			android:layout_width="44dp"
-			android:layout_height="44dp"
-			android:layout_gravity="center_horizontal|bottom"
-			android:gravity="center_horizontal|bottom"
-			android:layout_weight="1"
-			android:padding="8dp"
-			android:animateLayoutChanges="true"
-			android:background="?android:attr/selectableItemBackground"/>
-   						
-        <ImageView
-			android:src="@drawable/twitter"
-			android:id="@+id/twitterTab"
-			android:layout_width="44dp"
-			android:layout_height="44dp"
-			android:layout_gravity="center_horizontal|bottom"
-			android:gravity="center_horizontal|bottom"
-			android:layout_weight="1"
-			android:padding="8dp"
-			android:animateLayoutChanges="true"
-			android:background="?android:attr/selectableItemBackground"/>
+    <FrameLayout 
+      android:id="@+id/twitterTab"
+      android:layout_width="wrap_content"
+      android:layout_height="48dp"
+      android:background="?android:attr/selectableItemBackground"
+      android:layout_weight="1">
+            <FrameLayout 
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+              android:layout_gravity="center"
+        android:background="@drawable/tab">
+      </FrameLayout>
+    <ImageView
+      android:id="@+id/twitterIcon"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_gravity="center"
+      android:layout_weight="1"
+      android:animateLayoutChanges="true"
+      android:gravity="center"
+      android:padding="4dp"
+      android:src="@drawable/twitter" />
+    </FrameLayout>
+    
+  </LinearLayout>
 
-   	</LinearLayout>    
-      	
 </FrameLayout>
-

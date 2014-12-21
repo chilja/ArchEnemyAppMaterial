@@ -23,105 +23,125 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
- * <p>Adapter for the Facebook SDK</p>
+ * <p>
+ * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API, parses response.
+ * </p>
+ * 
  * @author chiljagossow
  */
 
-public class FacebookAdapter
-	implements ProviderAdapter{
+public class FacebookAdapter implements ProviderAdapter {
 
   /**
-   * <p>Callback interface for feed requests</p>
+   * <p>
+   * Callback interface for feed requests.
+   * </p>
+   * 
    * @author chiljagossow
    */
-	public interface FeedCallback {
-		void onFeedRequestCompleted(ArrayList<Post> posts, String id, FacebookRequestError error);
-	}
+  public interface FeedCallback {
+    void onFeedRequestCompleted(ArrayList<Post> posts, String id, FacebookRequestError error);
+  }
 
-	/**
-   * <p>Callback interface for login process</p>
+  /**
+   * <p>
+   * Callback interface for login process.
+   * </p>
+   * 
    * @author chiljagossow
    */
-	public interface OnFacebookLoginListener {
-		void onFacebookLogin();
-	}
+  public interface OnFacebookLoginListener {
+    void onFacebookLogin();
+  }
 
-	/**
-   * <p>Callback interface for user requests</p>
+  /**
+   * <p>
+   * Callback interface for user requests.
+   * </p>
+   * 
    * @author chiljagossow
    */
-	public interface UserCallback {
-		void onUserRequestCompleted(GraphUser user, FacebookRequestError error);
-	}
+  public interface UserCallback {
+    void onUserRequestCompleted(GraphUser user, FacebookRequestError error);
+  }
 
-	protected static final String TAG = "FacebookAdapter";
+  protected static final String TAG = "FacebookAdapter";
 
-	// Activity code to flag an incoming activity result is due
-	// to a new permissions request
-	public static final int REAUTH_ACTIVITY_CODE = 100;
+  // Activity code to flag an incoming activity result is due
+  // to a new permissions request
+  public static final int REAUTH_ACTIVITY_CODE = 100;
 
-	/// List of additional write permissions being requested
-	public static final List<String> PERMISSIONS = Arrays.asList("publish_actions", "public_profile");
-	// Redirect URL for authentication errors requiring a user action
-	public static final Uri FACEBOOK_URL = Uri.parse("http://m.facebook.com");
+  // / List of additional write permissions being requested
+  public static final List<String> PERMISSIONS = Arrays.asList("publish_actions", "public_profile");
+  // Redirect URL for authentication errors requiring a user action
+  public static final Uri FACEBOOK_URL = Uri.parse("http://m.facebook.com");
 
-	// JSON Node names
-	private static final String TAG_DATA = "data";
-	private static final String TAG_MESSAGE = "message";
-	private static final String TAG_ID = "id";
-	private static final String TAG_NAME = "name";
-	private static final String TAG_PICTURE = "picture";
-	private static final String TAG_LINK = "link";
-	private static final String TAG_DATE = "created_time";
-	private static final String TAG_FROM = "from";
+  // JSON Node names
+  private static final String TAG_DATA = "data";
+  private static final String TAG_MESSAGE = "message";
+  private static final String TAG_ID = "id";
+  private static final String TAG_NAME = "name";
+  private static final String TAG_PICTURE = "picture";
+  private static final String TAG_LINK = "link";
+  private static final String TAG_DATE = "created_time";
+  private static final String TAG_FROM = "from";
 
-	/**
-	 * Parses String containing a timestamp formatted as yyyy-MM-dd'T'hh:mm:ss+'0000' using Locale.US
-	 * @param timestamp String formatted as yyyy-MM-dd'T'hh:mm:ss+'0000'
-	 * @return Date Date object
-	 */
-	public static Date getDate(String timestamp){
-		final SimpleDateFormat ft =
-			new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss+'0000'", Locale.US);
-		Date date = null;
-		try {
-		  date = ft.parse(timestamp);
-		} catch (final ParseException e) {
-		  Log.e(TAG, timestamp + " unparseable using " + ft);
-		}
-		return date;
-	}
+  /**
+   * Parses String containing a timestamp formatted as
+   * yyyy-MM-dd'T'hh:mm:ssZZZ using Locale.US.
+   * Adds time zone offset.
+   * 
+   * @param timestamp
+   *          String formatted as yyyy-MM-dd'T'hh:mm:ss+ZZZ
+   * @return Date Date object
+   */
+  public static Date getDate(String timestamp) {
+    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZ", Locale.US);
+    TimeZone zone = TimeZone.getDefault();
+    int offset = zone.getOffset(new Date().getTime());
+    Date date = null;
+    try {
+      date = dateFormat.parse(timestamp);
+    }
+    catch (final ParseException e) {
+      Log.e(TAG, timestamp + " unparseable using " + dateFormat);
+    }
+    return new Date(date.getTime() + offset);
+  }
 
-	// flag for pending reauthorization request
-	private boolean pendingPublishReauthorization = false;
+  // flag for pending reauthorization request
+  private boolean pendingPublishReauthorization = false;
 
-	private static FacebookAdapter facebookAdapter;
+  private static FacebookAdapter facebookAdapter;
 
-	/**
-	 * Returns singleton
-	 * @return FacebookAdapter
-	 */
-	public static FacebookAdapter getInstance() {
-		if (facebookAdapter == null) {
-			facebookAdapter = new FacebookAdapter();
-		}
-		return facebookAdapter;
-	}
+  /**
+   * Returns singleton, creates instance if needed.
+   * 
+   * @return FacebookAdapter
+   */
+  public static FacebookAdapter getInstance() {
+    if (facebookAdapter == null) {
+      facebookAdapter = new FacebookAdapter();
+    }
+    return facebookAdapter;
+  }
 
-	private com.facebook.widget.LoginButton facebookLoginButton;
+  private com.facebook.widget.LoginButton facebookLoginButton;
 
-	private FacebookAdapter(){
+  private FacebookAdapter() {
     // prevent instantiation from outside
   }
 
-	/**
-	 * Checks for a valid token
-	 * @return true if valid token is present
-	 */
-	public boolean hasValidToken() {
-		//check for open facebook session
+  /**
+   * Checks for a valid token.
+   * 
+   * @return true if valid token is present
+   */
+  public boolean hasValidToken() {
+    // check for open facebook session
     final Session session = Session.getActiveSession();
     if (session != null) {
       final String token = session.getAccessToken();
@@ -131,208 +151,213 @@ public class FacebookAdapter
         return true;
       }
     }
-		return false;
-	}
-
-	/**
-	 * Checks if Facebook is enabled
-	 */
-	@Override
-  public boolean isEnabled() {
-		return true;
-	}
-
-	/**
-	 * Checks if log in status
-	 * @return API calls can be made if true
-	 */
-	@Override
-  public boolean isLoggedIn() {
-		//check for open facebook session
-		final Session session = Session.getActiveSession();
-		if ((session != null) && session.isOpened()) {
-      return true;
-    }
-		return false;
-	}
-
-	/**
-	 * Checks for a pending publish action
-	 * @return
-	 */
-	public boolean isPendingPublish() {
-		return pendingPublishReauthorization;
-	}
-
-	/**
-	 * Starts log in process
-	 * @param activity
-	 */
-	public void logIn (Context context) {
-	  //widget to perform login
-  	facebookLoginButton = new com.facebook.widget.LoginButton(context);
-  	facebookLoginButton.performClick();
-	}
-
-	/**
-	 * Closes session and clears token
-	 */
-	@Override
-	public void logOut() {
-		final Session session = Session.getActiveSession();
-		if (session!= null) {
-			session.closeAndClearTokenInformation();
-		}
-	}
-
-	/**
-	 * Makes a feed request to the Facebook API
-	 * @param Callback FeedCallback to be called when response arrives
-	 * @param id Facebook user Id
-	 */
-	public void makeFeedRequest(
-    final FeedCallback callback, final String id){
-		final Session session = Session.getActiveSession();
-		final StringBuffer query = new StringBuffer(id);
-		query.append("/feed");
-		// make the API call
-		final Request request = new Request(
-	    session,
-	    query.toString(),
-	    null,
-	    HttpMethod.GET,
-	    new Request.Callback() {
-        @Override
-        public void onCompleted(Response response) {
-        	Log.i(TAG, "Feeds received");
-        	if (response.getError() != null) {
-            	callback.onFeedRequestCompleted(null, id, response.getError());
-            	return;
-            }
-        	// If the response is successful
-        	if (session == Session.getActiveSession()) {
-        		//Evaluate response
-        	  final JSONObject graphResponse = response
-                                           .getGraphObject()
-                                           .getInnerJSONObject();
-        		final ArrayList<Post> elements = parseJson(graphResponse);
-            callback.onFeedRequestCompleted(elements, id, null);
-           }
-        }
-	    }
-		);
-  	Log.i(TAG, "Make feed request");
-  	request.executeAsync();
+    return false;
   }
 
-	/**
-	 * Makes user request for the user currently logged in
-	 * @param userCallback Callback for the response
-	 */
-	public void makeMeRequest(UserCallback userCallback) {
-		final Session session = Session.getActiveSession();
-		final UserCallback callback = userCallback;
-		if ((session != null) && session.isOpened()) {
+  /**
+   * Checks if Facebook is enabled.
+   */
+  @Override
+  public boolean isEnabled() {
+    // may be used in later release
+    return true;
+  }
 
-	    // Make an API call to get user data and define a
-	    // new callback to handle the response.
-	    final Request request = Request.newMeRequest(session,
-	            new Request.GraphUserCallback() {
+  /**
+   * Checks log in status. Returns true if session is opened and API calls can be made.
+   * 
+   * @return True if API calls can be made.
+   */
+  @Override
+  public boolean isLoggedIn() {
+    // check for open facebook session
+    final Session session = Session.getActiveSession();
+    if ((session != null) && session.isOpened()) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Checks for a pending publish action.
+   * 
+   * @return
+   */
+  public boolean isPendingPublish() {
+    return pendingPublishReauthorization;
+  }
+
+  /**
+   * Starts log in process.
+   * 
+   * @param context Context for log in widget
+   */
+  public void logIn(Context context) {
+    // widget to perform login
+    facebookLoginButton = new com.facebook.widget.LoginButton(context);
+    facebookLoginButton.performClick();
+  }
+
+  /**
+   * Closes session and clears token.
+   */
+  @Override
+  public void logOut() {
+    final Session session = Session.getActiveSession();
+    if (session != null) {
+      session.closeAndClearTokenInformation();
+    }
+  }
+
+  /**
+   * Makes a feed request to the Facebook Graph API.
+   * 
+   * @param Callback
+   *          FeedCallback to be called when response arrives
+   * @param userId
+   *          Facebook user Id
+   */
+  public void makeFeedRequest(final FeedCallback callback, final String userId) {
+    final Session session = Session.getActiveSession();
+    final StringBuffer query = new StringBuffer(userId);
+    query.append("/feed");
+    // make the API call
+    final Request request = new Request(session, query.toString(), null, HttpMethod.GET,
+        new Request.Callback() {
+          @Override
+          public void onCompleted(Response response) {
+            Log.i(TAG, "Feeds received");
+            if (response.getError() != null) {
+              callback.onFeedRequestCompleted(null, userId, response.getError());
+              return;
+            }
+            // If the response is successful
+            if (session == Session.getActiveSession()) {
+              // Evaluate response
+              final JSONObject graphResponse = response.getGraphObject().getInnerJSONObject();
+              final ArrayList<Post> elements = parseJson(graphResponse, userId);
+              callback.onFeedRequestCompleted(elements, userId, null);
+            }
+          }
+        });
+    Log.i(TAG, "Make feed request");
+    request.executeAsync();
+  }
+
+  /**
+   * Makes user request for the user currently logged in.
+   * 
+   * @param userCallback
+   *          Callback for the response.
+   */
+  public void makeMeRequest(UserCallback userCallback) {
+    final Session session = Session.getActiveSession();
+    final UserCallback callback = userCallback;
+    if ((session != null) && session.isOpened()) {
+
+      // Make an API call to get user data and define a
+      // new callback to handle the response.
+      final Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
         @Override
         public void onCompleted(GraphUser user, Response response) {
-            // If the response is successful
-        	Log.i(TAG, "User response received");
+          // If the response is successful
+          Log.i(TAG, "User response received");
           if (session == Session.getActiveSession()) {
-              callback.onUserRequestCompleted(user, null);
+            callback.onUserRequestCompleted(user, null);
           }
           if (response.getError() != null) {
             callback.onUserRequestCompleted(null, response.getError());
           }
         }
-		    });
-			Log.i(TAG, "Making user request");
-		  request.executeAsync();
-		}
-	}
+      });
+      Log.i(TAG, "Making user request");
+      request.executeAsync();
+    }
+  }
 
+  /**
+   * Makes user request for the given Facebook user id.
+   * 
+   * @param callback
+   *          Callback for the response.
+   * @param id
+   *          Facebook user id.
+   */
+  public void makeUserRequest(final UserCallback callback, final String id) {
+    final Session session = Session.getActiveSession();
 
-	/**
-	 * Makes user request for the given user id
-	 * @param callback Callback for the response
-	 * @param id Facebook user id
-	 */
-	public void makeUserRequest(final UserCallback callback, final String id) {
-		final Session session = Session.getActiveSession();
-
-		if ((session != null) && session.isOpened()) {
+    if ((session != null) && session.isOpened()) {
 
       final Callback wrapper = new Callback() {
         @Override
         public void onCompleted(Response response) {
-        	Log.i(TAG, "User received");
-        	if (response.getError() != null) {
-        	  if (callback != null) {
-        	    callback.onUserRequestCompleted(null, response.getError());
-        	  }
+          Log.i(TAG, "User received");
+          if (response.getError() != null) {
+            if (callback != null) {
+              callback.onUserRequestCompleted(null, response.getError());
+            }
             return;
           }
-        	// If the response is successful
-        	if (session == Session.getActiveSession()) {
-        		// Evaluate response
+          // If the response is successful
+          if (session == Session.getActiveSession()) {
+            // Evaluate response
             final GraphUser graphUser = response.getGraphObjectAs(GraphUser.class);
             if (callback != null) {
-            	callback.onUserRequestCompleted(graphUser, null);
+              callback.onUserRequestCompleted(graphUser, null);
             }
-        	}
+          }
         }
       };
 
       final Request request = new Request(session, id, null, null, wrapper);
       request.executeAsync();
-		}
-	}
+    }
+  }
 
-	public void setPendingPublish(boolean pendingPublishReauthorization) {
-		this.pendingPublishReauthorization = pendingPublishReauthorization;
-	}
+  public void setPendingPublish(boolean pendingPublishReauthorization) {
+    this.pendingPublishReauthorization = pendingPublishReauthorization;
+  }
 
-	private ArrayList<Post> parseJson (JSONObject jsonObj){
+  private ArrayList<Post> parseJson(JSONObject jsonObj, String userId) {
 
-		final ArrayList<Post> posts = new ArrayList<Post>();
-		JSONArray data = null;
-		Log.i(TAG, "Parse response...");
-		if (jsonObj != null) {
-	        try {
-				data = jsonObj.getJSONArray(TAG_DATA);
-				for (int i = 0; i < data.length(); i++) {
-					try {
+    final ArrayList<Post> posts = new ArrayList<Post>();
+    JSONArray data = null;
+    Log.i(TAG, "Parse response...");
+    if (jsonObj != null) {
+      try {
+        data = jsonObj.getJSONArray(TAG_DATA);
+        for (int i = 0; i < data.length(); i++) {
+          try {
 
-						final JSONObject object = data.getJSONObject(i);
+            final JSONObject object = data.getJSONObject(i);
 
-						final String date = object.getString(TAG_DATE);
-						final String message = object.getString(TAG_MESSAGE);
-						final String picture = object.getString(TAG_PICTURE);
-						final String link = object.getString(TAG_LINK);
-						final JSONObject fromObj = object.getJSONObject(TAG_FROM);
-						final String name = fromObj.getString(TAG_NAME);
-						final String id = fromObj.getString(TAG_ID);
+            final String date = object.getString(TAG_DATE);
+            final String message = object.getString(TAG_MESSAGE);
+            final String picture = object.getString(TAG_PICTURE);
+            final String link = object.getString(TAG_LINK);
+            final String postId = object.getString(TAG_ID);
+            final JSONObject fromObj = object.getJSONObject(TAG_FROM);
+            final String userName = fromObj.getString(TAG_NAME);
+            final String fromUserId = fromObj.getString(TAG_ID);
 
-						final Post post =
-								new Post(name, id, message, date, picture, link, null);
-						posts.add(post);
-					} catch (final JSONException e) {
-						//ignore objects with missing tags
-					}
-				}
-	        } catch (final JSONException e1) {
-	        	//ignore objects with missing tags
-	        }
+            if (userId.equals(fromUserId)) {
+              final Post post = new Post(userName, userId, message, getDate(date), picture, link,
+                  postId);
+              posts.add(post);
+            }
+          }
+          catch (final JSONException e) {
+            // ignore objects with missing tags
+          }
+        }
+      }
+      catch (final JSONException e1) {
+        // ignore objects with missing tags
+      }
 
-		} else {
-			Log.e(TAG, "Couldn't parse response");
-		}
-	  return posts;
-	}
+    } else {
+      Log.e(TAG, "Couldn't parse response");
+    }
+    return posts;
+  }
 }
-
-

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-zh-rCN/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">取消</string>
     <string name="dgts__communication_error">通讯出错</string>
     <string name="dgts__confirmation_code">确认码</string>
@@ -39,4 +41,5 @@
     <string name="dgts__try_again_phone_number">请检查你的手机号码并重试。</string>
     <string name="dgts__try_another_phone">请尝试其他手机号码</string>
     <string name="dgts__upload_contacts">我们使用Twitter位数来查找更多你身边使用这个应用的朋友。当你请按「好的」，我们将在Twitter位数上传你的通讯录，并使我们的应用程序的其他用户能找到你。</string>
+
 </resources>

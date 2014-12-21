@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-da/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Annuller</string>
     <string name="dgts__communication_error">Kommunikationsfejl</string>
     <string name="dgts__confirmation_code">Bekræftelseskode</string>
@@ -31,8 +33,7 @@
     <string name="dgts__sign_in_twitter">Log ind med Twitter</string>
     <string name="dgts__signing_in">Logger ind</string>
     <string name="dgts__success_desc">Ikonet Fuldført</string>
-    <string name="dgts__terms_text">Når du trykker på \"Send bekræftelseskode herover, sender\
-        <u>Digits by Twitter</u> dig en sms-besked for at bekræfte dit telefonnummer.</string>
+    <string name="dgts__terms_text">Når du trykker på \"Send bekræftelseskode herover, sender\ <u>Digits by Twitter</u> dig en sms-besked for at bekræfte dit telefonnummer.</string>
     <string name="dgts__terms_text_create">Ved at trykke på \"Opret konto\" herover accepterer du <u>Vilkår for anvendelse</u>, <u>Privatlivspolitik</u> og <u>Politik vedrørende cookies</u> for Digits by Twitter og at andre brugere af denne app kan finde dit ved hjælp af dit telefonnumer og/eller din e-mail.</string>
     <string name="dgts__terms_text_create_app">Ved at klikke på \"Opret konto\" herover accepterer du <u>Vilkår for anvendelse</u>, <u>Privatlivspolitik</u> og <u>Politik vedrørende cookies</u> for Digits by Twitter og at andre brugere af %1$s kan finde dig ved hjælp af dit telefonnummer og/eller din e-mail.</string>
     <string name="dgts__try_again">Prøv igen</string>
@@ -40,4 +41,5 @@
     <string name="dgts__try_again_phone_number">Tjek venligst dit nummer og prøv igen.</string>
     <string name="dgts__try_another_phone">Prøv et andet telefonnummer</string>
     <string name="dgts__upload_contacts">Vi bruger Digits by Twitter til at finde flere af dine venner, der bruger denne app. Når du klikker på OK, uploader vi din adressebot til Digits by Twitter og gør det muligt for andre bruger af vores app at finde dig.</string>
+
 </resources>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-fa/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">لغو</string>
     <string name="dgts__communication_error">خطای ارتباطی</string>
     <string name="dgts__confirmation_code">کد تأیید</string>
@@ -34,4 +36,5 @@
     <string name="dgts__try_again_phone_number">لطفاً شماره تان را بررسی کنید و دوباره امتحان کنید.</string>
     <string name="dgts__try_another_phone">یک شماره تلفن دیگر را امتحان کنید</string>
     <string name="dgts__upload_contacts">ما از Digits که ارائه است از توییتر استفاده می کنیم تا تعداد بیشتری از دوستان شما را پیدا کنیم که از این برنامه استفاده می کنند. پس از اینکه روی \"تأیید\" ضربه زدید، ما دفترچه آدرستان را در Digit ارائه شده توسط توییتر بارگذاری می کنیم و به سایر کاربران برنامه مان امکان می دهیم تا شما را پیدا کنند.</string>
+
 </resources>

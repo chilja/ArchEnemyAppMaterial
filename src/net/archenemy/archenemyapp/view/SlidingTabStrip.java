@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 
 /**
  * Tab indicator that slides
- *
+ * 
  */
 
 class SlidingTabStrip extends LinearLayout {
@@ -28,7 +28,7 @@ class SlidingTabStrip extends LinearLayout {
     this(context, null);
   }
 
-  public SlidingTabStrip(Context context,AttributeSet attrs) {
+  public SlidingTabStrip(Context context, AttributeSet attrs) {
     super(context, attrs);
     setWillNotDraw(false);
 
@@ -52,14 +52,11 @@ class SlidingTabStrip extends LinearLayout {
 
         // Draw the indicator
         View nextTab = getChildAt(selectedPosition + 1);
-        left = (int) ((selectionOffset * nextTab.getLeft()) +
-                ((1.0f - selectionOffset) * left));
-        right = (int) ((selectionOffset * nextTab.getRight()) +
-                ((1.0f - selectionOffset) * right));
+        left = (int) ((selectionOffset * nextTab.getLeft()) + ((1.0f - selectionOffset) * left));
+        right = (int) ((selectionOffset * nextTab.getRight()) + ((1.0f - selectionOffset) * right));
       }
 
-      canvas.drawRect(left, height - indicatorHeight, right,
-          height, indicatorPaint);
+      canvas.drawRect(left, height - indicatorHeight, right, height, indicatorPaint);
     }
 
   }

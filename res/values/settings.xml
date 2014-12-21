@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   
-    <string name="pref_michael_amott_title">Michael Amott</string>
-    <string name="pref_alyssa_white_gluz_title">Alyssa White-Gluz</string>
-        
+
     <string name="pref_member_summary_on">Following</string>
-    <string name="pref_member_summary_off">Not following</string>  	
-    
-    <string name="pref_key_michael_amott">pref_key_michael_amott</string>
-    <string name="pref_key_alyssa_white_gluz">pref_key_alyssa_white_gluz</string>
-    
+    <string name="pref_member_summary_off">Not following</string>
     <string name="pref_startMenuItem">Start screen</string>
     <string name="pref_startMenuItem_dialog">Select start screen</string>
     <string name="pref_startMenuItem_default">FACEBOOK</string>
-    
+
     <string-array name="pref_startMenuItem_entries">
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
-    
     <string-array name="pref_startMenuItem_values">
         <item>FACEBOOK</item>
         <item>TWITTER</item>
     </string-array>
-    
+
 </resources>

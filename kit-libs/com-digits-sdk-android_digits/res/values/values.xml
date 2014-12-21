@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values/colors.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <color name="dgts__purple">#744eaa</color>
     <color name="dgts__purple_pressed">#553788</color>
     <color name="dgts__resend_text">#2B7BB9</color>
     <color name="dgts__title_default">#292F33</color>
-    <declare-styleable name="StateButton"><attr format="string" name="finishStateText"/><attr format="string" name="progressStateText"/><attr format="string" name="startStateText"/><attr format="reference" name="dgts__StateButtonStyle"/></declare-styleable>
+
+    <declare-styleable name="StateButton">
+        <attr name="finishStateText" format="string" />
+        <attr name="progressStateText" format="string" />
+        <attr name="startStateText" format="string" />
+        <attr name="dgts__StateButtonStyle" format="reference" />
+    </declare-styleable>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values/dimens.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <dimen name="dgts__country_code_margin_bottom">1dp</dimen>
     <dimen name="dgts__margin_bottom">16dp</dimen>
     <dimen name="dgts__padding_container">14dp</dimen>
@@ -17,7 +26,8 @@
     <dimen name="dgts__terms_text_size">12sp</dimen>
     <dimen name="dgts__title_text_size">22sp</dimen>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__associated_with_twitter_error">Please sign in with Twitter</string>
     <string name="dgts__associated_with_twitter_error_alternative">Your number is already associated
         with a Twitter account. Please sign in with Twitter below.</string>
@@ -54,13 +64,11 @@
     <string name="dgts__sign_in_twitter">Sign in with Twitter</string>
     <string name="dgts__signing_in">Signing in</string>
     <string name="dgts__success_desc">Success Icon</string>
-    <string name="dgts__terms_text">By tapping "Send confirmation code" above,
-        <u>Digits by Twitter</u>, will send you a SMS message to confirm your phone number.</string>
+    <string name="dgts__terms_text">By tapping "Send confirmation code" above, <u>Digits by Twitter</u>, will send you a SMS message to confirm your phone number.</string>
     <string name="dgts__terms_text_create">By tapping "Create account" above, you agree to the <u>Terms
         of Service</u>, <u>Privacy Policy</u>, and <u>Cookies Policy</u> of Digits by Twitter, and that other
         users of this app can discover you by phone number and/or email.</string>
-    <string name="dgts__terms_text_create_app">By tapping "Create account" above, you agree to the
-        <u>Terms of Service</u>, <u>Privacy Policy</u>, and <u>Cookies Policy</u> of Digits by Twitter, and that other
+    <string name="dgts__terms_text_create_app">By tapping "Create account" above, you agree to the <u>Terms of Service</u>, <u>Privacy Policy</u>, and <u>Cookies Policy</u> of Digits by Twitter, and that other
         users of %1$s can discover you by phone number and/or email.</string>
     <string name="dgts__try_again">Try Again</string>
     <string name="dgts__try_again_confirmation">Please check your code and try again.</string>
@@ -70,7 +78,8 @@
         this app. When you tap Okay, we\'ll upload your address book to Digits by Twitter and
         enable other users of our app to discover you.</string>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values/styles.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <style name="dgts__ButtonText">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/tw__login_btn_text_size</item>
@@ -78,6 +87,7 @@
         <item name="android:paddingLeft">@dimen/tw__login_btn_left_padding</item>
         <item name="android:paddingRight">@dimen/tw__login_btn_right_padding</item>
     </style>
+
     <style name="dgts__Container">
         <item name="android:paddingLeft">@dimen/dgts__padding_container</item>
         <item name="android:paddingRight">@dimen/dgts__padding_container</item>
@@ -85,20 +95,24 @@
         <item name="android:paddingBottom">30dp</item>
     </style>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values/themes.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <style name="dgts__LightTheme" parent="android:Theme.Light">
         <item name="dgts__StateButtonStyle">@style/tw__Button</item>
     </style>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values/styles.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <style name="dgts__Terms">
         <item name="android:textColor">@color/tw__medium_gray</item>
         <item name="android:textSize">@dimen/dgts__terms_text_size</item>
     </style>
+
     <style name="dgts__Title">
         <item name="android:textSize">@dimen/dgts__title_text_size</item>
         <item name="android:paddingLeft">@dimen/dgts__padding_title</item>
         <item name="android:textColor">@color/dgts__title_default</item>
         <item name="android:layout_marginBottom">24dp</item>
     </style>
+
 </resources>

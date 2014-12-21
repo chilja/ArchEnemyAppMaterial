@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-ur/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">منسوخ کریں</string>
     <string name="dgts__communication_error">مواصلاتی خرابی</string>
     <string name="dgts__confirmation_code">تصدیقی کوڈ</string>
@@ -34,4 +36,5 @@
     <string name="dgts__try_again_phone_number">برائے مہربانی اپنے نمبر کی پڑتال کریں اور دوبارہ کوشش کریں-</string>
     <string name="dgts__try_another_phone">ایک مختلف فون نمبر آزمائیں</string>
     <string name="dgts__upload_contacts">ہم آپ کے مزید دوستوں کو تلاش کرنے کیلئے جو یہ ایپ استعمال کرتے ہیں، اعداد بطرف ٹوئٹر استعمال کرتے ہیں۔ جب آپ ٹھیک ہے پر تھپتھپاتے ہیں، تو ہم اعداد بطرف ٹوئٹر پر آپ کی ایڈریس بک کو اپ لوڈ کریں گے اور اپنی ایپ کے دیگر صارفین کو آپ کو دریافت کر سکنے کے قابل بنائیں گے۔</string>
+
 </resources>

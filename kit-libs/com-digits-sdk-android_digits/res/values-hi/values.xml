@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-hi/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">रद्द करें</string>
     <string name="dgts__communication_error">संचार त्रुटि</string>
     <string name="dgts__confirmation_code">पुष्टिकरण कोड</string>
@@ -39,4 +41,5 @@
     <string name="dgts__try_again_phone_number">कृपया अपने नंबर की जांच करें और फिर कोशिश करें.</string>
     <string name="dgts__try_another_phone">एक अलग फ़ोन नंबर आजमाएं</string>
     <string name="dgts__upload_contacts">इस एप्प का इस्तेमाल करने वाले आपके मित्रों को ढूंढने के लिए हम ट्विटर के डिजिट्स का इस्तेमाल करेंगे. जब आप ठीक है को दबाएंगे, तब हम ट्विटर के डिजिट्स पर आपकी पता पुस्तिका को अपलोड करेंगे और आप को खोज पा ने के लिए हमारे एप्प के अन्य उपयोगकर्ताओं को सक्षम करेंगे.</string>
+
 </resources>

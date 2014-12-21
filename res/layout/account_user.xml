@@ -1,18 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:orientation="vertical"
-   android:layout_width="wrap_content"
-   android:layout_height="wrap_content"
-   android:gravity="center" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical" >
 
-    
-	<net.archenemy.archenemyapp.view.RobotoFont
-		android:id="@+id/subTextView"
-		style="@style/Text.Headline" 
-		android:gravity="center" />
-	
-	<net.archenemy.archenemyapp.view.RobotoFont
-	    android:id="@+id/userNameView"
-	    style="@style/Text.Display1"
-	    android:gravity="center" />
-	
+    <net.archenemy.archenemyapp.view.RobotoFont
+        android:id="@+id/subTextView"
+        style="@style/Text.Headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center" />
+
+    <net.archenemy.archenemyapp.view.RobotoFont
+        android:id="@+id/userNameView"
+        style="@style/Text.Display1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center" />
+
 </LinearLayout>

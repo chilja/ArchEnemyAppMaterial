@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="twitter">Twitter</string>
-    
     <string name="twitter_login_header">Receive tweets from the official accounts</string>
-    
+
 </resources>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-pl/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Anuluj</string>
     <string name="dgts__communication_error">Błąd połączenia</string>
     <string name="dgts__confirmation_code">Kod potwierdzenia</string>
@@ -42,4 +44,5 @@ mogą rozpoznać Cię po numerze telefonu lub adresie e-mail.</string>
     <string name="dgts__try_again_phone_number">Sprawdź numer i spróbuj ponownie.</string>
     <string name="dgts__try_another_phone">Wpisz inny numer telefonu</string>
     <string name="dgts__upload_contacts">Za pomocą usługi Digits zarządzanej przez Twittera szukamy Twoich znajomych, którzy korzystają z tej aplikacji. Stuknij OK, a prześlemy Twoją książkę adresową do usługi Digits zarządzanej przez Twittera i sprawimy, że inni użytkownicy naszej aplikacji będą mogli Cię rozpoznać.</string>
+
 </resources>

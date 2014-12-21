@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/tweetui/src/main/res/values-zh-rTW/plurals.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <plurals name="tw__time_hours">
         <item quantity="one">1 小時</item>
         <item quantity="other">%d 小時</item>
@@ -15,7 +17,9 @@
         <item quantity="other">%d 秒</item>
     </plurals>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/tweetui/src/main/res/values-zh-rTW/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="tw__relative_date_format_long">y/M/d</string>
     <string name="tw__relative_date_format_short">M月d日</string>
+
 </resources>

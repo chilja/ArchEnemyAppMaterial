@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-tr/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">İptal</string>
     <string name="dgts__communication_error">İletişim Hatası</string>
     <string name="dgts__confirmation_code">Doğrulama kodu</string>
@@ -34,9 +36,7 @@ Lütfen daha sonra yeniden dene.</string>
     <string name="dgts__success_desc">Başarılı Simgesi</string>
     <string name="dgts__terms_text">Yukarıdaki \"Kod gönder\" düğmesine dokunduğunda, <u>Digits by Twitter</u> telefon numaranı doğrulamak için sana bir kısa mesaj gönderir.</string>
     <string name="dgts__terms_text_create">Yukarıdaki \"Hesap oluştur\" düğmesine tıklayarak Digits by Twitter\'ın <u>Hizmet Şartları</u>\'nı, <u>Gizlilik Politikası</u>\'nı ve <u>Çerez Politikası</u>\'nı onaylamış ve bu uygulamanın diğer kullanıcılarının seni telefon numarandan ve/veya e-posta adresinden bulabileceğini kabul etmiş oluyorsun.</string>
-    <string name="dgts__terms_text_create_app">Yukarıdaki \"Hesap oluştur\" düğmesine tıklayarak Digits by Twitter\'ın \
-        <u>Hizmet Şartları</u>\'nı, <u>Gizlilik Politikası</u>\'nı ve \
-        <u>Çerez Politikası</u>\'nı \
+    <string name="dgts__terms_text_create_app">Yukarıdaki \"Hesap oluştur\" düğmesine tıklayarak Digits by Twitter\'ın \ <u>Hizmet Şartları</u>\'nı, <u>Gizlilik Politikası</u>\'nı ve \ <u>Çerez Politikası</u>\'nı \
 onaylamış ve %1$s uygulamasının diğer kullanıcılarının seni telefon \
 numarandan ve/veya e-posta adresinden bulabileceğini kabul etmiş \
 oluyorsun.</string>
@@ -45,4 +45,5 @@ oluyorsun.</string>
     <string name="dgts__try_again_phone_number">Lütfen numaranı kontrol et ve yeniden dene.</string>
     <string name="dgts__try_another_phone">Farklı bir telefon numarası dene</string>
     <string name="dgts__upload_contacts">Bu uygulamayı kullanan daha çok arkadaşını bulmak için Digits by Twitter\'ı kullanırız. Tamam\'a dokunduğunda, rehberin Digits by Twitter\'a yüklenir ve uygulamamızın diğer kullanıcılarının seni bulması sağlanır.</string>
+
 </resources>

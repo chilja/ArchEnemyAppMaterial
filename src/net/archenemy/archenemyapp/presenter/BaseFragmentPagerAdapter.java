@@ -1,7 +1,7 @@
 package net.archenemy.archenemyapp.presenter;
 
 /**
- * Custom implementation of a FragmentPagerAdapter
+ * Custom implementation of a FragmentPagerAdapter suitable for BaseFragments
  */
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 
 public class BaseFragmentPagerAdapter extends FragmentPagerAdapter {
 
-	private BaseFragment[] fragments;
+  private BaseFragment[] fragments;
 
   public BaseFragmentPagerAdapter(FragmentManager fm, BaseFragment[] fragments) {
-		super(fm);
-		this.fragments = fragments;
-	}
+    super(fm);
+    this.fragments = fragments;
+  }
 
   @Override
   public void destroyItem(ViewGroup container, int position, Object object) {
@@ -29,13 +29,11 @@ public class BaseFragmentPagerAdapter extends FragmentPagerAdapter {
   }
 
   public int getIconResId(int position) {
-  	return fragments[position].getIconResId();
+    return fragments[position].getIconResId();
   }
 
   @Override
   public Fragment getItem(int position) {
-  	return fragments[position];
+    return fragments[position];
   }
-
 }
-

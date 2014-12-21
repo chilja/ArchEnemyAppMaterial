@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-en-rXX/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">[Cåäncéêl]</string>
     <string name="dgts__communication_error">[Cöømmünïícåätïíöøn Erröør]</string>
     <string name="dgts__confirmation_code">[Cöønfïírmåätïíöøn cöødéê]</string>
@@ -34,13 +36,11 @@
     <string name="dgts__sign_in_twitter">[Sïígn ïín wïíth Twïíttéêr]</string>
     <string name="dgts__signing_in">[Sïígnïíng ïín]</string>
     <string name="dgts__success_desc">[Süccéêss Icöøn]</string>
-    <string name="dgts__terms_text">[By tåäppïíng \"Séênd cöønfïírmåätïíöøn cöødéê\" åäböøvéê,\
-        <u>Dïígïíts by Twïíttéêr</u>, wïíll séênd yöøü åä SMS méêssåägéê töø cöønfïírm yöøür phöønéê nümbéêr.]</string>
+    <string name="dgts__terms_text">[By tåäppïíng \"Séênd cöønfïírmåätïíöøn cöødéê\" åäböøvéê,\ <u>Dïígïíts by Twïíttéêr</u>, wïíll séênd yöøü åä SMS méêssåägéê töø cöønfïírm yöøür phöønéê nümbéêr.]</string>
     <string name="dgts__terms_text_create">[By tåäppïíng \"Créêåätéê åäccöøünt\" åäböøvéê, yöøü åägréêéê töø théê <u>Téêrms\
         öøf Séêrvïícéê</u>, <u>Prïívåäcy Pöølïícy</u>, åänd <u>Cöøöøkïíéês Pöølïícy</u> öøf Dïígïíts by Twïíttéêr, åänd thåät öøthéêr\
         üséêrs öøf thïís åäpp cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>
-    <string name="dgts__terms_text_create_app">[By tåäppïíng \"Créêåätéê åäccöøünt\" åäböøvéê, yöøü åägréêéê töø théê\
-        <u>Téêrms öøf Séêrvïícéê</u>, <u>Prïívåäcy Pöølïícy</u>, åänd <u>Cöøöøkïíéês Pöølïícy</u> öøf Dïígïíts by Twïíttéêr, åänd thåät öøthéêr\
+    <string name="dgts__terms_text_create_app">[By tåäppïíng \"Créêåätéê åäccöøünt\" åäböøvéê, yöøü åägréêéê töø théê\ <u>Téêrms öøf Séêrvïícéê</u>, <u>Prïívåäcy Pöølïícy</u>, åänd <u>Cöøöøkïíéês Pöølïícy</u> öøf Dïígïíts by Twïíttéêr, åänd thåät öøthéêr\
         üséêrs öøf %1$s cåän dïíscöøvéêr yöøü by phöønéê nümbéêr åänd/öør éêmåäïíl.]</string>
     <string name="dgts__try_again">[Try Agåäïín]</string>
     <string name="dgts__try_again_confirmation">[Pléêåäséê chéêck yöøür cöødéê åänd try åägåäïín.]</string>
@@ -49,4 +49,5 @@
     <string name="dgts__upload_contacts">[Wéê üséê Dïígïíts by Twïíttéêr töø fïínd möøréê öøf yöøür frïíéênds whöø üséê\
         thïís åäpp. Whéên yöøü tåäp Okåäy, wéê\'ll üplöøåäd yöøür åäddréêss böøöøk töø Dïígïíts by Twïíttéêr åänd\
         éênåäbléê öøthéêr üséêrs öøf öøür åäpp töø dïíscöøvéêr yöøü.]</string>
+
 </resources>

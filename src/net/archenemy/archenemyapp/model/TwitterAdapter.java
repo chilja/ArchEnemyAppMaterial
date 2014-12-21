@@ -1,5 +1,7 @@
 package net.archenemy.archenemyapp.model;
 
+import net.archenemy.archenemyapp.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -22,133 +24,166 @@ import twitter4j.conf.ConfigurationBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TwitterAdapter
-	implements ProviderAdapter{
 
-	public interface FeedCallback {
-		void onFeedRequestCompleted(ArrayList<Tweet> elements, Long id);
-	}
+/**
+ * <p>
+ * Adapter for the Twitter SDK and other: Logs in and out, makes calls to the API.
+ * </p>
+ * 
+ * @author chiljagossow
+ */
+public class TwitterAdapter implements ProviderAdapter {
+  /**
+   * <p>
+   * Callback interface for feed requests.
+   * </p>
+   * 
+   * @author chiljagossow
+   */
+  public interface FeedCallback {
+    void onFeedRequestCompleted(ArrayList<Tweet> elements, Long id);
+  }
 
-	public interface TwitterLoginCallback {
-		void onTwitterLogin();
-	}
+  /**
+   * <p>
+   * Callback interface for login process.
+   * </p>
+   * 
+   * @author chiljagossow
+   */
+  public interface TwitterLoginCallback {
+    void onTwitterLogin();
+  }
 
-	public interface UserCallback {
-	  void onUserRequestCompleted(User user);
-	}
+  /**
+   * <p>
+   * Callback interface for user requests.
+   * </p>
+   * 
+   * @author chiljagossow
+   */
+  public interface UserCallback {
+    void onUserRequestCompleted(User user);
+  }
 
-	private class FeedTask extends AsyncTask<Void, Void, ArrayList<Tweet>> {
+  private class FeedTask extends AsyncTask<Void, Void, ArrayList<Tweet>> {
 
-		private final FeedCallback callback;
-		private final Long id;
-		private Twitter twitter;
+    private final FeedCallback callback;
+    private final Long id;
+    private Twitter twitter;
 
-		private FeedTask(FeedCallback callback, Long id) {
-			this.callback = callback;
-			this.id = id;
-			twitter = getAuthorizedTwitterInstance();
-		}
+    private FeedTask(FeedCallback callback, Long id, Context context) {
+      this.callback = callback;
+      this.id = id;
+      twitter = getAuthorizedTwitterInstance(context);
+    }
 
-		private ArrayList<Tweet> getTweets(List<twitter4j.Status> statuses){
+    private ArrayList<Tweet> getTweets(List<twitter4j.Status> statuses) {
 
-		  final ArrayList<Tweet> tweets= new ArrayList<Tweet>();
+      final ArrayList<Tweet> tweets = new ArrayList<Tweet>();
 
-			for (final twitter4j.Status status : statuses) {
-				final URLEntity[] urlEntities = status.getURLEntities();
+      for (final twitter4j.Status status : statuses) {
+        if (status.isRetweet()) {
+          // ignore retweets
+          continue;
+        }
 
-				String link = null;
-				if ((urlEntities != null) && (urlEntities.length>0)) {
-					final URLEntity url = urlEntities[0];
-					link = url.getExpandedURL();
-				}
+        final URLEntity[] urlEntities = status.getURLEntities();
 
-				String url = null;
-				final MediaEntity[] media = status.getMediaEntities();
-				for (final MediaEntity entity : media) {
-					url = entity.getMediaURL();
-					entity.getType();
-					break;
-				}
+        String link = null;
+        if ((urlEntities != null) && (urlEntities.length > 0)) {
+          final URLEntity url = urlEntities[0];
+          link = url.getExpandedURL();
+        }
 
-				//use media url as link if no other link is provided
-				if (link == null) {
+        String url = null;
+        final MediaEntity[] media = status.getMediaEntities();
+        for (final MediaEntity entity : media) {
+          url = entity.getMediaURL();
+          entity.getType();
+          break;
+        }
+
+        // use media url as link if no other link is provided
+        if (link == null) {
           link = url;
         }
 
-				Tweet tweet = new Tweet(
-            status.getUser().getScreenName(),
-            status.getText(),
-            status.getCreatedAt(),
-            link,
-            status.getUser().getBiggerProfileImageURL());
+        Tweet tweet = new Tweet(status.getId(), status.getUser().getScreenName(), status.getText(),
+            status.getCreatedAt(), link, status.getUser().getBiggerProfileImageURL());
 
-				if (url != null) {
-					tweet.setImageUrl(url);
-				}
-				tweets.add(tweet);
-	    }
-			return tweets;
-		}
+        if (url != null) {
+          tweet.setImageUrl(url);
+        }
+        tweets.add(tweet);
+      }
+      return tweets;
+    }
 
-		@Override
-		protected ArrayList<Tweet> doInBackground(Void... params) {
+    @Override
+    protected ArrayList<Tweet> doInBackground(Void... params) {
       try {
-          return getTweets(twitter.getUserTimeline(id));
-      } catch (final TwitterException te) {
-          te.printStackTrace();
+        return getTweets(twitter.getUserTimeline(id));
+      }
+      catch (final TwitterException te) {
+        te.printStackTrace();
       }
       return null;
-	  }
+    }
 
-		@Override
-		protected void onPostExecute(ArrayList<Tweet> elements) {
-			feedTasks.remove(this);
-			callback.onFeedRequestCompleted(elements, id);
-		}
-	}
+    @Override
+    protected void onPostExecute(ArrayList<Tweet> elements) {
+      feedTasks.remove(this);
+      callback.onFeedRequestCompleted(elements, id);
+    }
+  }
 
-	private class UserTask extends AsyncTask<Long, Void, User> {
+  private class UserTask extends AsyncTask<Long, Void, User> {
 
-		UserCallback callback;
+    private UserCallback callback;
+    private Twitter twitter;
 
-		private UserTask(UserCallback callback) {
-			this.callback = callback;
-		}
+    private UserTask(UserCallback callback, Context context) {
+      this.callback = callback;
+      twitter = getAuthorizedTwitterInstance(context);
+    }
 
-		@Override
-		protected User doInBackground(Long... params) {
+    @Override
+    protected User doInBackground(Long... params) {
       try {
-        return getAuthorizedTwitterInstance().showUser(params[0]);
-      } catch (final TwitterException exception) {
+        return twitter.showUser(params[0]);
+      }
+      catch (final TwitterException exception) {
         exception.printStackTrace();
         Log.e(TAG, "User could not be retrieved: " + params[0]);
       }
       return null;
-	  }
+    }
 
-		@Override
-		protected void onPostExecute(User user) {
-			userTasks.remove(this);
-			callback.onUserRequestCompleted(user);
-		}
-	}
+    @Override
+    protected void onPostExecute(User user) {
+      userTasks.remove(this);
+      callback.onUserRequestCompleted(user);
+    }
+  }
 
-	public static final String TAG = "TwitterAdapter";
+  public static final String TAG = "TwitterAdapter";
 
-	static final String KEY = "DqhZFiXkeerd1gaqeD1reFmVX";
+  private static String key;
 
-	static final String SECRET = "pcpFXsv1YFqQ1BncuQw5qzBMvl9Ow3TUPKG2oFHnuR5RG9e2Ab";
+  private static String secret;
 
-	/**
+  /**
    * Returns singleton
-   * @return
+   * 
+   * @return TwitterAdapter
    */
-	public static TwitterAdapter getInstance() {
-		if (twitterAdapter == null) {
+  public static TwitterAdapter getInstance() {
+    if (twitterAdapter == null) {
       twitterAdapter = new TwitterAdapter();
     }
-		return twitterAdapter;
-	}
+    return twitterAdapter;
+  }
 
   private final ArrayList<FeedTask> feedTasks = new ArrayList<FeedTask>();
 
@@ -158,135 +193,168 @@ public class TwitterAdapter
 
   private static TwitterAdapter twitterAdapter;
 
+  /**
+   * Returns the application key.
+   * @return the key
+   */
+  public static String getKey(Context context) {
+    if (key == null) {
+      key = context.getString(R.string.twitter_key);
+    }
+    return key;
+  }
+
+  /**
+   * Returns the application secret.
+   * @return the secret
+   */
+  public static String getSecret(Context context) {
+    if (secret == null) {
+      secret = context.getString(R.string.twitter_secret);
+    }
+    return secret;
+  }
+
   private TwitterAdapter() {
-    //prevent instantiation from outside
+    // prevent instantiation from outside
   }
 
-	/**
-	 * Gets name of logged in user
-	 * @return
-	 */
-	public String getUserName() {
-		final TwitterSession session =
-    			com.twitter.sdk.android.Twitter.getSessionManager().getActiveSession();
-		return session.getUserName();
-	}
+  /**
+   * Gets the name of logged in user from session.
+   * @return String with user name
+   */
+  public String getUserName() {
+    final TwitterSession session = com.twitter.sdk.android.Twitter.getSessionManager()
+        .getActiveSession();
+    return session.getUserName();
+  }
 
-	@Override
+  @Override
   public boolean isEnabled() {
-	  return true;
-	}
-
-	@Override
-  public boolean isLoggedIn() {
-  	if (com.twitter.sdk.android.Twitter.getSessionManager().getActiveSession() != null) {
-      return true;
-  	}
-  	return false;
+    return true;
   }
 
-	/**
-	 * Starts log in process
-	 * @param activity Calling activity
-	 * @param loginListener
-	 */
-	public void logIn(Context context, final TwitterLoginCallback loginListener ) {
-  	twitterLoginButton = new TwitterLoginButton(context);
+  @Override
+  public boolean isLoggedIn() {
+    if (com.twitter.sdk.android.Twitter.getSessionManager().getActiveSession() != null) {
+      return true;
+    }
+    return false;
+  }
 
-  	twitterLoginButton.setCallback(new Callback<TwitterSession>() {
-			@Override
-      public void failure(
-      		com.twitter.sdk.android.core.TwitterException arg0) {
-      }
+  /**
+   * Starts log in process.
+   * 
+   * @param context
+   *          Context for log in window
+   * @param loginListener
+   */
+  public void logIn(Context context, final TwitterLoginCallback loginListener) {
+    twitterLoginButton = new TwitterLoginButton(context);
 
-			@Override
+    twitterLoginButton.setCallback(new Callback<TwitterSession>() {
+      @Override
+      public void failure(com.twitter.sdk.android.core.TwitterException arg0) {}
+
+      @Override
       public void success(Result<TwitterSession> result) {
-			  loginListener.onTwitterLogin();
+        loginListener.onTwitterLogin();
       }
-		});
+    });
 
-		twitterLoginButton.performClick();
-	}
+    twitterLoginButton.performClick();
+  }
 
-	@Override
+  @Override
   public void logOut() {
-		com.twitter.sdk.android.Twitter.getSessionManager().clearActiveSession();
-	}
+    com.twitter.sdk.android.Twitter.getSessionManager().clearActiveSession();
+  }
 
-/**
- * Makes a feed request to the Twitter API for the given user id
- * @param id Twitter user id
- * @param callback Callback for response
- */
-	public void makeFeedRequest(Long id, final FeedCallback callback) {
-		if (isEnabled() && isLoggedIn()) {
-			Log.d(TAG, "Requesting feeds...");
-			final FeedTask task = new FeedTask(callback, id);
-			feedTasks.add(task);
-			task.execute();
-		}
-	}
-
-	/**
-	 * Makes a user request to the Twitter API for the given user id
-	 * @param userId Twitter user id
-	 * @param callback Callback for response
-	 */
-	public void makeUserRequest(Long userId, UserCallback callback) {
-		if (isLoggedIn()) {
-			Log.i(TAG, "Requesting user ...");
-			final UserTask task = new UserTask(callback);
-			userTasks.add(task);
-			task.execute(userId);
-		}
-	}
-
-	/**
-	 * Passes the activity's result for the management of the active session after log in.
-	 * @param requestCode
-	 * @param resultCode
-	 * @param data
-	 */
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    // Pass the activity result to the login button.
-    if (twitterLoginButton != null) {
-    	twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+  /**
+   * Makes a feed request to the Twitter API for the given user id.
+   * 
+   * @param id
+   *          Twitter user id
+   * @param callback
+   *          Callback for response
+   * @param context
+   *          Context of request
+   */
+  public void makeFeedRequest(Long id, final FeedCallback callback, Context context) {
+    if (isEnabled() && isLoggedIn()) {
+      Log.d(TAG, "Requesting feed for id " + id);
+      final FeedTask task = new FeedTask(callback, id, context);
+      feedTasks.add(task);
+      task.execute();
     }
   }
 
   /**
-   * Cancels all background tasks. Should be called from the activity's onDestroy() method
+   * Makes a user request to the Twitter API for the given user id.
+   * 
+   * @param userId
+   *          Twitter user id
+   * @param callback
+   *          Callback for response
+   * @param context
+   *          Context of request
    */
-	public void onDestroy() {
+  public void makeUserRequest(Long userId, UserCallback callback, Context context) {
+    if (isLoggedIn()) {
+      Log.i(TAG, "Requesting user ...");
+      final UserTask task = new UserTask(callback, context);
+      userTasks.add(task);
+      task.execute(userId);
+    }
+  }
+
+  /**
+   * Passes the activity's result for the handling of the active session after
+   * log in.
+   * 
+   * @param requestCode
+   * @param resultCode
+   * @param data
+   */
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    // Pass the activity result to the login button.
+    if (twitterLoginButton != null) {
+      twitterLoginButton.onActivityResult(requestCode, resultCode, data);
+    }
+  }
+
+  /**
+   * Cancels all background tasks. Should be called from the activity's
+   * onDestroy() method
+   */
+  public void onDestroy() {
     if (!feedTasks.isEmpty()) {
-    	for (final FeedTask task:feedTasks) {
-    		task.cancel(true);
-    	}
-    	feedTasks.clear();
+      for (FeedTask task : feedTasks) {
+        task.cancel(true);
+      }
+      feedTasks.clear();
     }
     Log.i(TAG, "All feed tasks cancelled");
 
     if (!userTasks.isEmpty()) {
-    	for (final UserTask task:userTasks) {
-    		task.cancel(true);
-    	}
-    	userTasks.clear();
+      for (UserTask task : userTasks) {
+        task.cancel(true);
+      }
+      userTasks.clear();
     }
     Log.i(TAG, "All user tasks cancelled");
   }
 
-	private Twitter getAuthorizedTwitterInstance() {
+  private Twitter getAuthorizedTwitterInstance(Context context) {
 
-	  TwitterAuthToken authToken =
-  			com.twitter.sdk.android.Twitter.getSessionManager().getActiveSession().getAuthToken();
+    TwitterAuthToken authToken = com.twitter.sdk.android.Twitter.getSessionManager()
+        .getActiveSession().getAuthToken();
 
     ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-    configurationBuilder.setDebugEnabled(true)
-      .setOAuthConsumerKey(KEY)
-      .setOAuthConsumerSecret(SECRET)
-      .setOAuthAccessToken(authToken.token)
-      .setOAuthAccessTokenSecret(authToken.secret);
+    configurationBuilder.setDebugEnabled(true).setOAuthConsumerKey(getKey(context))
+        .setOAuthConsumerSecret(getSecret(context)).setOAuthAccessToken(authToken.token)
+        .setOAuthAccessTokenSecret(authToken.secret);
 
     return new TwitterFactory(configurationBuilder.build()).getInstance();
-	}
+  }
 }

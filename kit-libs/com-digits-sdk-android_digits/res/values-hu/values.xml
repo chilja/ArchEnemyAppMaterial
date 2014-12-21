@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-hu/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Mégse</string>
     <string name="dgts__communication_error">Kommunikációs hiba</string>
     <string name="dgts__confirmation_code">Megerősítőkód</string>
@@ -34,4 +36,5 @@
     <string name="dgts__try_again_phone_number">Ellenőrizd a számod és próbálkozz újra!</string>
     <string name="dgts__try_another_phone">Próbálkozz másik telefonszámmal!</string>
     <string name="dgts__upload_contacts">A Digits by Twitter segítségével megkeressük az alkalmazást használó ismerőseidet. Az OK gombra koppintva feltöltjük a címjegyzéked a Digits by Twitter szolgáltatásba, és lehetővé tesszük az alkalmazásunk többi felhasználójának, hogy megkereshessenek Téged.</string>
+
 </resources>

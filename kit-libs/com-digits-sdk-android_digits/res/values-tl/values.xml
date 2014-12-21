@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-tl/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Kanselahin</string>
     <string name="dgts__communication_error">Error sa Komunikasyon</string>
     <string name="dgts__confirmation_code">Code sa Pagkumpirma</string>
@@ -39,4 +41,5 @@
     <string name="dgts__try_again_phone_number">Pakitingnan ang numero ninyo at subukan ulit.</string>
     <string name="dgts__try_another_phone">Subukan ang ibang numero ng telepono</string>
     <string name="dgts__upload_contacts">Gumagamit kami ng Digits by Twitter para mahanap ang iba pang kaibigan na gumagamit ng app na ito. Kapag nag-tap ng Okay, i-a-upload namin ang inyong address book sa Digits by Twitter at paganahin ang ibang mga user ng app namin para matukasan kayo. </string>
+
 </resources>

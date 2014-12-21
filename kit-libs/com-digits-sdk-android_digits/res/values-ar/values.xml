@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-ar/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">إلغاء</string>
     <string name="dgts__communication_error">خطأ اتصال</string>
     <string name="dgts__confirmation_code">رمز التأكيد</string>
@@ -50,4 +52,5 @@
 تويتر\" للبحث عن مزيد من أصدقائك الذين يستخدمون هذا التطبيق. عند الضغط على\
 \"موافق\"، سنقوم/ برفع دفتر العناوين على \" Digits\
 بواسطة تويتر\"، ثمّ تمكين مستخدمي التطبيق الآخرين من اكتشاف هويتك.</string>
+
 </resources>

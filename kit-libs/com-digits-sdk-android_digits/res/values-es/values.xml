@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-es/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Cancelar</string>
     <string name="dgts__communication_error">Error de comunicación</string>
     <string name="dgts__confirmation_code">Código de confirmación</string>
@@ -31,8 +33,7 @@
     <string name="dgts__sign_in_twitter">Iniciar sesión en Twitter</string>
     <string name="dgts__signing_in">Iniciando sesión</string>
     <string name="dgts__success_desc">Icono Éxito</string>
-    <string name="dgts__terms_text">Al pulsar \"Enviar código de confirmación\" arriba,\
-        <u>Digits de Twitter</u>, te enviará un SMS para confirmar tu número de teléfono.</string>
+    <string name="dgts__terms_text">Al pulsar \"Enviar código de confirmación\" arriba,\ <u>Digits de Twitter</u>, te enviará un SMS para confirmar tu número de teléfono.</string>
     <string name="dgts__terms_text_create">Al pulsar \"Crear cuenta\" arriba, aceptas los <u>Términos de servicio</u>, la <u>Política de privacidad</u> y la <u>Política de cookies</u> de Digits de Twitter, y que otros usuarios de esta app puedan conocerte a través de tu número de teléfono y/o correo electrónico.</string>
     <string name="dgts__terms_text_create_app">Al pulsar \"Crear cuenta\" arriba, aceptas los <u>Términos de servicio</u>, la <u>Política de Privacidad</u> y la <u>Política de cookies</u> de Digits de Twitter, y que otros usuarios de %1$s puedan conocerte a través de tu número de teléfono y/o correo electrónico.</string>
     <string name="dgts__try_again">Reintentar</string>
@@ -40,4 +41,5 @@
     <string name="dgts__try_again_phone_number">Revisa tu número e inténtalo de nuevo.</string>
     <string name="dgts__try_another_phone">Intenta con otro número de teléfono </string>
     <string name="dgts__upload_contacts">Usamos Digits de Twitter para encontrar más amigos tuyos que usan esta app. Cuando pulses \"Aceptar\", cargaremos tu libreta de direcciones a Digits de Twitter y permitiremos a otros usuarios de nuestra app que te encuentren.</string>
+
 </resources>

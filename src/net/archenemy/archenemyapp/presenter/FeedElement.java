@@ -5,21 +5,23 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
 /**
- * Interface for feed elements
+ * Interface for feed elements with common methods
+ * 
  * @author chiljagossow
- *
+ * 
  */
-public interface FeedElement extends Comparable<FeedElement>{
+public interface FeedElement extends Comparable<FeedElement> {
   /**
-   * Binds  {@link RecyclerView.ViewHolder RecyclerView.ViewHolder} to data
+   * Binds {@link RecyclerView.ViewHolder RecyclerView.ViewHolder} to data
+   * 
    * @param holder
    * @param activity
    */
-	public void bindViewHolder(ViewHolder holder, Activity activity);
+  public void bindViewHolder(ViewHolder holder, Activity activity);
 
-	/**
-	 *
-	 * @return Link that should be opened on click event
-	 */
-	public String getLink();
+  /**
+   * 
+   * @return Link that should be opened on click event
+   */
+  public String getLink();
 }

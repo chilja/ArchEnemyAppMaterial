@@ -1,25 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">       
-   
-    <CheckBoxPreference
-        android:key="@string/pref_key_alyssa_white_gluz"
-        android:title="@string/pref_alyssa_white_gluz_title"
-        android:summaryOff="@string/pref_member_summary_off"       
-        android:summaryOn="@string/pref_member_summary_on" 
-        android:defaultValue="true"/>
-    <CheckBoxPreference
-        android:key="@string/pref_key_michael_amott"
-        android:title="@string/pref_michael_amott_title"
-        android:summaryOff="@string/pref_member_summary_off"       
-        android:summaryOn="@string/pref_member_summary_on" 
-        android:defaultValue="true"/>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <ListPreference
-        android:key="pref_startMenuItem"
-        android:title="@string/pref_startMenuItem"
+        android:defaultValue="@string/pref_startMenuItem_default"
         android:dialogTitle="@string/pref_startMenuItem_dialog"
         android:entries="@array/pref_startMenuItem_entries"
         android:entryValues="@array/pref_startMenuItem_values"
-        android:defaultValue="@string/pref_startMenuItem_default" />
+        android:key="pref_startMenuItem"
+        android:title="@string/pref_startMenuItem" />
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_key_alissa_white_gluz"
+        android:summaryOff="@string/pref_member_summary_off"
+        android:summaryOn="@string/pref_member_summary_on"
+        android:title="Alissa White-Gluz" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_key_michael_amott"
+        android:summaryOff="@string/pref_member_summary_off"
+        android:summaryOn="@string/pref_member_summary_on"
+        android:title="Michael Amott" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_key_jeff_loomis"
+        android:summaryOff="@string/pref_member_summary_off"
+        android:summaryOn="@string/pref_member_summary_on"
+        android:title="Jeff Loomis" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_key_daniel_erlandsson"
+        android:summaryOff="@string/pref_member_summary_off"
+        android:summaryOn="@string/pref_member_summary_on"
+        android:title="Daniel Erlandsson" />
+    
 </PreferenceScreen>

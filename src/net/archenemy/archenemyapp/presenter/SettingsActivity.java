@@ -8,21 +8,23 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 /**
- * Settings
+ * Activity for editing settings
+ * 
  * @author chiljagossow
- *
+ * 
  */
 public class SettingsActivity extends ActionBarActivity {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-	  super.onCreate(savedInstanceState);
-	  setContentView(R.layout.settings_activity);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.settings_activity);
 
-	  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-	  toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-		setSupportActionBar(toolbar);
-		TextView title = (TextView) findViewById(R.id.title);
-		title.setText(R.string.title_activity_settings);
-	}
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+    setSupportActionBar(toolbar);
+    
+    TextView title = (TextView) findViewById(R.id.title);
+    title.setText(R.string.title_activity_settings);
+  }
 }

@@ -11,14 +11,15 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 /**
- * Fragment to manage user input for settings
+ * Fragment for editing settings
+ * 
  * @author chiljagossow
- *
+ * 
  */
-public class SettingsFragment extends PreferenceFragment
-	implements OnSharedPreferenceChangeListener{
+public class SettingsFragment extends PreferenceFragment implements
+    OnSharedPreferenceChangeListener {
 
-	@Override
+  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Load the preferences from an XML resource
@@ -26,35 +27,35 @@ public class SettingsFragment extends PreferenceFragment
     setStartMenuSummary();
   }
 
-	@Override
-	public void onPause() {
+  @Override
+  public void onPause() {
     super.onPause();
     PreferenceManager.getDefaultSharedPreferences(getActivity())
-	    .unregisterOnSharedPreferenceChangeListener(this);
-	}
+        .unregisterOnSharedPreferenceChangeListener(this);
+  }
 
-	@Override
-	public void onResume() {
+  @Override
+  public void onResume() {
     super.onResume();
     PreferenceManager.getDefaultSharedPreferences(getActivity())
-	    .registerOnSharedPreferenceChangeListener(this);
-	}
+        .registerOnSharedPreferenceChangeListener(this);
+  }
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-      String key) {
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     if (key.equals(Constants.PREF_KEY_START)) {
       setStartMenuSummary();
     }
-	}
+  }
 
-	private void setStartMenuSummary() {
-		SharedPreferences sharedPreferences =
-      PreferenceManager.getDefaultSharedPreferences(getActivity());
+  private void setStartMenuSummary() {
+    SharedPreferences sharedPreferences = PreferenceManager
+        .getDefaultSharedPreferences(getActivity());
     String start = sharedPreferences.getString(Constants.PREF_KEY_START, Constants.FACEBOOK);
-    String summary = (Constants.FACEBOOK.equals(start))?
-    	getResources().getString(R.string.title_facebook) : getResources().getString(R.string.title_twitter);
-    Preference startMenuPreference = getPreferenceManager().findPreference(Constants.PREF_KEY_START);
+    String summary = (Constants.FACEBOOK.equals(start)) ? getResources().getString(
+        R.string.title_facebook) : getResources().getString(R.string.title_twitter);
+    Preference startMenuPreference = getPreferenceManager()
+        .findPreference(Constants.PREF_KEY_START);
     startMenuPreference.setSummary(summary);
-	}
+  }
 }

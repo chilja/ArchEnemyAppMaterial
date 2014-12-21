@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-fi/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Peruuta</string>
     <string name="dgts__communication_error">Viestintävirhe</string>
     <string name="dgts__confirmation_code">Vahvistuskoodi</string>
@@ -39,4 +41,5 @@
     <string name="dgts__try_again_phone_number">Tarkista numero ja yritä uudelleen.</string>
     <string name="dgts__try_another_phone">Kokeile toista puhelinnumeroa</string>
     <string name="dgts__upload_contacts">Digits by Twitter -palvelu auttaa löytämään muita tätä sovellusta käyttäviä ystäviäsi. Kun napautat OK, lähetämme osoitekirjasi Digits by Twitterille ja sallimme sovelluksen muiden käyttäjien löytää sinut.</string>
+
 </resources>

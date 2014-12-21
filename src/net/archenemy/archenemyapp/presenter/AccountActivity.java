@@ -12,66 +12,68 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 /**
- * Activity holding fragments for log in/out processes with providers
+ * Activity holding fragments for log in/out processes with providers.
+ * 
  * @author chiljagossow
- *
+ * 
  */
-public class AccountActivity extends FacebookActivity
- implements
-   FacebookAdapter.OnFacebookLoginListener,
-   TwitterAdapter.TwitterLoginCallback{
+public class AccountActivity extends FacebookActivity implements
+    FacebookAdapter.OnFacebookLoginListener, TwitterAdapter.TwitterLoginCallback {
 
-	private static final int FACEBOOK = 0;
-	private static final int TWITTER = 1;
-	public static final String TAG = "FacebookActivity";
+  private static final int FACEBOOK = 0;
+  private static final int TWITTER = 1;
+  public static final String TAG = "AccountActivity";
 
-	private FacebookAccountFragment facebookAccount;
-	private TwitterAccountFragment twitterAccount;
+  private FacebookAccountFragment facebookAccount;
+  private TwitterAccountFragment twitterAccount;
 
   private SlidingTabLayout slidingTabLayout;
   private ViewPager viewPager;
+  private BaseFragmentPagerAdapter adapter;
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (twitterAccount != null) {
-    	twitterAccount.onActivityResult(requestCode, resultCode, data);
+      twitterAccount.onActivityResult(requestCode, resultCode, data);
     }
-	}
+  }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.account_activity);
 
     final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-		setSupportActionBar(toolbar);
-		final TextView title = (TextView) findViewById(R.id.title);
-		title.setText(R.string.title_activity_accounts);
+    setSupportActionBar(toolbar);
+
+    final TextView title = (TextView) findViewById(R.id.title);
+    title.setText(R.string.title_activity_accounts);
 
     twitterAccount = new TwitterAccountFragment();
     facebookAccount = new FacebookAccountFragment();
-    twitterAccount.showHeader(false);
-    facebookAccount.showHeader(false);
 
     final BaseFragment[] fragments = new BaseFragment[2];
     fragments[FACEBOOK] = facebookAccount;
     fragments[TWITTER] = twitterAccount;
 
-		viewPager = (ViewPager) findViewById(R.id.viewpager);
-    viewPager.setAdapter(new BaseFragmentPagerAdapter(getSupportFragmentManager(), fragments));
+    viewPager = (ViewPager) findViewById(R.id.viewpager);
+    adapter = new BaseFragmentPagerAdapter(getSupportFragmentManager(), fragments);
+    viewPager.setAdapter(adapter);
     slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
     slidingTabLayout.setIndicatorColor(getResources().getColor(R.color.accent));
     slidingTabLayout.setCustomTabView(R.layout.tab, R.id.tabIcon);
     slidingTabLayout.setViewPager(viewPager);
-	}
+  }
 
-	@Override
-	public void onFacebookLogin() {
-		 facebookAccount.onFacebookLogin();
-	}
+  @Override
+  public void onFacebookLogin() {
+    if (adapter.getItem(FACEBOOK) instanceof FacebookAccountFragment) {
+      ((FacebookAccountFragment) (adapter.getItem(FACEBOOK))).onFacebookLogin();
+    }
+  }
 
-	@Override
-	public void onTwitterLogin() {}
+  @Override
+  public void onTwitterLogin() {}
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-th/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">ยกเลิก</string>
     <string name="dgts__communication_error">ข้อผิดพลาดการสื่อสาร</string>
     <string name="dgts__confirmation_code">รหัสยืนยัน</string>
@@ -39,4 +41,5 @@
     <string name="dgts__try_again_phone_number">กรุณาตรวจสอบหมายเลขของคุณแล้วลองอีกครั้ง</string>
     <string name="dgts__try_another_phone">ลองใช้หมายเลขโทรศัพท์อื่น</string>
     <string name="dgts__upload_contacts">เราใช้ Digits โดยทวิตเตอร์เพื่อตามหาเพื่อนของคุณที่ใช้งานแอปนี้เพิ่มเติม เมื่อคุณแตะที่ โอเค เราจะอัพโหลดสมุดที่อยู่ของคุณไปที่ Digits โดยทวิตเตอร์และอนุญาตให้ผู้ใช้อื่นในแอปของเราสามารถหาคุณเจอได้</string>
+
 </resources>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-pt/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Cancelar</string>
     <string name="dgts__communication_error">Erro de Comunicação</string>
     <string name="dgts__confirmation_code">Código de confirmação</string>
@@ -40,4 +42,5 @@
     <string name="dgts__try_again_phone_number">Verifique seu número e tente novamente.</string>
     <string name="dgts__try_another_phone">Tente um número de celular diferente</string>
     <string name="dgts__upload_contacts">Usamos o Digits by Twitter para encontrar mais dos seus amigos que usam este app. Quando você tocar em OK, nós vamos carregar sua lista de contatos para o Digits by Twitter e deixar que outros usuários do app possam descobrir você.</string>
+
 </resources>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-sv/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Avbryt</string>
     <string name="dgts__communication_error">Kommunikationsfel</string>
     <string name="dgts__confirmation_code">Bekräftelsekod</string>
@@ -33,8 +35,7 @@
     <string name="dgts__success_desc">Ikonen Lyckades</string>
     <string name="dgts__terms_text">Om du trycker på Skicka bekräftelsekod ovan skickar <u>Digits by Twitter</u> ett SMS för att bekräfta ditt telefonnummer.</string>
     <string name="dgts__terms_text_create">Om du trycker på Skapa konto ovan godkänner du Digits by Twitters <u>användarvillkor</u>, <u>sekretesspolicy</u> och <u>cookiepolicy</u> och att andra användare av den här appen kan identifiera dig genom ditt telefonnummer och/eller din e-postadress.</string>
-    <string name="dgts__terms_text_create_app">Om du trycker på Skapa konto ovan godkänner du Digits by Twitters \
-<u>användarvillkor</u>, <u>sekretesspolicy</u> \
+    <string name="dgts__terms_text_create_app">Om du trycker på Skapa konto ovan godkänner du Digits by Twitters \ <u>användarvillkor</u>, <u>sekretesspolicy</u> \
 och <u>cookiepolicy</u> och att andra användare av %1$s kan identifiera dig genom ditt telefonnummer och/eller din \
 e-postadress.</string>
     <string name="dgts__try_again">Försök igen</string>
@@ -42,4 +43,5 @@ e-postadress.</string>
     <string name="dgts__try_again_phone_number">Vänligen kontrollera ditt nummer och prova igen.</string>
     <string name="dgts__try_another_phone">Prova ett annat telefonnummer</string>
     <string name="dgts__upload_contacts">Vi använder Digits by Twitter för att hitta fler av dina vänner som också använder denna applikation. När du klickar okej laddar vi upp din adressbok till Digits by Twitter och gör det möjligt för andra användare av applikationen att hitta dig.</string>
+
 </resources>

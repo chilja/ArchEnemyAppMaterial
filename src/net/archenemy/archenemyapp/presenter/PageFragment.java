@@ -1,7 +1,7 @@
 package net.archenemy.archenemyapp.presenter;
 
 import net.archenemy.archenemyapp.R;
-import net.archenemy.archenemyapp.model.ArchEnemyDataAdapter;
+import net.archenemy.archenemyapp.model.DataAdapter;
 import net.archenemy.archenemyapp.model.SocialMediaUser;
 
 import android.animation.Animator;
@@ -21,172 +21,184 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base fragment for feed pages
+ * Base fragment for feed pages. Handles common page behavior, eg. swipe
+ * refresh, enter animation, scrolling.
+ * 
  * @author chiljagossow
- *
+ * 
  */
-public abstract class PageFragment extends BaseFragment
-	implements Serializable {
+public abstract class PageFragment extends BaseFragment implements Serializable {
 
-	class FeedAdapter extends RecyclerView.Adapter<ViewHolder> {
+  class FeedAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-		private final List<FeedElement> listElements;
+    private List<FeedElement> feedElements;
 
-    public FeedAdapter(List<FeedElement> listElements) {
-    	this.listElements = listElements;
+    public FeedAdapter(List<FeedElement> feedElements) {
+      super();
+      this.feedElements = feedElements;
     }
 
     @Override
     public int getItemCount() {
-      return listElements.size();
+      return feedElements.size();
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-    	listElements.get(position).bindViewHolder(holder, getActivity());
+      feedElements.get(position).bindViewHolder(holder, getActivity());
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       return getViewHolder(parent);
     }
-	}
 
-	class ScrollListener extends RecyclerView.OnScrollListener {
+    private List<FeedElement> getFeedElements() {
+      return feedElements;
+    }
+  }
 
-		@Override
-		public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-			super.onScrolled(recyclerView, dx, dy);
-			PageFragment.this.onScrolled(recyclerView, dy);
-		}
+  class ScrollListener extends RecyclerView.OnScrollListener {
 
-		@Override
-		public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-			super.onScrollStateChanged(recyclerView, newState);
-		}
-	}
+    @Override
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+      super.onScrolled(recyclerView, dx, dy);
+      PageFragment.this.onScrolled(recyclerView, dy);
+    }
 
-	private static final long serialVersionUID = 1L;
-	public static final String TAG = "FacebookPageFragment";
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+      super.onScrollStateChanged(recyclerView, newState);
+    }
+  }
 
-	protected transient RecyclerView recyclerView;
-	protected transient FeedAdapter adapter;
-	protected transient RecyclerView.LayoutManager layoutManager;
-	protected List<FeedElement> listElements = new ArrayList<FeedElement>();
-	protected static ArrayList<SocialMediaUser> socialMediaUsers;
-	protected SwipeRefreshLayout swipeRefreshLayout;
-	protected View parentView;
+  private static final long serialVersionUID = 1L;
+  public static final String TAG = "FacebookPageFragment";
 
-	@Override
-	public View onCreateView(LayoutInflater inflater,
-	    ViewGroup container, Bundle savedInstanceState) {
+  protected static ArrayList<SocialMediaUser> socialMediaUsers;
 
-		super.onCreateView(inflater, container, savedInstanceState);
-		parentView = inflater.inflate(R.layout.page_fragment, container, false);
+  protected transient RecyclerView recyclerView;
+  protected transient RecyclerView.LayoutManager layoutManager;
+  protected transient FeedAdapter adapter;
 
-		socialMediaUsers = ArchEnemyDataAdapter.getInstance().getEnabledSocialMediaUsers(getActivity());
+  protected transient SwipeRefreshLayout swipeRefreshLayout;
+  protected transient View parentView;
+
+  private int headerHeight;
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    headerHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+    super.onCreateView(inflater, container, savedInstanceState);
+    parentView = inflater.inflate(R.layout.page_fragment, container, false);
+
+    socialMediaUsers = DataAdapter.getInstance().getEnabledSocialMediaUsers(getActivity());
 
     layoutManager = new LinearLayoutManager(getActivity());
-	 	recyclerView = (RecyclerView) parentView.findViewById(R.id.recyclerView);
+
+    recyclerView = (RecyclerView) parentView.findViewById(R.id.recyclerView);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setOnScrollListener(new ScrollListener());
 
     swipeRefreshLayout = (SwipeRefreshLayout) parentView.findViewById(R.id.swipeRefresh);
-    swipeRefreshLayout.setColorSchemeColors(
-      getActivity().getResources().getColor(R.color.accent),
-      getActivity().getResources().getColor(R.color.accent_dark));
+    swipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getColor(R.color.accent),
+        getActivity().getResources().getColor(R.color.accent_dark));
 
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override
       public void onRefresh() {
-         onFeedRefresh();
+        onFeedRefresh();
       }
     });
 
     refresh();
 
-	  return parentView;
-	}
+    return parentView;
+  }
 
-	@Override
-	public void refresh() {
-		if (isAttached) {
-			final int start = recyclerView.getBottom();
-
-			if ((listElements == null) || (listElements.size() == 1)) {
-        swipeRefreshLayout.setTranslationY(start);
+  @Override
+  public void refresh() {
+    if (isAttached && (recyclerView != null)) {
+      boolean enterAnimation = false;
+      if ((adapter == null) || (adapter.getFeedElements() == null)) {
+        enterAnimation = true;
       }
 
-			listElements = getListElements();
-			if ((listElements != null) && (listElements.size() > 0) && (getActivity() != null) && (recyclerView != null)) {
-				// specify an adapter (see also next example)
-        adapter = new FeedAdapter(listElements);
-        recyclerView.setAdapter(adapter);
-			}
+      List<FeedElement> feedElements = getFeedElements();
+      if ((feedElements != null) && (feedElements.size() > 0)) {
+        if (adapter == null) {
+          adapter = new FeedAdapter(feedElements);
+          recyclerView.setAdapter(adapter);
+        } else {
+          recyclerView.swapAdapter(new FeedAdapter(feedElements), false);
+        }
 
-			if (adapter != null) {
-				adapter.notifyDataSetChanged();
-				animateEnterTransition();
-			}
+        if (enterAnimation) {
+          animateEnterTransition();
+        }
+      }
+      // Stop the refreshing indicator
+      setRefreshing(false);
+    }
+  }
 
-			// Stop the refreshing indicator
-	    setRefreshing(false);
-		}
-	}
+  public abstract void setRefreshing(boolean isRefreshing);
 
-	public abstract void setRefreshing(boolean isRefreshing);
+  private void animateEnterTransition() {
+    swipeRefreshLayout.setTranslationY(recyclerView.getBottom());
 
-	private void animateEnterTransition() {
+    final AnimatorListener listener = new AnimatorListener() {
+      @Override
+      public void onAnimationCancel(Animator animation) {}
 
-		final AnimatorListener listener = new AnimatorListener() {
-			@Override
-			public void onAnimationCancel(Animator animation) {	}
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        swipeRefreshLayout.setTranslationY(0);
+      }
 
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				swipeRefreshLayout.setTranslationY(0);
-			}
+      @Override
+      public void onAnimationRepeat(Animator animation) {}
 
-			@Override
-			public void onAnimationRepeat(Animator animation) {	}
+      @Override
+      public void onAnimationStart(Animator animation) {}
+    };
 
-			@Override
-			public void onAnimationStart(Animator animation) { }
+    swipeRefreshLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator())
+        .setDuration(300).setListener(listener).start();
+  }
 
-		};
+  protected abstract List<FeedElement> getFeedElements();
 
-		swipeRefreshLayout.animate().translationY(0)
-		.setInterpolator(new DecelerateInterpolator())
-		.setDuration(300)
-		.setListener(listener)
-		.start();
-	}
-
-	protected abstract List<FeedElement> getListElements();
-
-	protected int getScrollY() {
-	  if (recyclerView != null) {
+  protected int getScrollY() {
+    if (recyclerView != null) {
       final View firstChild = recyclerView.getChildAt(0);
       if (firstChild == null) {
-          return 0;
+        return 0;
       }
-  
-      final int firstVisiblePosition = recyclerView.getChildPosition(recyclerView.findChildViewUnder(0.0F, 0.0F));
+
+      final int firstVisiblePosition = recyclerView.getChildPosition(recyclerView
+          .findChildViewUnder(0.0F, 0.0F));
       final int top = firstChild.getTop();
-  
+
       int headerHeight = 0;
       if (firstVisiblePosition >= 1) {
-          headerHeight = 154 * 3;
+        headerHeight = this.headerHeight;
       }
-  
+
       return top - (firstVisiblePosition * firstChild.getHeight()) - headerHeight;
-	  }
-	  return 0;
-	}
+    }
+    return 0;
+  }
 
-	protected abstract ViewHolder getViewHolder(ViewGroup parent);
+  protected abstract ViewHolder getViewHolder(ViewGroup parent);
 
-	protected abstract void onFeedRefresh();
+  protected abstract void onFeedRefresh();
 
-	protected abstract void onScrolled(RecyclerView recyclerView, int dy);
+  protected abstract void onScrolled(RecyclerView recyclerView, int dy);
 }

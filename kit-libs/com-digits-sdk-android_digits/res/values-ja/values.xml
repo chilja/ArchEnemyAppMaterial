@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-ja/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">キャンセル</string>
     <string name="dgts__communication_error">通信エラー</string>
     <string name="dgts__confirmation_code">認証コード</string>
@@ -39,4 +41,5 @@
     <string name="dgts__try_again_phone_number">番号を確認し、やり直してください。</string>
     <string name="dgts__try_another_phone">別の電話番号をお試しください</string>
     <string name="dgts__upload_contacts">Twitterでは、このアプリを使う友だちをより多く見つけるためにDigits by Twitterを使います。[OK] をタップすると、アドレス帳がDigits by Twitterにアップロードされ、他のユーザーがあなたを見つけられるようになります。</string>
+
 </resources>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/digits/src/main/res/values-en-rGB/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="dgts__cancel">Cancel</string>
     <string name="dgts__communication_error">Communication Error</string>
     <string name="dgts__confirmation_code">Confirmation code</string>
@@ -39,4 +41,5 @@
     <string name="dgts__upload_contacts">We use Digits by Twitter to find more of your friends who use\
         this app. When you tap OK, we\'ll upload your address book to Digits by Twitter and\
         enable other users of our app to discover you.</string>
+
 </resources>

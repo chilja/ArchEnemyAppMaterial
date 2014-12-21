@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/tweetui/src/main/res/values-en-rSS/plurals.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <plurals name="tw__time_hours">
         <item quantity="one">[[59358]] 1h</item>
         <item quantity="other">[[59359]] %dh</item>
@@ -15,7 +17,8 @@
         <item quantity="other">[[59355]] %ds</item>
     </plurals>
     <!-- From: file:/Users/android/workspace/jenkins/workspace/fabric-android-deploy/sdk/kits/tweetui/src/main/res/values-en-rSS/strings.xml -->
-    <eat-comment/>
+    <eat-comment />
+
     <string name="tw__loading_tweet">[[60974]] Loading Tweet</string>
     <string name="tw__relative_date_format_long">[[59353]] MM/dd/yy</string>
     <string name="tw__relative_date_format_short">[[59352]] MMM dd</string>
@@ -23,4 +26,5 @@
     <string name="tw__share_subject_format">[[60978]] Tweet from %1$s (\@%2$s)</string>
     <string name="tw__share_tweet">[[60976]] Share Tweet</string>
     <string name="tw__tweet_content_description">[[60975]] %1$s. %2$s. %3$s.</string>
+
 </resources>

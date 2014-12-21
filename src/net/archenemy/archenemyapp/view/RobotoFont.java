@@ -7,10 +7,11 @@ import android.widget.TextView;
 
 /**
  * Custom TextView using non-standard types of Roboto
+ * 
  * @author chiljagossow
- *
+ * 
  */
-public class RobotoFont  extends TextView {
+public class RobotoFont extends TextView {
 
   public RobotoFont(Context context) {
     super(context);
@@ -28,13 +29,16 @@ public class RobotoFont  extends TextView {
   public void setTypeface(Typeface tf, int style) {
     switch (style) {
       case Typeface.BOLD:
-        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Black.ttf"));
+        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(),
+            "fonts/Roboto-Black.ttf"));
         break;
       case Typeface.ITALIC:
-        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-LightItalic.ttf"));
+        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(),
+            "fonts/Roboto-LightItalic.ttf"));
         break;
       default:
-        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Medium.ttf"));
+        super.setTypeface(Typeface.createFromAsset(getContext().getAssets(),
+            "fonts/Roboto-Medium.ttf"));
     }
   }
 }

@@ -9,18 +9,20 @@ import com.twitter.sdk.android.core.TwitterCore;
 import io.fabric.sdk.android.Fabric;
 
 /**
- * <p>Manager for social media provider SDK</p>
- *
+ * <p>
+ * Initializes social media provider SDK.
+ * </p>
+ * 
  * @author chiljagossow
  */
 public class SocialMediaApplication extends Application {
 
-	@Override
+  @Override
   public void onCreate() {
-        super.onCreate();
-  	final TwitterAuthConfig authConfig =
-  			 new TwitterAuthConfig(TwitterAdapter.KEY, TwitterAdapter.SECRET);
-  	Fabric.with(this, new Twitter(authConfig));
-  	Fabric.with(this, new TwitterCore(authConfig), new Twitter(authConfig));
-	}
+    super.onCreate();
+    final TwitterAuthConfig authConfig = new TwitterAuthConfig(TwitterAdapter.getKey(this),
+        TwitterAdapter.getSecret(this));
+    Fabric.with(this, new Twitter(authConfig));
+    Fabric.with(this, new TwitterCore(authConfig), new Twitter(authConfig));
+  }
 }
