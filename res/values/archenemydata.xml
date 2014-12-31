@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string-array name="social_media_user_names">
-    <item>Arch Enemy</item>
-    <item>Alissa White-Gluz</item>
-    <item>Michael Amott</item>
-    <item>Jeff Loomis</item>
-    <item>Daniel Erlandsson</item>
-  </string-array>
-  
-  <string-array name="twitter_user_ids">
-    <item>19564489</item>
-    <item>383472626</item>
-    <item>88349752</item>
-    <item>72609295</item>
-    <item>229033478</item>
-  </string-array>
-  
-  <string-array name="facebook_user_ids">
-    <item>142695605765331</item>
-    <item>49373264983</item>
-    <item>116270908441437</item>
-    <item>100409503356619</item>
-    <item>314969645204287</item>
-  </string-array>
-  
-  <string-array name="preference_keys">
-    <item></item>
-    <item>pref_key_alissa_white_gluz</item>
-    <item>pref_key_michael_amott</item>
-    <item>pref_key_jeff_loomis</item>
-    <item>pref_key_daniel_erlandsson</item>
-  </string-array>
-  
+    <string-array name="social_media_user_names">
+        <item>Arch Enemy</item>
+        <item>Alissa White-Gluz</item>
+        <item>Michael Amott</item>
+        <item>Jeff Loomis</item>
+        <item>Daniel Erlandsson</item>
+    </string-array>
+    <string-array name="twitter_user_ids">
+        <item>19564489</item>
+        <item>383472626</item>
+        <item>88349752</item>
+        <item>72609295</item>
+        <item>229033478</item>
+    </string-array>
+    <string-array name="facebook_user_ids">
+        <item>142695605765331</item>
+        <item>49373264983</item>
+        <item>116270908441437</item>
+        <item>100409503356619</item>
+        <item>314969645204287</item>
+    </string-array>
+    <string-array name="preference_keys">
+        <item></item>
+        <item>pref_key_alissa_white_gluz</item>
+        <item>pref_key_michael_amott</item>
+        <item>pref_key_jeff_loomis</item>
+        <item>pref_key_daniel_erlandsson</item>
+    </string-array>
+
 </resources>

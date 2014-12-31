@@ -3,9 +3,7 @@ package net.archenemy.archenemyapp.presenter;
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.Constants;
 import net.archenemy.archenemyapp.model.TwitterAdapter;
-import net.archenemy.archenemyapp.model.TwitterAdapter.TwitterLoginCallback;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
@@ -57,14 +54,12 @@ public class TwitterAccountFragment extends AccountFragment implements
         builder.create().show();
 
       } else {
-        TwitterAdapter.getInstance().logIn(getActivity(), TwitterAccountFragment.this);
+        TwitterAdapter.getInstance().logIn(getActivity(), BackgroundWorkerFragment.getInstance());
       }
     }
   }
 
   public static final String TAG = "TwitterAccountFragment";
-
-  private TwitterLoginCallback onLoginListener;
 
   @Override
   public int getIconResId() {
@@ -84,17 +79,6 @@ public class TwitterAccountFragment extends AccountFragment implements
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    try {
-      onLoginListener = (TwitterLoginCallback) activity;
-    }
-    catch (ClassCastException e) {
-      throw new ClassCastException(activity.toString() + " must implement OnTwitterLoginListener");
-    }
-  }
-
-  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     providerAdapter = TwitterAdapter.getInstance();
@@ -104,31 +88,16 @@ public class TwitterAccountFragment extends AccountFragment implements
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
     super.onCreateView(inflater, container, savedInstanceState);
-    View view = inflater.inflate(R.layout.twitter_account_fragment, container, false);
+    view = inflater.inflate(R.layout.twitter_account_fragment, container, false);
 
     loginButton = (Button) view.findViewById(R.id.twitterButton);
     loginButton.setOnClickListener(new OnClickListener());
+    headerText = (TextView) view.findViewById(R.id.headerText);
+    userNameView = (TextView) view.findViewById(R.id.userNameView);
+    subtext = (TextView) view.findViewById(R.id.subTextView);
 
-    text = (FrameLayout) view.findViewById(R.id.text);
-
-    if (showHeader) {
-      View accountInfoView = inflater.inflate(R.layout.account_header, null);
-      headerText = (TextView) accountInfoView.findViewById(R.id.headerText);
-      headerText.setText(R.string.twitter_login_header);
-      text.addView(accountInfoView, 0, new ViewGroup.LayoutParams(
-          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
-
-    if (showUser) {
-      View userInfoView = inflater.inflate(R.layout.account_user, null);
-      userNameView = (TextView) userInfoView.findViewById(R.id.userNameView);
-      subtext = (TextView) userInfoView.findViewById(R.id.subTextView);
-      if (savedInstanceState != null) {
-        name = savedInstanceState.getString(Constants.TWITTER_USER_NAME, name);
-        userNameView.setText(name);
-      }
-      text.addView(userInfoView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-          ViewGroup.LayoutParams.MATCH_PARENT));
+    if (savedInstanceState != null) {
+      name = savedInstanceState.getString(Constants.TWITTER_USER_NAME, name);
     }
 
     return view;
@@ -143,18 +112,23 @@ public class TwitterAccountFragment extends AccountFragment implements
   @Override
   public void onTwitterLogin() {
     setLoggedIn();
-    onLoginListener.onTwitterLogin();
   }
 
   @Override
   protected void setLoggedIn() {
-    if (showUser) {
-      super.setLoggedIn();
-      if (Utility.isConnectedToNetwork(getActivity(), false)
-          && TwitterAdapter.getInstance().isLoggedIn()) {
-        name = TwitterAdapter.getInstance().getUserName();
-        userNameView.setText(name);
-      }
+    super.setLoggedIn();
+    if (Utility.isConnectedToNetwork(getActivity(), false)
+        && TwitterAdapter.getInstance().isLoggedIn()) {
+      name = TwitterAdapter.getInstance().getUserName();
+      userNameView.setText(name);
+    }
+  }
+
+  @Override
+  protected void setLoggedOut() {
+    super.setLoggedOut();
+    if (headerText != null) {
+      headerText.setText(R.string.twitter_login_header);
     }
   }
 }

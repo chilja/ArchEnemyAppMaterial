@@ -28,7 +28,6 @@ import com.facebook.widget.WebDialog.OnCompleteListener;
 public abstract class FacebookActivity extends ActionBarActivity implements
     FacebookAdapter.OnFacebookLoginListener {
 
-  protected FacebookAdapter facebookAdapter;
   protected boolean pendingLogin = false;
 
   // Facebook lifecycle helper
@@ -75,6 +74,34 @@ public abstract class FacebookActivity extends ActionBarActivity implements
   }
 
   /**
+   * Starts share dialog using Facebook Native App if installed, feed dialog
+   * otherwise
+   * 
+   * @param shareParams
+   *          Bundle with share parameters name, link, caption, description,
+   *          picture
+   */
+  public void startShareDialog(Bundle shareParams) {
+    if (FacebookDialog.canPresentShareDialog(this, FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
+
+      // Publish the post using the Native Facebook Share Dialog
+      final FacebookDialog.ShareDialogBuilder shareDialogBuilder = new FacebookDialog.ShareDialogBuilder(
+          this);
+      shareDialogBuilder.setName(shareParams.getString("name"));
+      shareDialogBuilder.setLink(shareParams.getString("link"));
+      shareDialogBuilder.setCaption(shareParams.getString("caption"));
+      shareDialogBuilder.setDescription(shareParams.getString("description"));
+      shareDialogBuilder.setPicture(shareParams.getString("picture"));
+      final FacebookDialog shareDialog = shareDialogBuilder.build();
+      shareDialog.present();
+
+    } else {
+      // Publish the post using the custom share dialog
+      publishFeedDialog(shareParams, this);
+    }
+  }
+
+  /**
    * Publishes story to user timeline via custom feed dialog
    * 
    * @param params
@@ -115,34 +142,6 @@ public abstract class FacebookActivity extends ActionBarActivity implements
 
     if (!FacebookAdapter.getInstance().isLoggedIn()) {
       Toast.makeText(context, R.string.fb_share_error_log_in, Toast.LENGTH_LONG).show();
-    }
-  }
-
-  /**
-   * Starts share dialog using Facebook Native App if installed, feed dialog
-   * otherwise
-   * 
-   * @param shareParams
-   *          Bundle with share parameters name, link, caption, description,
-   *          picture
-   */
-  public void startShareDialog(Bundle shareParams) {
-    if (FacebookDialog.canPresentShareDialog(this, FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-
-      // Publish the post using the Native Facebook Share Dialog
-      final FacebookDialog.ShareDialogBuilder shareDialogBuilder = new FacebookDialog.ShareDialogBuilder(
-          this);
-      shareDialogBuilder.setName(shareParams.getString("name"));
-      shareDialogBuilder.setLink(shareParams.getString("link"));
-      shareDialogBuilder.setCaption(shareParams.getString("caption"));
-      shareDialogBuilder.setDescription(shareParams.getString("description"));
-      shareDialogBuilder.setPicture(shareParams.getString("picture"));
-      final FacebookDialog shareDialog = shareDialogBuilder.build();
-      shareDialog.present();
-
-    } else {
-      // Publish the post using the custom share dialog
-      publishFeedDialog(shareParams, this);
     }
   }
 
@@ -233,8 +232,9 @@ public abstract class FacebookActivity extends ActionBarActivity implements
       }
     }
 
-    // Show the error 
-    new AlertDialog.Builder(this).setPositiveButton(R.string.fb_error_dialog_button_text, listener)
+    // Show the error
+    new AlertDialog.Builder(this).setIcon(R.drawable.facebook_medium)
+        .setPositiveButton(R.string.fb_error_dialog_button_text, listener)
         .setTitle(R.string.fb_error_dialog_title).setMessage(dialogBody).show();
   }
 

@@ -38,6 +38,8 @@ public class FacebookPageFragment extends PageFragment implements Serializable {
    */
   public interface OnScrolledListener {
     public void onFacebookPageScrolled(int scrollY, int dy);
+
+    public void onFacebookPageScrollStateChanged(int scrollY, int dy);
   }
 
   public static final String TAG = "FacebookPageFragment";
@@ -109,5 +111,10 @@ public class FacebookPageFragment extends PageFragment implements Serializable {
   @Override
   protected void onScrolled(RecyclerView recyclerView, int dy) {
     onScrolledListener.onFacebookPageScrolled(getScrollY(), dy);
+  }
+
+  @Override
+  protected void onScrollStateChanged(RecyclerView recyclerView, int dy) {
+    onScrolledListener.onFacebookPageScrollStateChanged(getScrollY(), dy);
   }
 }

@@ -12,7 +12,8 @@ import java.util.ArrayList;
 
 /**
  * <p>
- * Entity that holds data from social media, e.g. IDs, feeds and preference keys.
+ * Entity that holds data from social media, e.g. IDs, feeds and preference
+ * keys.
  * </p>
  * 
  * @author chiljagossow
@@ -23,7 +24,6 @@ public class SocialMediaUser {
   private final Long twitterUserId;
   private final String facebookUserId;
   private final String prefKey;
-  private final int userId;
   private GraphUser facebookUser;
   private User twitterUser;
 
@@ -45,11 +45,9 @@ public class SocialMediaUser {
    * @param facebookUserId
    *          user id of Facebook account (numeric)
    */
-  public SocialMediaUser(String name, String prefKey, int userId, Long twitterUserId,
-      String facebookUserId) {
+  public SocialMediaUser(String name, String prefKey, Long twitterUserId, String facebookUserId) {
 
     this.name = name;
-    this.userId = userId;
     this.prefKey = prefKey;
     this.twitterUserId = twitterUserId;
     this.facebookUserId = facebookUserId;
@@ -81,10 +79,6 @@ public class SocialMediaUser {
 
   public Long getTwitterUserId() {
     return twitterUserId;
-  }
-
-  public int getUserId() {
-    return userId;
   }
 
   /**

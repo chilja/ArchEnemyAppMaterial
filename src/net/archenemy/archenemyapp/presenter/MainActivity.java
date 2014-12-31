@@ -2,11 +2,7 @@ package net.archenemy.archenemyapp.presenter;
 
 import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.Constants;
-import net.archenemy.archenemyapp.model.DataAdapter;
 import net.archenemy.archenemyapp.model.FacebookAdapter;
-import net.archenemy.archenemyapp.model.Post;
-import net.archenemy.archenemyapp.model.SocialMediaUser;
-import net.archenemy.archenemyapp.model.Tweet;
 import net.archenemy.archenemyapp.model.TwitterAdapter;
 
 import android.animation.Animator;
@@ -27,53 +23,45 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.facebook.FacebookRequestError;
-import com.facebook.model.GraphUser;
-
-import twitter4j.User;
-
-import java.util.ArrayList;
+import android.widget.LinearLayout.LayoutParams;
 
 /**
- * Main Activity of ArchEnemyApp. Manages which fragment will be displayed and
- * coordinates calls to the provider adapters.
+ * Main Activity of ArchEnemyApp. Manages which fragment will be displayed,
+ * controls animation, and coordinates feed requests.
  * 
  * @author chiljagossow
  * 
  */
-public class MainActivity extends FacebookActivity implements TwitterAdapter.FeedCallback,
-    TwitterAdapter.UserCallback, TwitterAdapter.TwitterLoginCallback,
+public class MainActivity extends FacebookActivity implements
     TwitterPageFragment.OnRefreshFeedListener, TwitterPageFragment.OnScrolledListener,
-    FacebookAdapter.FeedCallback, FacebookAdapter.UserCallback,
     FacebookAdapter.OnFacebookLoginListener, FacebookPageFragment.OnRefreshFeedListener,
-    FacebookPageFragment.OnScrolledListener {
+    FacebookPageFragment.OnScrolledListener, BackgroundWorkerFragment.ProviderRequestCallback {
 
-  private static final String TAG = "MainActivity";
+  public static final String TAG = "MainActivity";
 
   // menu positions = main fragment index
   private static final int FACEBOOK = 0;
   private static final int TWITTER = 1;
   private static final int FACEBOOK_LOGIN = 3;
   private static final int TWITTER_LOGIN = 4;
-  private static int selectedMenuItem;// initial selection
+  private static int selectedMenuItem;
 
   private boolean isResumed = false;
-
-  private DataAdapter dataAdapter;
 
   private Toolbar toolbar;
 
   private FrameLayout tabsBackground;
+  private FrameLayout background;
   private LinearLayout tabs;
   private ImageView headerImage;
+  private FrameLayout fragmentContainer;
 
   private int appBarHeight;
   private int tabHeight;
   private Integer maxTabTranslationY;
   private Integer currentTabTranslationY;
-  private Integer facebookScrollY = 0;
-  private Integer twitterScrollY = 0;
+
+  private static final float maxAlpha = 0.8F;
 
   // fragments
   private FacebookPageFragment facebookPageFragment;
@@ -81,23 +69,23 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   private TwitterPageFragment twitterPageFragment;
   private TwitterAccountFragment twitterAccountFragment;
 
+  private BackgroundWorkerFragment workerFragment;
+
   // Twitter
-  private TwitterAdapter twitterAdapter;
   // flag to prevent repeated automatic refresh
   private static boolean twitterIsRefreshed = false;
-  private static Integer twitterCallbackCount = 0;
-  private static Integer twitterCallbackTotal = 0;;
   private FrameLayout twitterTab;
   private ImageView twitterIcon;
 
   // Facebook
-  private FacebookAdapter facebookAdapter;
   // flag to prevent repeated automatic refresh
   private static boolean facebookIsRefreshed = false;
-  private static Integer facebookCallbackCount = 0;
-  private static Integer facebookCallbackTotal = 0;
   private FrameLayout facebookTab;
   private ImageView facebookIcon;
+
+  public int getContainerWidth() {
+    return fragmentContainer.getWidth();
+  }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,74 +96,21 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   }
 
   @Override
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-    // Checks the orientation of the screen
-    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      maxTabTranslationY = getResources().getDimensionPixelSize(R.dimen.max_tab_translation_y_land);
-    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-      maxTabTranslationY = getResources().getDimensionPixelSize(R.dimen.max_tab_translation_y);
-    }
-    switch (selectedMenuItem) {
-      case TWITTER:
-        setCurrentTabTranslationY(twitterScrollY, false);
-        break;
-      case FACEBOOK:
-        setCurrentTabTranslationY(facebookScrollY, false);
-        break;
-    }
-
-    updateTabsBackgroundAlpha();
-    updateToolbar();
-    translateTabs();
-  }
-
-  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.main_activity);
+    assignViews();
 
-    facebookIcon = (ImageView) findViewById(R.id.facebookIcon);
-    facebookTab = (FrameLayout) findViewById(R.id.facebookTab);
-    facebookTab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View arg0) {
-        showMenuItem(FACEBOOK);
-      }
-    });
-
-    twitterIcon = (ImageView) findViewById(R.id.twitterIcon);
-    twitterTab = (FrameLayout) findViewById(R.id.twitterTab);
-    twitterTab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View arg0) {
-        showMenuItem(TWITTER);
-      }
-    });
-
-    facebookAdapter = FacebookAdapter.getInstance();
-    twitterAdapter = TwitterAdapter.getInstance();
-    dataAdapter = DataAdapter.getInstance();
-
-    if (savedInstanceState != null) {
-      // try to retrieve fragments
-      twitterPageFragment = (TwitterPageFragment) getSupportFragmentManager().findFragmentByTag(
-          TwitterPageFragment.TAG);
-      facebookPageFragment = (FacebookPageFragment) getSupportFragmentManager().findFragmentByTag(
-          FacebookPageFragment.TAG);
-      twitterAccountFragment = (TwitterAccountFragment) getSupportFragmentManager()
-          .findFragmentByTag(TwitterAccountFragment.TAG);
-      facebookAccountFragment = (FacebookAccountFragment) getSupportFragmentManager()
-          .findFragmentByTag(FacebookAccountFragment.TAG);
-
-      twitterIsRefreshed = savedInstanceState.getBoolean(Constants.TWITTER_IS_REFRESHED, false);
-      facebookIsRefreshed = savedInstanceState.getBoolean(Constants.FACEBOOK_IS_REFRESHED, false);
-      twitterCallbackCount = savedInstanceState.getInt(Constants.TWITTER_CALLBACK_COUNT, 0);
-      facebookCallbackCount = savedInstanceState.getInt(Constants.FACEBOOK_CALLBACK_COUNT, 0);
-      twitterCallbackTotal = savedInstanceState.getInt(Constants.TWITTER_CALLBACK_TOTAL, 0);
-      facebookCallbackTotal = savedInstanceState.getInt(Constants.FACEBOOK_CALLBACK_TOTAL, 0);
-    }
+    twitterPageFragment = (TwitterPageFragment) getSupportFragmentManager().findFragmentByTag(
+        TwitterPageFragment.TAG);
+    facebookPageFragment = (FacebookPageFragment) getSupportFragmentManager().findFragmentByTag(
+        FacebookPageFragment.TAG);
+    twitterAccountFragment = (TwitterAccountFragment) getSupportFragmentManager()
+        .findFragmentByTag(TwitterAccountFragment.TAG);
+    facebookAccountFragment = (FacebookAccountFragment) getSupportFragmentManager()
+        .findFragmentByTag(FacebookAccountFragment.TAG);
+    workerFragment = (BackgroundWorkerFragment) getSupportFragmentManager().findFragmentByTag(
+        BackgroundWorkerFragment.TAG);
 
     // initialize fragments
     if (twitterPageFragment == null) {
@@ -188,115 +123,69 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
 
     if (twitterAccountFragment == null) {
       twitterAccountFragment = new TwitterAccountFragment();
-      twitterAccountFragment.showHeader(true);
-      twitterAccountFragment.showUser(false);
     }
 
     if (facebookAccountFragment == null) {
       facebookAccountFragment = new FacebookAccountFragment();
-      facebookAccountFragment.showHeader(true);
-      facebookAccountFragment.showUser(false);
     }
 
-    toolbar = (Toolbar) findViewById(R.id.toolbar);
-    // no title
-    toolbar.setTitle("");
-    setSupportActionBar(toolbar);
-
-    tabs = (LinearLayout) findViewById(R.id.tabs);
-    tabsBackground = (FrameLayout) findViewById(R.id.tabsBackground);
-
-    headerImage = (ImageView) findViewById(R.id.headerImage);
-    int width = getResources().getDisplayMetrics().widthPixels;
-    int height = (width * 3) / 4;
-    BitmapUtility.loadBitmap(this, R.drawable.band, headerImage, width, height);
+    if (workerFragment == null) {
+      workerFragment = BackgroundWorkerFragment.getInstance();
+      getSupportFragmentManager().beginTransaction()
+          .add(workerFragment, BackgroundWorkerFragment.TAG).commit();
+    }
 
     initTranslationYValues();
 
-    getFacebookUsers();
-    getTwitterUsers();
-
     if (savedInstanceState != null) {
       selectedMenuItem = savedInstanceState.getInt(Constants.MENU_ITEM);
+      twitterIsRefreshed = savedInstanceState.getBoolean(Constants.TWITTER_IS_REFRESHED, false);
+      facebookIsRefreshed = savedInstanceState.getBoolean(Constants.FACEBOOK_IS_REFRESHED, false);
+      currentTabTranslationY = savedInstanceState.getInt(Constants.TAB_TRANSLATION, -tabHeight);
     } else {
       // get start screen from preferences
       SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
       String startScreen = sharedPreferences
           .getString(Constants.PREF_KEY_START, Constants.FACEBOOK);
       selectedMenuItem = (Constants.FACEBOOK.equals(startScreen)) ? FACEBOOK : TWITTER;
+      currentTabTranslationY = maxTabTranslationY;
+      getFacebookUsers();
+      getTwitterUsers();
     }
+
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see net.archenemy.archenemyapp.presenter.BackgroundWorkerFragment.
+   * ProviderRequestCallback#onFacebookFeedReceived()
+   */
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-    // cancel background threads
-    BitmapUtility.onDestroy();
-    twitterAdapter.onDestroy();
+  public void onFacebookFeedReceived() {
+    refreshFacebookMenuItem();
+    Log.i(TAG, "Received facebook feeds");
   }
 
   @Override
   public void onFacebookLogin() {
     // callback from Facebook log in process
-    Log.i(TAG, "Facebook session opened");
-    if (facebookAdapter.isLoggedIn()) {
-      facebookIsRefreshed = false;
-      refreshFacebookMenuItem();
-      refreshFacebookFeed();
-    }
+    refreshFacebookMenuItem();
+    facebookIsRefreshed = false;
+    refreshFacebookFeed();
   }
 
   @Override
   public void onFacebookPageScrolled(int scrollY, int dy) {
-    synchronized (facebookScrollY) {
-      facebookScrollY = scrollY;
-      onPageScrolled(facebookScrollY, dy);
+    if (selectedMenuItem == FACEBOOK) {
+      onPageScrolled(scrollY, dy);
     }
   }
 
-  // Facebook feed callback
   @Override
-  public void onFeedRequestCompleted(ArrayList<Post> posts, String id, FacebookRequestError error) {
-    if (error != null) {
-      handleError(error);
-    }
-    synchronized (facebookCallbackCount) {
-      if ((posts != null) && (id != null) && (posts.size() > 0)) {
-
-        for (SocialMediaUser user : dataAdapter.getEnabledSocialMediaUsers(this)) {
-          if (id.equals(user.getFacebookUserId())) {
-            user.setPosts(posts);
-            break;
-          }
-        }
-      }
-
-      facebookCallbackCount += 1;
-      if (facebookCallbackCount == facebookCallbackTotal) {
-        refreshFacebookMenuItem();
-      }
-
-      Log.i(TAG, "Received facebook feed for " + id);
-    }
-  }
-
-  // Twitter feed callback
-  @Override
-  public void onFeedRequestCompleted(ArrayList<Tweet> tweets, Long id) {
-    synchronized (twitterCallbackCount) {
-      if ((tweets != null) && (id != null) && (tweets.size() > 0)) {
-        for (SocialMediaUser user : dataAdapter.getEnabledSocialMediaUsers(this)) {
-          if (id.equals(user.getTwitterUserId())) {
-            user.setTweets(tweets);
-            break;
-          }
-        }
-      }
-      twitterCallbackCount += 1;
-      if (twitterCallbackCount == twitterCallbackTotal) {
-        refreshTwitterMenuItem();
-      }
-      Log.i(TAG, "Received twitter feed for " + id.toString());
+  public void onFacebookPageScrollStateChanged(int scrollY, int dy) {
+    if (selectedMenuItem == FACEBOOK) {
+      onPageScrollStateChanged(scrollY, dy);
     }
   }
 
@@ -366,118 +255,84 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    isResumed = true;
-
-    twitterScrollY = twitterPageFragment.getScrollY();
-    facebookScrollY = facebookPageFragment.getScrollY();
-
-    switch (selectedMenuItem) {
-      case TWITTER:
-        setCurrentTabTranslationY(twitterScrollY, false);
-        break;
-      case FACEBOOK:
-        setCurrentTabTranslationY(facebookScrollY, false);
-        break;
-    }
-
-    showMenuItem(selectedMenuItem);
-    updateTabsBackgroundAlpha();
-    updateToolbar();
-    translateTabs();
-  }
-
-  @Override
-  public void onRrefeshTwitterFeed() {
+  public void onRefreshTwitterFeed() {
     twitterIsRefreshed = false;
     refreshTwitterFeed();
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    isResumed = true;
+    showMenuItem(selectedMenuItem);
+  }
+
+  @Override
   public void onSaveInstanceState(Bundle bundle) {
-    super.onSaveInstanceState(bundle);
     // save current state
+    bundle.putInt(Constants.TAB_TRANSLATION, currentTabTranslationY);
     bundle.putInt(Constants.MENU_ITEM, getVisibleMenuItem());
-    bundle.putInt(Constants.TWITTER_CALLBACK_COUNT, twitterCallbackCount);
-    bundle.putInt(Constants.FACEBOOK_CALLBACK_COUNT, facebookCallbackCount);
-    bundle.putInt(Constants.TWITTER_CALLBACK_TOTAL, twitterCallbackTotal);
-    bundle.putInt(Constants.FACEBOOK_CALLBACK_TOTAL, facebookCallbackTotal);
     bundle.putBoolean(Constants.TWITTER_IS_REFRESHED, twitterIsRefreshed);
     bundle.putBoolean(Constants.FACEBOOK_IS_REFRESHED, facebookIsRefreshed);
+
+    super.onSaveInstanceState(bundle);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see net.archenemy.archenemyapp.presenter.BackgroundWorkerFragment.
+   * ProviderRequestCallback#onTwitterFeedReceived()
+   */
+  @Override
+  public void onTwitterFeedReceived() {
+    refreshTwitterMenuItem();
+    Log.i(TAG, "Received twitter feeds");
   }
 
   @Override
   public void onTwitterLogin() {
-    // callback from Twitter login process
-    Log.i(TAG, "Twitter session opened");
-    if (twitterAdapter.isLoggedIn()) {
-      twitterIsRefreshed = false;
-      refreshTwitterMenuItem();
-      refreshTwitterFeed();
-    }
+    // callback from Twitter log in process
+    refreshTwitterMenuItem();
+    getTwitterUsers();
   }
 
   @Override
   public void onTwitterPageScrolled(int scrollY, int dy) {
-    synchronized (twitterScrollY) {
-      twitterScrollY = scrollY;
-      onPageScrolled(twitterScrollY, dy);
+    if (selectedMenuItem == TWITTER) {
+      Log.i(TAG, "twitter page scrolled " + scrollY);
+      onPageScrolled(scrollY, dy);
     }
   }
 
   @Override
-  public void onUserRequestCompleted(GraphUser graphUser, FacebookRequestError error) {
-    if (error != null) {
-      handleError(error);
-    }
-    String userId = graphUser.getId();
-    for (SocialMediaUser user : dataAdapter.getEnabledSocialMediaUsers(this)) {
-      if (user.getFacebookUserId().equals(userId)) {
-        user.setFacebookUser(graphUser);
-        facebookAdapter.makeFeedRequest(this, user.getFacebookUserId());
-        facebookCallbackTotal++;
-        break;
-      }
-    }
-  }
-
-  @Override
-  public void onUserRequestCompleted(User twitterUser) {
-    Long userId = twitterUser.getId();
-    for (SocialMediaUser user : dataAdapter.getEnabledSocialMediaUsers(this)) {
-      if (user.getTwitterUserId().equals(userId)) {
-        user.setTwitterUser(twitterUser);
-        twitterAdapter.makeFeedRequest(userId, this, this);
-        twitterCallbackTotal++;
-        break;
-      }
+  public void onTwitterPageScrollStateChanged(int scrollY, int dy) {
+    if (selectedMenuItem == TWITTER) {
+      onPageScrollStateChanged(scrollY, dy);
     }
   }
 
   private void animateHeaderTransition(int menuIndex, boolean showTabs) {
     if (isResumed) {
-      // set new tab translation
-      switch (menuIndex) {
-        case FACEBOOK:
-          facebookScrollY = facebookPageFragment.getScrollY();
-          setCurrentTabTranslationY(facebookScrollY, showTabs);
-          break;
-        case TWITTER:
-          twitterScrollY = twitterPageFragment.getScrollY();
-          setCurrentTabTranslationY(twitterScrollY, showTabs);
-      }
+
+      // tabs background alpha
+      float alpha = (float) (maxTabTranslationY - currentTabTranslationY) / (maxTabTranslationY);
 
       // background alpha
-      float alpha = (float) (maxTabTranslationY - currentTabTranslationY) / (maxTabTranslationY);
+      float backgroundAlpha = (alpha > maxAlpha) ? maxAlpha : alpha;
 
       // tool bar translation
       float translationY = toolbar.getTranslationY();
+
+      if (toolbar.getAnimation() != null) {
+        toolbar.getAnimation().cancel();
+      }
 
       // animations
       if (currentTabTranslationY > appBarHeight) {
         if (translationY < 0) {
           // show
+
           animateYTranslation(toolbar, 0, 300);
         }
       } else {
@@ -486,10 +341,10 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
           animateYTranslation(toolbar, -appBarHeight, 300);
         }
       }
-
-      animateYTranslation(tabs, currentTabTranslationY, 300);
-      animateYTranslation(tabsBackground, currentTabTranslationY - maxTabTranslationY, 300);
+      cancelTabsAnimation();
+      animateTabsTranslation();
       tabsBackground.animate().alpha(alpha).setDuration(300).start();
+      background.animate().alpha(backgroundAlpha).setDuration(300).start();
     }
   }
 
@@ -502,36 +357,121 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
 
   private void animateYTranslation(final View view, final int y, int duration) {
 
-    if (view.getAnimation() == null) {
+    if (view.getAnimation() != null) {
+      return;
+    }
 
-      AnimatorListener listener = new AnimatorListener() {
-        @Override
-        public void onAnimationCancel(Animator animation) {}
+    AnimatorListener listener = new AnimatorListener() {
+      @Override
+      public void onAnimationCancel(Animator animation) {
+        view.setTranslationY(y);
+      }
 
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          // make sure the animation ends in the correct end position
-          if (view == tabs) {
-            view.setTranslationY(currentTabTranslationY);
-            return;
-          }
-          if (view == tabsBackground) {
-            view.setTranslationY(currentTabTranslationY - maxTabTranslationY);
-            return;
-          }
-          view.setTranslationY(y);
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        // make sure the animation ends in the correct end position
+        if (view == tabs) {
+          view.setTranslationY(currentTabTranslationY);
+          return;
         }
+        if (view == tabsBackground) {
+          view.setTranslationY(currentTabTranslationY - maxTabTranslationY);
+          return;
+        }
+        view.setTranslationY(y);
+      }
 
-        @Override
-        public void onAnimationRepeat(Animator animation) {}
+      @Override
+      public void onAnimationRepeat(Animator animation) {}
 
-        @Override
-        public void onAnimationStart(Animator animation) {}
+      @Override
+      public void onAnimationStart(Animator animation) {}
 
-      };
+    };
 
-      view.animate().translationY(y).setInterpolator(new AccelerateDecelerateInterpolator())
-          .setDuration(duration).setListener(listener).start();
+    view.animate().translationY(y).setInterpolator(new AccelerateDecelerateInterpolator())
+        .setDuration(duration).setListener(listener).start();
+
+  }
+
+  /**
+   * 
+   */
+  private void assignViews() {
+    setContentView(R.layout.main_activity);
+
+    facebookIcon = (ImageView) findViewById(R.id.facebookIcon);
+    facebookTab = (FrameLayout) findViewById(R.id.facebookTab);
+    facebookTab.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View arg0) {
+        currentTabTranslationY = calculateTabTranslationY(facebookPageFragment.getScrollY(), false);
+        showMenuItem(FACEBOOK);
+      }
+    });
+
+    twitterIcon = (ImageView) findViewById(R.id.twitterIcon);
+    twitterTab = (FrameLayout) findViewById(R.id.twitterTab);
+    twitterTab.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View arg0) {
+        currentTabTranslationY = calculateTabTranslationY(twitterPageFragment.getScrollY(), false);
+        showMenuItem(TWITTER);
+      }
+    });
+
+    toolbar = (Toolbar) findViewById(R.id.toolbar);
+    // no title
+    toolbar.setTitle("");
+    setSupportActionBar(toolbar);
+
+    tabs = (LinearLayout) findViewById(R.id.tabs);
+    tabsBackground = (FrameLayout) findViewById(R.id.tabsBackground);
+    background = (FrameLayout) findViewById(R.id.background);
+
+    fragmentContainer = (FrameLayout) findViewById(R.id.fragmentContainer);
+
+    headerImage = (ImageView) findViewById(R.id.headerImage);
+    int width = 0;
+    int height = 0;
+    // in portrait orientation, display band picture in 16:9 format
+    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+      width = getResources().getDisplayMetrics().widthPixels;
+      height = (width * 9) / 16;
+    } else {
+      // in landscape orientation, display band picture full screen
+      width = getResources().getDisplayMetrics().widthPixels;
+      height = getResources().getDisplayMetrics().heightPixels;
+    }
+    LayoutParams params = new LayoutParams(width, height);
+    headerImage.setLayoutParams(params);
+    BitmapUtility.loadBitmap(this, R.drawable.band, headerImage, width, height);
+
+  }
+
+  private Integer calculateTabTranslationY(int scrollY, boolean showTabs) {
+    int minTranslation = -tabHeight;
+    if (showTabs) {
+      // scrolling up -> show tabs
+      minTranslation = 0;
+    }
+    if ((maxTabTranslationY + scrollY) <= minTranslation) {
+      return minTranslation;
+    }
+    if ((maxTabTranslationY + scrollY) < 0) {
+      // show
+      return 0;
+    }
+    // translate
+    return maxTabTranslationY + scrollY;
+  }
+
+  private void cancelTabsAnimation() {
+    if (tabs.getAnimation() != null) {
+      tabs.getAnimation().cancel();
+    }
+    if (tabsBackground.getAnimation() != null) {
+      tabsBackground.getAnimation().cancel();
     }
   }
 
@@ -551,7 +491,7 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
 
     switch (menuIndex) {
       case FACEBOOK:
-        if (facebookAdapter.hasValidToken()) {
+        if (FacebookAdapter.getInstance().hasValidToken()) {
           index = FACEBOOK;
         } else {
           index = FACEBOOK_LOGIN;
@@ -559,7 +499,7 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
         break;
 
       case TWITTER:
-        if (twitterAdapter.isLoggedIn()) {
+        if (TwitterAdapter.getInstance().isLoggedIn()) {
           index = TWITTER;
         } else {
           index = TWITTER_LOGIN;
@@ -576,12 +516,8 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   private void getFacebookUsers() {
     // check network connection
     if (Utility.isConnectedToNetwork(this, true)) {
-      if (!facebookIsRefreshed && facebookAdapter.isLoggedIn()) {
-        for (SocialMediaUser member : dataAdapter.getEnabledSocialMediaUsers(this)) {
-          if (member.getFacebookUser() == null) {
-            facebookAdapter.makeUserRequest(this, member.getFacebookUserId());
-          }
-        }
+      if (!facebookIsRefreshed && FacebookAdapter.getInstance().isLoggedIn()) {
+        workerFragment.requestFacebookUsers();
       }
     }
   }
@@ -610,12 +546,8 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   private void getTwitterUsers() {
     // check network connection
     if (Utility.isConnectedToNetwork(this, true)) {
-      if (!twitterIsRefreshed && twitterAdapter.isLoggedIn()) {
-        for (SocialMediaUser member : dataAdapter.getEnabledSocialMediaUsers(this)) {
-          if (member.getTwitterUser() == null) {
-            twitterAdapter.makeUserRequest(member.getTwitterUserId(), this, this);
-          }
-        }
+      if (!twitterIsRefreshed && TwitterAdapter.getInstance().isLoggedIn()) {
+        workerFragment.requestTwitterUsers();
       }
     }
   }
@@ -649,15 +581,7 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   private void initTranslationYValues() {
     tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
     appBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_height);
-    switch (getResources().getConfiguration().orientation) {
-      case Configuration.ORIENTATION_LANDSCAPE:
-        maxTabTranslationY = getResources().getDimensionPixelSize(
-            R.dimen.max_tab_translation_y_land);
-        break;
-      default:
-        maxTabTranslationY = getResources().getDimensionPixelSize(R.dimen.max_tab_translation_y);
-    }
-    currentTabTranslationY = maxTabTranslationY;
+    maxTabTranslationY = getResources().getDimensionPixelSize(R.dimen.max_tab_translation_y);
   }
 
   private void onPageScrolled(Integer scrollY, int dy) {
@@ -666,8 +590,9 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
       showTabs = true;
     }
     int previousTabTranslation = currentTabTranslationY;
-    setCurrentTabTranslationY(scrollY, showTabs);
+    currentTabTranslationY = calculateTabTranslationY(scrollY, showTabs);
     updateTabsBackgroundAlpha();
+    updateBackgroundAlpha();
     updateToolbar();
     if (((previousTabTranslation == 0) && (currentTabTranslationY == -tabHeight))
         || ((previousTabTranslation == -tabHeight) && (currentTabTranslationY == 0))) {
@@ -675,22 +600,18 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
       animateTabsTranslation();
     } else if (previousTabTranslation != currentTabTranslationY) {
       // translation has changed
+      cancelTabsAnimation();
       translateTabs();
     }
   }
 
+  private void onPageScrollStateChanged(Integer scrollY, int dy) {}
+
   private void refreshFacebookFeed() {
     // check network connection
     if (Utility.isConnectedToNetwork(this, true)) {
-      if (!facebookIsRefreshed && facebookAdapter.isLoggedIn()) {
-
-        facebookCallbackCount = 0;
-        facebookCallbackTotal = 0;
-        for (SocialMediaUser member : dataAdapter.getEnabledSocialMediaUsers(this)) {
-          facebookAdapter.makeFeedRequest(this, member.getFacebookUserId());
-          facebookCallbackTotal += 1;
-        }
-
+      if (!facebookIsRefreshed && FacebookAdapter.getInstance().isLoggedIn()) {
+        workerFragment.requestFacebookFeed();
         // set flag
         facebookIsRefreshed = true;
         facebookPageFragment.setRefreshing(true);
@@ -699,27 +620,16 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   }
 
   private void refreshFacebookMenuItem() {
-    if (facebookCallbackCount == facebookCallbackTotal) {
-      if (getVisibleMenuItem() == FACEBOOK) {
-        showMenuItem(FACEBOOK);
-      }
-      facebookPageFragment.refresh();
-      facebookCallbackCount = facebookCallbackTotal = 0;
+    if (getVisibleMenuItem() == FACEBOOK) {
+      showMenuItem(FACEBOOK);
     }
   }
 
   private void refreshTwitterFeed() {
     // check network connection
     if (Utility.isConnectedToNetwork(this, true)) {
-      if (!twitterIsRefreshed && twitterAdapter.isLoggedIn()) {
-
-        twitterCallbackTotal = 0;
-        twitterCallbackCount = 0;
-        for (SocialMediaUser member : dataAdapter.getEnabledSocialMediaUsers(this)) {
-          twitterAdapter.makeFeedRequest(member.getTwitterUserId(), this, this);
-          twitterCallbackTotal += 1;
-        }
-
+      if (!twitterIsRefreshed && TwitterAdapter.getInstance().isLoggedIn()) {
+        workerFragment.requestTwitterFeed();
         // set flag
         twitterIsRefreshed = true;
         twitterPageFragment.setRefreshing(true);
@@ -730,33 +640,7 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
   private void refreshTwitterMenuItem() {
     if (getVisibleMenuItem() == TWITTER) {
       showMenuItem(TWITTER);
-    } else {
-      twitterPageFragment.refresh();
     }
-  }
-
-  private Integer setCurrentTabTranslationY(int scrollY, boolean showTabs) {
-    synchronized (currentTabTranslationY) {
-      int minTranslation = -tabHeight;
-      if (showTabs) {
-        // scrolling up -> show tabs
-        minTranslation = 0;
-      }
-      if ((maxTabTranslationY + scrollY) <= minTranslation) {
-        // hide
-        return currentTabTranslationY = minTranslation;
-      }
-      if ((maxTabTranslationY + scrollY) < 0) {
-        // show
-        return currentTabTranslationY = 0;
-      }
-      // translate
-      return currentTabTranslationY = maxTabTranslationY + scrollY;
-    }
-  }
-
-  private void setViewSelected(View view) {
-    view.setAlpha(1F);
   }
 
   private void setTabSelection(int menuIndex) {
@@ -771,6 +655,10 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
         break;
       default:
     }
+  }
+
+  private void setViewSelected(View view) {
+    view.setAlpha(1F);
   }
 
   private void setViewUnselected(View view) {
@@ -811,6 +699,19 @@ public class MainActivity extends FacebookActivity implements TwitterAdapter.Fee
     tabsBackground.setTranslationY(currentTabTranslationY - maxTabTranslationY);
   }
 
+  /**
+   * 
+   */
+  private void updateBackgroundAlpha() {
+    // background alpha
+    float alpha = (float) (maxTabTranslationY - currentTabTranslationY) / (maxTabTranslationY);
+    alpha = (alpha > maxAlpha) ? maxAlpha : alpha;
+    background.setAlpha(alpha);
+  }
+
+  /**
+   * 
+   */
   private void updateTabsBackgroundAlpha() {
     // animate container background
     float alpha = (float) (maxTabTranslationY - currentTabTranslationY) / (maxTabTranslationY);

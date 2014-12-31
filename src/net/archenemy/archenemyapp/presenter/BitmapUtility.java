@@ -135,8 +135,9 @@ public class BitmapUtility {
 
   /**
    * BitmapDrawable with reference to the async task loading the bitmap.
+   * 
    * @author chiljagossow
-   *
+   * 
    */
   static class AsyncDrawable extends BitmapDrawable {
     private final WeakReference<BitmapFromUrlTask> asyncTaskReference;
@@ -180,25 +181,28 @@ public class BitmapUtility {
    * @return bitmap as circle shape
    */
   public static Bitmap getCircleBitmap(Bitmap bitmap, int diameterPixels) {
-    final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
-        Config.ARGB_8888);
-    final Canvas canvas = new Canvas(output);
+    if (bitmap != null) {
+      final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
+          Config.ARGB_8888);
+      final Canvas canvas = new Canvas(output);
 
-    final int color = 0xff424242;
-    final Paint paint = new Paint();
-    final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-    final RectF rectF = new RectF(rect);
-    final float roundPx = diameterPixels;
+      final int color = 0xff424242;
+      final Paint paint = new Paint();
+      final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+      final RectF rectF = new RectF(rect);
+      final float roundPx = diameterPixels;
 
-    paint.setAntiAlias(true);
-    canvas.drawARGB(0, 0, 0, 0);
-    paint.setColor(color);
-    canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+      paint.setAntiAlias(true);
+      canvas.drawARGB(0, 0, 0, 0);
+      paint.setColor(color);
+      canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
 
-    paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-    canvas.drawBitmap(bitmap, rect, rect, paint);
+      paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+      canvas.drawBitmap(bitmap, rect, rect, paint);
 
-    return output;
+      return output;
+    }
+    return null;
   }
 
   /**
@@ -293,7 +297,7 @@ public class BitmapUtility {
       }
       tasks.clear();
     }
-    Log.i(TAG, "all async tasks cancelled");
+    Log.i(TAG, "All async tasks cancelled.");
   }
 
   private static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
@@ -304,8 +308,7 @@ public class BitmapUtility {
     }
   }
 
-  private static int calculateSampleSize(BitmapFactory.Options options, int reqWidth,
-      int reqHeight) {
+  private static int calculateSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 
     final int height = options.outHeight;
     final int width = options.outWidth;

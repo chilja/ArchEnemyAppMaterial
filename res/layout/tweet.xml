@@ -1,6 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingLeft="8dp"
     android:paddingRight="8dp" >
@@ -22,18 +24,18 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:minHeight="202dp"
+            android:layout_marginBottom="4dp"
             android:scaleType="centerCrop" />
 
         <ImageView
             android:id="@+id/avatarView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/avatar_diameter"
+            android:layout_height="@dimen/avatar_diameter"
             android:layout_below="@+id/imageView"
-            android:layout_margin="16dp" />
+            android:layout_margin="12dp" />
 
         <net.archenemy.archenemyapp.view.RobotoFont
             android:id="@+id/messageView"
@@ -41,11 +43,13 @@
             android:layout_below="@+id/imageView"
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@+id/avatarView"
-            android:paddingRight="16dp" />
+            android:maxWidth="380dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="12dp" />
 
         <TextView
             android:id="@+id/dateView"
-            style="@style/Timestamp"
+            style="@style/DateTime"
             android:layout_below="@+id/messageView"
             android:layout_gravity="bottom"
             android:layout_marginBottom="8dp"

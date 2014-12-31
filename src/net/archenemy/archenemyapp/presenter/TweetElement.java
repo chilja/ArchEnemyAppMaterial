@@ -4,12 +4,14 @@ import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.Tweet;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -33,21 +35,38 @@ public class TweetElement implements FeedElement {
     private RelativeLayout tweet;
     private View view;
 
-    public ViewHolder(View view) {
+    private int containerWidth;
+    private int imageHeight;
+    private int avatarDiameter;
+
+    private Context context;
+
+    private float density;
+
+    public ViewHolder(View view, int containerWidth, Context context) {
       super(view);
       this.view = view;
+      this.context = context;
+
       messageView = (TextView) view.findViewById(R.id.messageView);
       dateView = (TextView) view.findViewById(R.id.dateView);
       imageView = (ImageView) view.findViewById(R.id.imageView);
       avatarView = (ImageView) view.findViewById(R.id.avatarView);
       placeholder = (FrameLayout) view.findViewById(R.id.placeholder);
       tweet = (RelativeLayout) view.findViewById(R.id.tweet);
+
+      imageHeight = (containerWidth * 9) / 16; // image format 16:9
+      avatarDiameter = (int) context.getResources().getDimension(R.dimen.avatar_diameter);
     }
 
-    private void setAvatarUrl(String avatarUrl, float density, Activity activity) {
+    private void clearLink() {
+      view.setOnClickListener(null);
+    }
+
+    private void setAvatarUrl(String avatarUrl) {
       // URL provided? -> load bitmap
       if (avatarUrl != null) {
-        BitmapUtility.loadBitmap(activity, avatarUrl, avatarView, (int) (40 * density));
+        BitmapUtility.loadBitmap(context, avatarUrl, avatarView, avatarDiameter);
       }
     }
 
@@ -55,11 +74,18 @@ public class TweetElement implements FeedElement {
       dateView.setText(Utility.getDisplayDate(date));
     }
 
-    private void setImageUrl(String imageUrl, int width, Activity activity) {
+    private void setImageUrl(String imageUrl) {
+
       if (imageUrl != null) {
+        if (density == 0) {
+          density = context.getResources().getDisplayMetrics().density;
+        }
         // URL provided? -> load bitmap
         imageView.setImageBitmap(null);
-        BitmapUtility.loadBitmap(activity, imageUrl, imageView, width, width);
+        LayoutParams params = new LayoutParams(containerWidth, imageHeight);
+        imageView.setLayoutParams(params);
+
+        BitmapUtility.loadBitmap(context, imageUrl, imageView, containerWidth, imageHeight);
         imageView.setVisibility(View.VISIBLE);
 
       } else {
@@ -106,7 +132,9 @@ public class TweetElement implements FeedElement {
 
   /**
    * Creates a new instance
-   * @param tweet Tweet holding the data to be displayed
+   * 
+   * @param tweet
+   *          Tweet holding the data to be displayed
    */
   public TweetElement(Tweet tweet) {
     this.tweet = tweet;
@@ -121,16 +149,15 @@ public class TweetElement implements FeedElement {
 
       if (isPlaceholder) {
         myHolder.showPlaceholder();
+        myHolder.clearLink();
       }
 
       if (!isPlaceholder) {
-        float density = activity.getResources().getDisplayMetrics().density;
-        int width = activity.getResources().getDisplayMetrics().widthPixels;
         myHolder.showTweet();
         myHolder.setMessage(tweet.getMessage());
-        myHolder.setImageUrl(tweet.getImageUrl(), width, activity);
+        myHolder.setImageUrl(tweet.getImageUrl());
         myHolder.setDate(tweet.getDate());
-        myHolder.setAvatarUrl(tweet.getAvatarUrl(), density, activity);
+        myHolder.setAvatarUrl(tweet.getAvatarUrl());
         myHolder.setLink(tweet.getLink(), activity);
       }
     }

@@ -9,7 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
- * Abstract class with basic logic for account fragments.
+ * Abstract class with basic logic for account fragments, e.g. handling state of
+ * button and text.
  * 
  * @author chiljagossow
  * 
@@ -21,9 +22,7 @@ public abstract class AccountFragment extends BaseFragment {
   protected TextView headerText;
   protected Button loginButton;
   protected String name;
-  protected Boolean showHeader = false;
-  protected Boolean showUser = true;
-  protected View fragmentView;
+  protected View view;
   protected FrameLayout text;
 
   protected ProviderAdapter providerAdapter;
@@ -42,14 +41,15 @@ public abstract class AccountFragment extends BaseFragment {
       loginButton.setEnabled(true);
       loginButton.setText(R.string.button_log_out);
     }
-    if (showUser) {
-      if (subtext != null) {
-        subtext.setText(R.string.account_logged_in);
-        subtext.setTextColor(getResources().getColor(R.color.text_primary));
-      }
-      if (userNameView != null) {
-        userNameView.setText(name);
-      }
+    if (subtext != null) {
+      subtext.setText(R.string.account_logged_in);
+      subtext.setTextColor(getResources().getColor(R.color.text_primary));
+    }
+    if (userNameView != null) {
+      userNameView.setText(name);
+    }
+    if (headerText != null) {
+      headerText.setText(null);
     }
   }
 
@@ -62,14 +62,11 @@ public abstract class AccountFragment extends BaseFragment {
       loginButton.setEnabled(true);
       loginButton.setText(R.string.button_log_in);
     }
-    if (showUser) {
-      if (subtext != null) {
-        subtext.setText(R.string.account_logged_out);
-        subtext.setTextColor(getResources().getColor(R.color.text_primary));
-      }
-      if (userNameView != null) {
-        userNameView.setText(null);
-      }
+    if (subtext != null) {
+      subtext.setText(null);
+    }
+    if (userNameView != null) {
+      userNameView.setText(null);
     }
   }
 
@@ -80,11 +77,13 @@ public abstract class AccountFragment extends BaseFragment {
     if (loginButton != null) {
       loginButton.setEnabled(false);
     }
-    if (showUser) {
-      subtext.setText(R.string.account_offline);
-      subtext.setTextColor(getResources().getColor(R.color.accent));
+    if (subtext != null) {
+      subtext.setText(null);
+    }
+    if (userNameView != null) {
       userNameView.setText(null);
     }
+
   }
 
   protected void setOnline() {
@@ -109,23 +108,5 @@ public abstract class AccountFragment extends BaseFragment {
         setOffline();
       }
     }
-  }
-
-  /**
-   * Sets flag indicating whether login header should be shown.
-   * 
-   * @param showHeader
-   */
-  void showHeader(Boolean showHeader) {
-    this.showHeader = showHeader;
-  }
-
-  /**
-   * Set flag indicating whether user info should be shown.
-   * 
-   * @param showUserInfo
-   */
-  void showUser(Boolean showUserInfo) {
-    showUser = showUserInfo;
   }
 }

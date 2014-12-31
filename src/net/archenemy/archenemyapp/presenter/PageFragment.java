@@ -60,15 +60,19 @@ public abstract class PageFragment extends BaseFragment implements Serializable 
 
   class ScrollListener extends RecyclerView.OnScrollListener {
 
+    private int recentDy;
+
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
       super.onScrolled(recyclerView, dx, dy);
+      recentDy = dy;
       PageFragment.this.onScrolled(recyclerView, dy);
     }
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
       super.onScrollStateChanged(recyclerView, newState);
+      PageFragment.this.onScrollStateChanged(recyclerView, recentDy);
     }
   }
 
@@ -201,4 +205,6 @@ public abstract class PageFragment extends BaseFragment implements Serializable 
   protected abstract void onFeedRefresh();
 
   protected abstract void onScrolled(RecyclerView recyclerView, int dy);
+
+  protected abstract void onScrollStateChanged(RecyclerView recyclerView, int dy);
 }

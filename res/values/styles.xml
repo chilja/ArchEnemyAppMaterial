@@ -63,7 +63,7 @@
         <item name="android:textColorLink">@color/accent</item>
     </style>
 
-    <style name="Timestamp" parent="Text.Caption">
+    <style name="DateTime" parent="Text.Caption">
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:singleLine">true</item>
         <item name="android:gravity">bottom|left</item>
@@ -72,19 +72,6 @@
     <style name="Name" parent="Text.Caption">
         <item name="android:singleLine">true</item>
         <item name="android:gravity">bottom|left</item>
-    </style>
-
-    <style name="FacebookLogo">
-        <item name="android:src">@drawable/com_facebook_logo</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">top|center_horizontal</item>
-        <item name="android:gravity">top|center_horizontal</item>
-    </style>
-
-    <style name="FacebookLogo.Small">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">60dp</item>
     </style>
 
     <style name="Avatar">

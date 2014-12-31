@@ -8,8 +8,9 @@ import java.util.Date;
 /**
  * <p>
  * Entity holding data of Facebook post
+ * 
  * @author chiljagossow
- * </p>
+ *         </p>
  * 
  */
 public class Post {
@@ -23,13 +24,21 @@ public class Post {
 
   /**
    * Creates a new instance.
-   * @param userName Name to be displayed
-   * @param userId Facebook user ID
-   * @param message Message to be displayed
-   * @param date Date and time when post was published
-   * @param imageUrl URL to image to be displayed
-   * @param link Link associated with post
-   * @param postId unique and stable ID of post
+   * 
+   * @param userName
+   *          Name to be displayed
+   * @param userId
+   *          Facebook user ID
+   * @param message
+   *          Message to be displayed
+   * @param date
+   *          Date and time when post was published
+   * @param imageUrl
+   *          URL to image to be displayed
+   * @param link
+   *          Link associated with post
+   * @param postId
+   *          unique and stable ID of post
    */
   public Post(String userName, String userId, String message, Date date, String imageUrl,
       String link, String postId) {

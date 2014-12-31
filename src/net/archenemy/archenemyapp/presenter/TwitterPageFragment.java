@@ -29,7 +29,7 @@ public class TwitterPageFragment extends PageFragment implements Serializable {
    * Passes refresh event
    */
   public interface OnRefreshFeedListener {
-    public void onRrefeshTwitterFeed();
+    public void onRefreshTwitterFeed();
   }
 
   /**
@@ -37,6 +37,8 @@ public class TwitterPageFragment extends PageFragment implements Serializable {
    */
   public interface OnScrolledListener {
     public void onTwitterPageScrolled(int scrollY, int dy);
+
+    public void onTwitterPageScrollStateChanged(int scrollY, int dy);
   }
 
   private static final long serialVersionUID = 1L;
@@ -96,16 +98,28 @@ public class TwitterPageFragment extends PageFragment implements Serializable {
   @Override
   protected ViewHolder getViewHolder(ViewGroup parent) {
     View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tweet, parent, false);
-    return new TweetElement.ViewHolder(view);
+
+    int containerWidth = 0;
+    if (getActivity() instanceof MainActivity) {
+      containerWidth = ((MainActivity) getActivity()).getContainerWidth();
+    } else {
+      containerWidth = getActivity().getResources().getDisplayMetrics().widthPixels;
+    }
+    return new TweetElement.ViewHolder(view, containerWidth, getActivity());
   }
 
   @Override
   protected void onFeedRefresh() {
-    onRefreshFeedListener.onRrefeshTwitterFeed();
+    onRefreshFeedListener.onRefreshTwitterFeed();
   }
 
   @Override
   protected void onScrolled(RecyclerView recyclerView, int dy) {
     onScrolledListener.onTwitterPageScrolled(getScrollY(), dy);
+  }
+
+  @Override
+  protected void onScrollStateChanged(RecyclerView recyclerView, int dy) {
+    onScrolledListener.onTwitterPageScrollStateChanged(getScrollY(), dy);
   }
 }

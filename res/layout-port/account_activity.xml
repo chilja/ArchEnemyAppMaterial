@@ -4,25 +4,12 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true" >
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="fitCenter"
-        android:src="@drawable/symbol_port"
-        android:translationY="@dimen/header_height" />
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
+        android:background="@color/black"
         android:orientation="vertical" >
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent" />
 
         <FrameLayout
             android:id="@+id/header"
@@ -31,10 +18,10 @@
             android:background="@color/primary" >
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:layout_gravity="center"
-                android:alpha="0.54"
+                android:alpha="0.12"
                 android:src="@drawable/icon_accounts" />
 
             <TextView
@@ -42,7 +29,19 @@
                 style="@style/Text.Display3"
                 android:layout_gravity="center" />
         </FrameLayout>
-    </FrameLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/symbol_port" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
 
     <net.archenemy.archenemyapp.view.SlidingTabLayout
         android:id="@+id/sliding_tabs"

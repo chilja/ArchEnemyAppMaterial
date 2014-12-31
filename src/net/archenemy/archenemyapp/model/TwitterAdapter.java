@@ -1,9 +1,8 @@
 package net.archenemy.archenemyapp.model;
 
-import net.archenemy.archenemyapp.R;
-
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -21,13 +20,16 @@ import twitter4j.URLEntity;
 import twitter4j.User;
 import twitter4j.conf.ConfigurationBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Properties;
 
 /**
  * <p>
- * Adapter for the Twitter SDK and other: Logs in and out, makes calls to the API.
+ * Adapter for the Twitter SDK and other: Logs in and out, makes calls to the
+ * API.
  * </p>
  * 
  * @author chiljagossow
@@ -155,7 +157,7 @@ public class TwitterAdapter implements ProviderAdapter {
       }
       catch (final TwitterException exception) {
         exception.printStackTrace();
-        Log.e(TAG, "User could not be retrieved: " + params[0]);
+        Log.e(TAG, "User could not be retrieved: " + params[0] + ".");
       }
       return null;
     }
@@ -195,24 +197,46 @@ public class TwitterAdapter implements ProviderAdapter {
 
   /**
    * Returns the application key.
+   * 
    * @return the key
    */
   public static String getKey(Context context) {
     if (key == null) {
-      key = context.getString(R.string.twitter_key);
+      loadProperties(context);
     }
     return key;
   }
 
   /**
    * Returns the application secret.
+   * 
    * @return the secret
    */
   public static String getSecret(Context context) {
     if (secret == null) {
-      secret = context.getString(R.string.twitter_secret);
+      loadProperties(context);
     }
     return secret;
+  }
+
+  /**
+   * Loads properties from resource assets/oauth_consumer.properties.
+   * 
+   * @context Context to access resources
+   */
+  private static void loadProperties(Context context) {
+    AssetManager assetManager = context.getAssets();
+    Properties properties = new Properties();
+    InputStream inputStream;
+    try {
+      inputStream = assetManager.open("oauth_consumer.properties");
+      properties.load(inputStream);
+      key = properties.getProperty("twitter.com.consumer_key");
+      secret = properties.getProperty("twitter.com.consumer_secret");
+    }
+    catch (IOException e) {
+      Log.e(TAG, "Error reading file oauth_consumer.properties.");
+    }
   }
 
   private TwitterAdapter() {
@@ -221,6 +245,7 @@ public class TwitterAdapter implements ProviderAdapter {
 
   /**
    * Gets the name of logged in user from session.
+   * 
    * @return String with user name
    */
   public String getUserName() {
@@ -282,7 +307,7 @@ public class TwitterAdapter implements ProviderAdapter {
    */
   public void makeFeedRequest(Long id, final FeedCallback callback, Context context) {
     if (isEnabled() && isLoggedIn()) {
-      Log.d(TAG, "Requesting feed for id " + id);
+      Log.i(TAG, "Requesting feed for user id " + id + ".");
       final FeedTask task = new FeedTask(callback, id, context);
       feedTasks.add(task);
       task.execute();
@@ -301,7 +326,7 @@ public class TwitterAdapter implements ProviderAdapter {
    */
   public void makeUserRequest(Long userId, UserCallback callback, Context context) {
     if (isLoggedIn()) {
-      Log.i(TAG, "Requesting user ...");
+      Log.i(TAG, "Requesting user data for user id " + userId + ".");
       final UserTask task = new UserTask(callback, context);
       userTasks.add(task);
       task.execute(userId);
@@ -334,7 +359,7 @@ public class TwitterAdapter implements ProviderAdapter {
       }
       feedTasks.clear();
     }
-    Log.i(TAG, "All feed tasks cancelled");
+    Log.i(TAG, "All feed tasks cancelled.");
 
     if (!userTasks.isEmpty()) {
       for (UserTask task : userTasks) {
@@ -342,7 +367,7 @@ public class TwitterAdapter implements ProviderAdapter {
       }
       userTasks.clear();
     }
-    Log.i(TAG, "All user tasks cancelled");
+    Log.i(TAG, "All user tasks cancelled.");
   }
 
   private Twitter getAuthorizedTwitterInstance(Context context) {

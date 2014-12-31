@@ -23,11 +23,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * <p>
- * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API, parses response.
+ * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API,
+ * parses response.
  * </p>
  * 
  * @author chiljagossow
@@ -90,9 +90,8 @@ public class FacebookAdapter implements ProviderAdapter {
   private static final String TAG_FROM = "from";
 
   /**
-   * Parses String containing a timestamp formatted as
-   * yyyy-MM-dd'T'hh:mm:ssZZZ using Locale.US.
-   * Adds time zone offset.
+   * Parses String containing a timestamp formatted as yyyy-MM-dd'T'hh:mm:ssZZZ
+   * using Locale.US. Adds time zone offset.
    * 
    * @param timestamp
    *          String formatted as yyyy-MM-dd'T'hh:mm:ss+ZZZ
@@ -100,8 +99,6 @@ public class FacebookAdapter implements ProviderAdapter {
    */
   public static Date getDate(String timestamp) {
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZ", Locale.US);
-    TimeZone zone = TimeZone.getDefault();
-    int offset = zone.getOffset(new Date().getTime());
     Date date = null;
     try {
       date = dateFormat.parse(timestamp);
@@ -109,7 +106,7 @@ public class FacebookAdapter implements ProviderAdapter {
     catch (final ParseException e) {
       Log.e(TAG, timestamp + " unparseable using " + dateFormat);
     }
-    return new Date(date.getTime() + offset);
+    return date;
   }
 
   // flag for pending reauthorization request
@@ -164,7 +161,8 @@ public class FacebookAdapter implements ProviderAdapter {
   }
 
   /**
-   * Checks log in status. Returns true if session is opened and API calls can be made.
+   * Checks log in status. Returns true if session is opened and API calls can
+   * be made.
    * 
    * @return True if API calls can be made.
    */
@@ -190,7 +188,8 @@ public class FacebookAdapter implements ProviderAdapter {
   /**
    * Starts log in process.
    * 
-   * @param context Context for log in widget
+   * @param context
+   *          Context for log in widget
    */
   public void logIn(Context context) {
     // widget to perform login
@@ -226,7 +225,7 @@ public class FacebookAdapter implements ProviderAdapter {
         new Request.Callback() {
           @Override
           public void onCompleted(Response response) {
-            Log.i(TAG, "Feeds received");
+            Log.i(TAG, "Received feed for user id " + userId + ".");
             if (response.getError() != null) {
               callback.onFeedRequestCompleted(null, userId, response.getError());
               return;
@@ -240,7 +239,7 @@ public class FacebookAdapter implements ProviderAdapter {
             }
           }
         });
-    Log.i(TAG, "Make feed request");
+    Log.i(TAG, "Make feed request for user id " + userId + ".");
     request.executeAsync();
   }
 
@@ -261,7 +260,7 @@ public class FacebookAdapter implements ProviderAdapter {
         @Override
         public void onCompleted(GraphUser user, Response response) {
           // If the response is successful
-          Log.i(TAG, "User response received");
+          Log.i(TAG, "Received response for user data request for logged in user.");
           if (session == Session.getActiveSession()) {
             callback.onUserRequestCompleted(user, null);
           }
@@ -270,7 +269,7 @@ public class FacebookAdapter implements ProviderAdapter {
           }
         }
       });
-      Log.i(TAG, "Making user request");
+      Log.i(TAG, "Making user data request for logged in user.");
       request.executeAsync();
     }
   }
@@ -291,7 +290,7 @@ public class FacebookAdapter implements ProviderAdapter {
       final Callback wrapper = new Callback() {
         @Override
         public void onCompleted(Response response) {
-          Log.i(TAG, "User received");
+          Log.i(TAG, "Received user data for user id " + id + ".");
           if (response.getError() != null) {
             if (callback != null) {
               callback.onUserRequestCompleted(null, response.getError());
@@ -310,6 +309,7 @@ public class FacebookAdapter implements ProviderAdapter {
       };
 
       final Request request = new Request(session, id, null, null, wrapper);
+      Log.i(TAG, "Make user data request for user id " + id + ".");
       request.executeAsync();
     }
   }
@@ -322,7 +322,6 @@ public class FacebookAdapter implements ProviderAdapter {
 
     final ArrayList<Post> posts = new ArrayList<Post>();
     JSONArray data = null;
-    Log.i(TAG, "Parse response...");
     if (jsonObj != null) {
       try {
         data = jsonObj.getJSONArray(TAG_DATA);
@@ -356,7 +355,7 @@ public class FacebookAdapter implements ProviderAdapter {
       }
 
     } else {
-      Log.e(TAG, "Couldn't parse response");
+      Log.e(TAG, "Couldn't parse response.");
     }
     return posts;
   }

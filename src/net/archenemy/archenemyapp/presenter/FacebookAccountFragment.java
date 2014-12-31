@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookRequestError;
@@ -94,54 +93,39 @@ public class FacebookAccountFragment extends AccountFragment implements
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
     super.onCreateView(inflater, container, savedInstanceState);
-    fragmentView = inflater.inflate(R.layout.facebook_account_fragment, container, false);
+    view = inflater.inflate(R.layout.facebook_account_fragment, container, false);
 
-    loginButton = (Button) fragmentView.findViewById(R.id.facebookButton);
+    loginButton = (Button) view.findViewById(R.id.facebookButton);
     loginButton.setOnClickListener(new OnClickListener());
 
-    text = (FrameLayout) fragmentView.findViewById(R.id.text);
+    headerText = (TextView) view.findViewById(R.id.headerText);
+    userNameView = (TextView) view.findViewById(R.id.userNameView);
+    subtext = (TextView) view.findViewById(R.id.subTextView);
 
-    if (showHeader) {
-      final View accountInfoView = inflater.inflate(R.layout.account_header, null);
-      headerText = (TextView) accountInfoView.findViewById(R.id.headerText);
-      headerText.setText(R.string.facebook_login_header);
-      text.addView(accountInfoView, 0, new ViewGroup.LayoutParams(
-          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    if (savedInstanceState != null) {
+      name = savedInstanceState.getString(Constants.FACEBOOK_USER_NAME, name);
     }
 
-    if (showUser) {
-      final View userInfoView = inflater.inflate(R.layout.account_user, null);
-      userNameView = (TextView) userInfoView.findViewById(R.id.userNameView);
-      subtext = (TextView) userInfoView.findViewById(R.id.subTextView);
-      if (savedInstanceState != null) {
-        name = savedInstanceState.getString(Constants.FACEBOOK_USER_NAME, name);
+    if (name != null) {
+      userNameView.setText(name);
+    } else {
+      if (Utility.isConnectedToNetwork(getActivity(), false) && providerAdapter.isLoggedIn()) {
+        FacebookAdapter.getInstance().makeMeRequest(this);
       }
-
-      if (name != null) {
-        userNameView.setText(name);
-      } else {
-        if (Utility.isConnectedToNetwork(getActivity(), false) && providerAdapter.isLoggedIn()) {
-          FacebookAdapter.getInstance().makeMeRequest(this);
-        }
-      }
-      text.addView(userInfoView, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-          ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    return fragmentView;
+    return view;
   }
 
   /**
    * Should be called from activity upon Facebook login to update state
    */
   public void onFacebookLogin() {
-    if (showUser) {
-      if (FacebookAdapter.getInstance().isLoggedIn()) {
-        // request user
-        FacebookAdapter.getInstance().makeMeRequest(this);
-      }
-      updateState();
+    if (FacebookAdapter.getInstance().isLoggedIn()) {
+      // request user
+      FacebookAdapter.getInstance().makeMeRequest(this);
     }
+    updateState();
   }
 
   @Override
@@ -155,13 +139,19 @@ public class FacebookAccountFragment extends AccountFragment implements
     if (error != null) {
       facebookActivity.handleError(error);
     }
-    if (showUser) {
-      if (user != null) {
-        name = user.getName();
-        if (userNameView != null) {
-          userNameView.setText(name);
-        }
+    if (user != null) {
+      name = user.getName();
+      if (userNameView != null) {
+        userNameView.setText(name);
       }
+    }
+  }
+
+  @Override
+  protected void setLoggedOut() {
+    super.setLoggedOut();
+    if (headerText != null) {
+      headerText.setText(R.string.facebook_login_header);
     }
   }
 }

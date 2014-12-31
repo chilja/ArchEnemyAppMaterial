@@ -9,6 +9,7 @@ import java.util.Date;
  * <p>
  * Entity that holds the data of a Tweet from Twitter.
  * </p>
+ * 
  * @author chiljagossow
  * 
  */
@@ -23,14 +24,18 @@ public class Tweet {
 
   /**
    * Creates a new instance.
-   * @param tweetId unique and stable ID of tweet
-   * @param userName Name to be displayed
+   * 
+   * @param tweetId
+   *          unique and stable ID of tweet
+   * @param userName
+   *          Name to be displayed
    * @param message
    * @param date
    * @param link
    * @param avatarUrl
    */
-  public Tweet(Long tweetId, String userName, String message, Date date, String link, String avatarUrl) {
+  public Tweet(Long tweetId, String userName, String message, Date date, String link,
+      String avatarUrl) {
     this.tweetId = tweetId;
     this.userName = userName;
     this.message = message;
@@ -83,7 +88,7 @@ public class Tweet {
   public String getMessage() {
     return message;
   }
-  
+
   /**
    * @return the name
    */

@@ -61,6 +61,7 @@ public class AccountActivity extends FacebookActivity implements
     viewPager = (ViewPager) findViewById(R.id.viewpager);
     adapter = new BaseFragmentPagerAdapter(getSupportFragmentManager(), fragments);
     viewPager.setAdapter(adapter);
+
     slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
     slidingTabLayout.setIndicatorColor(getResources().getColor(R.color.accent));
     slidingTabLayout.setCustomTabView(R.layout.tab, R.id.tabIcon);

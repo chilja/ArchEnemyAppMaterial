@@ -29,7 +29,7 @@ public class PostElement implements FeedElement {
   public static class ViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "PostViewHolder";
 
-    private RelativeLayout post;
+    private RelativeLayout postLayout;
     private FrameLayout placeholder;
 
     private TextView messageView;
@@ -40,13 +40,14 @@ public class PostElement implements FeedElement {
     private ImageView collapseButton;
     private ImageView avatarView;
     private View view;
+    private PostElement postElement;
 
     public ViewHolder(View view) {
       super(view);
       this.view = view;
 
       placeholder = (FrameLayout) view.findViewById(R.id.placeholder);
-      post = (RelativeLayout) view.findViewById(R.id.post);
+      postLayout = (RelativeLayout) view.findViewById(R.id.post);
 
       messageView = (TextView) view.findViewById(R.id.messageView);
       teaserView = (TextView) view.findViewById(R.id.teaserView);
@@ -61,7 +62,7 @@ public class PostElement implements FeedElement {
           expand();
         }
       });
-      
+
       collapseButton = (ImageView) view.findViewById(R.id.collapseButton);
       collapseButton.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -71,16 +72,22 @@ public class PostElement implements FeedElement {
       });
     }
 
+    private void clearLink() {
+      view.setOnClickListener(null);
+    }
+
     private void collapse() {
       messageView.setVisibility(View.GONE);
       collapseButton.setVisibility(View.GONE);
       expandButton.setVisibility(View.VISIBLE);
+      postElement.isExpanded = false;
     }
 
     private void expand() {
       messageView.setVisibility(View.VISIBLE);
       collapseButton.setVisibility(View.VISIBLE);
       expandButton.setVisibility(View.INVISIBLE);
+      postElement.isExpanded = true;
     }
 
     private void setDate(Date date) {
@@ -132,8 +139,9 @@ public class PostElement implements FeedElement {
     private void setProfileId(String profileId, float density, Activity activity) {
       String avatarUrl = null;
       avatarView.setImageBitmap(null);
+      int diameter = (int) activity.getResources().getDimension(R.dimen.avatar_diameter);
       try {
-        avatarUrl = ImageRequest.getProfilePictureUrl(profileId, 100, 100).toString();
+        avatarUrl = ImageRequest.getProfilePictureUrl(profileId, diameter, diameter).toString();
       }
       catch (URISyntaxException e) {
         Log.e(TAG, "URL invalid");
@@ -141,23 +149,24 @@ public class PostElement implements FeedElement {
 
       // URL provided? -> load bitmap
       if (avatarUrl != null) {
-        BitmapUtility.loadBitmap(activity, avatarUrl, avatarView, (int) (40 * density));
+        BitmapUtility.loadBitmap(activity, avatarUrl, avatarView, diameter);
       }
     }
 
     private void showPlaceholder() {
       placeholder.setVisibility(View.VISIBLE);
-      post.setVisibility(View.GONE);
+      postLayout.setVisibility(View.GONE);
     }
 
     private void showPost() {
       placeholder.setVisibility(View.GONE);
-      post.setVisibility(View.VISIBLE);
+      postLayout.setVisibility(View.VISIBLE);
     }
   }
 
   private Post post;
   private boolean isPlaceholder = false;
+  private boolean isExpanded = false;
 
   /**
    * Creates a new instance that is empty (placeholder)
@@ -169,7 +178,9 @@ public class PostElement implements FeedElement {
 
   /**
    * Creates a new instance
-   * @param post Post holding the data to be displayed
+   * 
+   * @param post
+   *          Post holding the data to be displayed
    */
   public PostElement(Post post) {
     this.post = post;
@@ -183,17 +194,23 @@ public class PostElement implements FeedElement {
       ViewHolder myHolder = (ViewHolder) holder;
       if (isPlaceholder) {
         myHolder.showPlaceholder();
+        myHolder.clearLink();
       }
       if (!isPlaceholder) {
         float density = activity.getResources().getDisplayMetrics().density;
         myHolder.showPost();
-        myHolder.collapse();
         myHolder.setMessage(post.getMessage());
         myHolder.setImageUrl(post.getImageUrl(), density, activity);
         myHolder.setDate(post.getDate());
         myHolder.setName(post.getUserName());
         myHolder.setProfileId(post.getUserId(), density, activity);
         myHolder.setLink(post.getLink(), activity);
+        myHolder.postElement = this;
+        if (isExpanded) {
+          myHolder.expand();
+        } else {
+          myHolder.collapse();
+        }
       }
     }
   }
