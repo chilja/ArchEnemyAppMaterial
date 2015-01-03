@@ -1,5 +1,9 @@
 <resources>
 
-    <dimen name="header_height_full">200dp</dimen>
+    <dimen name="header_height_accounts">200dp</dimen>
+    <dimen name="header_height_settings">200dp</dimen>
+    <dimen name="tab_translation_y_accounts">156dp</dimen>
+    <dimen name="max_tab_translation_y">104dp</dimen>
+    <dimen name="placeholder_height">154dp</dimen>
 
 </resources>

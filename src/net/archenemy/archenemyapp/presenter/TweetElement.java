@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -22,7 +23,12 @@ import java.util.Date;
  * @author chiljagossow
  * 
  */
-public class TweetElement implements FeedElement {
+public class TweetElement implements FeedElement, Serializable {
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -47,6 +53,7 @@ public class TweetElement implements FeedElement {
       super(view);
       this.view = view;
       this.context = context;
+      this.containerWidth = containerWidth;
 
       messageView = (TextView) view.findViewById(R.id.messageView);
       dateView = (TextView) view.findViewById(R.id.dateView);

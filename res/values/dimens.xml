@@ -1,21 +1,12 @@
 <resources>
 
-    <dimen name="header_height">104dp</dimen>
-    <dimen name="app_bar_height">56dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
     <dimen name="status_bar_height">24dp</dimen>
     <dimen name="tab_height">48dp</dimen>
-    <dimen name="tab_translation_y_start">104dp</dimen>
-    <dimen name="tab_translation_y">144dp</dimen>
-    <dimen name="tab_translation_y_accounts">154dp</dimen>
-    <dimen name="tab_translation_y_accounts_land">56dp</dimen>
-    <dimen name="max_tab_translation_y">104dp</dimen>
-    <dimen name="tab_background_height">154dp</dimen>
-    <dimen name="tab_background_height_land">104dp</dimen>
-    <dimen name="placeholder_height">154dp</dimen>
-    <dimen name="placeholder_height_land">104dp</dimen>
     <dimen name="avatar_diameter">40dp</dimen>
-    <dimen name="account_header_width">320dp</dimen>
-    <dimen name="account_padding">8dp</dimen>
-    <dimen name="layout_margin">16dp</dimen>
+    <dimen name="account_text_width">300dp</dimen>
+    <dimen name="margin_medium">8dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_small">4dp</dimen>
 
 </resources>

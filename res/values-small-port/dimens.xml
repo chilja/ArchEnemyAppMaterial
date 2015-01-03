@@ -3,7 +3,10 @@
     <dimen name="margin_medium">4dp</dimen>
     <dimen name="margin_large">8dp</dimen>
     <dimen name="margin_small">4dp</dimen>
+    <dimen name="tab_translation_y_accounts">110dp</dimen>
     <dimen name="placeholder_height">106dp</dimen>
+    <dimen name="header_height_accounts">154dp</dimen>
+    <dimen name="header_height_settings">104dp</dimen>
     <dimen name="max_tab_translation_y">56dp</dimen>
 
 </resources>

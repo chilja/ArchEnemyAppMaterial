@@ -19,7 +19,8 @@
                 android:id="@+id/headerImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop" >
+            </ImageView>
         </LinearLayout>
 
         <FrameLayout
@@ -39,7 +40,7 @@
     <FrameLayout
         android:id="@+id/tabsBackground"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tab_background_height"
+        android:layout_height="@dimen/placeholder_height"
         android:alpha="0.0"
         android:background="@color/accent"
         android:elevation="16dp" />

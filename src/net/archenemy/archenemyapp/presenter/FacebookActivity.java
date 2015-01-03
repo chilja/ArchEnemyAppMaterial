@@ -4,29 +4,25 @@ import net.archenemy.archenemyapp.R;
 import net.archenemy.archenemyapp.model.FacebookAdapter;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.Toast;
-
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
 import com.facebook.FacebookRequestError;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.FacebookDialog;
-import com.facebook.widget.WebDialog;
-import com.facebook.widget.WebDialog.OnCompleteListener;
 
 /**
- * Activity that handles Facebook user interaction
+ * Activity that handles Facebook SDK UI lifecycle and user interaction.
  */
 
 public abstract class FacebookActivity extends ActionBarActivity implements
     FacebookAdapter.OnFacebookLoginListener {
+  
+  // Redirect URL for authentication errors requiring a user action
+  public static final Uri FACEBOOK_URL = Uri.parse("http://m.facebook.com");
 
   protected boolean pendingLogin = false;
 
@@ -73,86 +69,6 @@ public abstract class FacebookActivity extends ActionBarActivity implements
     mUiHelper.onResume();
   }
 
-  /**
-   * Starts share dialog using Facebook Native App if installed, feed dialog
-   * otherwise
-   * 
-   * @param shareParams
-   *          Bundle with share parameters name, link, caption, description,
-   *          picture
-   */
-  public void startShareDialog(Bundle shareParams) {
-    if (FacebookDialog.canPresentShareDialog(this, FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
-
-      // Publish the post using the Native Facebook Share Dialog
-      final FacebookDialog.ShareDialogBuilder shareDialogBuilder = new FacebookDialog.ShareDialogBuilder(
-          this);
-      shareDialogBuilder.setName(shareParams.getString("name"));
-      shareDialogBuilder.setLink(shareParams.getString("link"));
-      shareDialogBuilder.setCaption(shareParams.getString("caption"));
-      shareDialogBuilder.setDescription(shareParams.getString("description"));
-      shareDialogBuilder.setPicture(shareParams.getString("picture"));
-      final FacebookDialog shareDialog = shareDialogBuilder.build();
-      shareDialog.present();
-
-    } else {
-      // Publish the post using the custom share dialog
-      publishFeedDialog(shareParams, this);
-    }
-  }
-
-  /**
-   * Publishes story to user timeline via custom feed dialog
-   * 
-   * @param params
-   *          Bundle with story values
-   * @param context
-   */
-  private void publishFeedDialog(Bundle params, final Context context) {
-    if (FacebookAdapter.getInstance().isLoggedIn()) {
-
-      final WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(context,
-          Session.getActiveSession(), params)).setOnCompleteListener(new OnCompleteListener() {
-
-        @Override
-        public void onComplete(Bundle values, FacebookException error) {
-          if (error == null) {
-            // When the story is posted, echo the success
-            // and the post Id.
-            final String postId = values.getString("post_id");
-            if (postId != null) {
-              Toast.makeText(context, "Posted story, id: " + postId, Toast.LENGTH_SHORT).show();
-            } else {
-              // User clicked the Cancel button
-              Toast.makeText(context, "Publish cancelled", Toast.LENGTH_SHORT).show();
-            }
-
-          } else if (error instanceof FacebookOperationCanceledException) {
-            // User clicked the "x" button
-            Toast.makeText(context, "Publish cancelled", Toast.LENGTH_SHORT).show();
-          } else {
-            // Generic, ex: network error
-            Toast.makeText(context, "Error posting story", Toast.LENGTH_SHORT).show();
-          }
-        }
-      }).build();
-
-      feedDialog.show();
-    }
-
-    if (!FacebookAdapter.getInstance().isLoggedIn()) {
-      Toast.makeText(context, R.string.fb_share_error_log_in, Toast.LENGTH_LONG).show();
-    }
-  }
-
-  private void requestPublishPermissions(Session session) {
-    if (session != null) {
-      final Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
-          this, FacebookAdapter.PERMISSIONS).setRequestCode(FacebookAdapter.REAUTH_ACTIVITY_CODE);
-      session.requestNewPublishPermissions(newPermissionsRequest);
-    }
-  }
-
   protected void handleError(FacebookRequestError error) {
     DialogInterface.OnClickListener listener = null;
     String dialogBody = null;
@@ -174,7 +90,7 @@ public abstract class FacebookActivity extends ActionBarActivity implements
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
               // Take the user to the mobile site.
-              final Intent intent = new Intent(Intent.ACTION_VIEW, FacebookAdapter.FACEBOOK_URL);
+              final Intent intent = new Intent(Intent.ACTION_VIEW, FACEBOOK_URL);
               startActivity(intent);
             }
           };
@@ -197,15 +113,6 @@ public abstract class FacebookActivity extends ActionBarActivity implements
         case PERMISSION:
           // A permissions-related error
           dialogBody = getString(R.string.fb_error_permission);
-          listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-              // new
-              FacebookAdapter.getInstance().setPendingPublish(true);
-              // Request publish permission
-              requestPublishPermissions(Session.getActiveSession());
-            }
-          };
           break;
 
         case SERVER:

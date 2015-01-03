@@ -1,0 +1,7 @@
+<resources>
+
+    <dimen name="tab_translation_y_accounts">60dp</dimen>
+    <dimen name="header_height_accounts">104dp</dimen>
+    <dimen name="header_height_settings">104dp</dimen>
+
+</resources>

@@ -10,9 +10,9 @@ import java.util.ArrayList;
 /**
  * <p>
  * Provides access to {@link SocialMediaUser SocialMediaUser}. User data must be
- * provided as string arrays with the names: social_media_user_names (name
+ * provided as string arrays using the names: social_media_user_names (name
  * strings) twitter_user_ids (numerical IDs) facebook_user_ids (numerical IDs)
- * preference_keys (same strings as preferences.xml).
+ * preference_keys (same strings as in preferences.xml).
  * </p>
  * 
  * @author chiljagossow
@@ -20,13 +20,14 @@ import java.util.ArrayList;
 
 public class DataAdapter {
 
-  protected static final String TAG = "DataAdapter";
+  public static final String TAG = "DataAdapter";
+  
   private static DataAdapter dataAdapter;
 
   private static ArrayList<SocialMediaUser> socialMediaUsers;
 
   /**
-   * Creates Singleton
+   * Returns Singleton.
    * 
    * @return DataAdapter instance
    */
@@ -98,20 +99,11 @@ public class DataAdapter {
     return enabledMembers;
   }
 
-  public SocialMediaUser getSocialMediaUser(String facebookUserId, Context context) {
-    for (SocialMediaUser user : getSocialMediaUsers(context)) {
-      if (user.getFacebookUserId().equals(facebookUserId)) {
-        return user;
-      }
-    }
-    return null;
-  }
-
   /**
    * Returns {@link SocialMediaUser SocialMediaUser} as provided in string
    * arrays named social_media_user_names (name strings) twitter_user_ids
    * (numerical IDs) facebook_user_ids (numerical IDs) preference_keys (same
-   * strings as preferences.xml).
+   * strings as in preferences.xml).
    * 
    * @param context
    *          Context to access resources

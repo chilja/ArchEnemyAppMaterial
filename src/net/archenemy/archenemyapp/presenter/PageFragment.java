@@ -88,6 +88,8 @@ public abstract class PageFragment extends BaseFragment implements Serializable 
   protected transient SwipeRefreshLayout swipeRefreshLayout;
   protected transient View parentView;
 
+  protected List<FeedElement> feedElements;
+
   private int headerHeight;
 
   @Override
@@ -121,7 +123,9 @@ public abstract class PageFragment extends BaseFragment implements Serializable 
       }
     });
 
-    refresh();
+    if (savedInstanceState == null) {
+      refresh();
+    }
 
     return parentView;
   }
@@ -134,13 +138,14 @@ public abstract class PageFragment extends BaseFragment implements Serializable 
         enterAnimation = true;
       }
 
-      List<FeedElement> feedElements = getFeedElements();
+      feedElements = getFeedElements();
       if ((feedElements != null) && (feedElements.size() > 0)) {
         if (adapter == null) {
           adapter = new FeedAdapter(feedElements);
           recyclerView.setAdapter(adapter);
         } else {
-          recyclerView.swapAdapter(new FeedAdapter(feedElements), false);
+          adapter = new FeedAdapter(feedElements);
+          recyclerView.swapAdapter(adapter, false);
         }
 
         if (enterAnimation) {

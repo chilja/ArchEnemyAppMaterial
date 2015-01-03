@@ -56,7 +56,7 @@ public class MainActivity extends FacebookActivity implements
   private ImageView headerImage;
   private FrameLayout fragmentContainer;
 
-  private int appBarHeight;
+  private int toolbarHeight;
   private int tabHeight;
   private Integer maxTabTranslationY;
   private Integer currentTabTranslationY;
@@ -300,7 +300,6 @@ public class MainActivity extends FacebookActivity implements
   @Override
   public void onTwitterPageScrolled(int scrollY, int dy) {
     if (selectedMenuItem == TWITTER) {
-      Log.i(TAG, "twitter page scrolled " + scrollY);
       onPageScrolled(scrollY, dy);
     }
   }
@@ -329,7 +328,7 @@ public class MainActivity extends FacebookActivity implements
       }
 
       // animations
-      if (currentTabTranslationY > appBarHeight) {
+      if (currentTabTranslationY > toolbarHeight) {
         if (translationY < 0) {
           // show
 
@@ -337,14 +336,15 @@ public class MainActivity extends FacebookActivity implements
         }
       } else {
         // hide
-        if (translationY != -appBarHeight) {
-          animateYTranslation(toolbar, -appBarHeight, 300);
+        if (translationY != -toolbarHeight) {
+          animateYTranslation(toolbar, -toolbarHeight, 300);
         }
       }
       cancelTabsAnimation();
       animateTabsTranslation();
       tabsBackground.animate().alpha(alpha).setDuration(300).start();
       background.animate().alpha(backgroundAlpha).setDuration(300).start();
+      updateToolbar();
     }
   }
 
@@ -580,7 +580,7 @@ public class MainActivity extends FacebookActivity implements
 
   private void initTranslationYValues() {
     tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
-    appBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_height);
+    toolbarHeight = getResources().getDimensionPixelSize(R.dimen.toolbar_height);
     maxTabTranslationY = getResources().getDimensionPixelSize(R.dimen.max_tab_translation_y);
   }
 
@@ -666,7 +666,7 @@ public class MainActivity extends FacebookActivity implements
   }
 
   private void showFragment(BaseFragment fragment, boolean addToBackStack) {
-    if (isResumed) {
+    if (isResumed && fragment != null) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
       transaction.replace(R.id.fragmentContainer, fragment, fragment.getTAG());
       transaction.show(fragment);
@@ -719,24 +719,24 @@ public class MainActivity extends FacebookActivity implements
   }
 
   private void updateToolbar() {
+    // show toolbar if tab translation leaves sufficient room for tool bar
     float translationY = toolbar.getTranslationY();
-
-    if (currentTabTranslationY > appBarHeight) {
-      if (translationY < 0) {
+    if (currentTabTranslationY >= toolbarHeight) {
+      if (translationY <= 0) {
         // show
         animateYTranslation(toolbar, 0, 100);
       }
     } else {
       // hide
-      if (translationY != -appBarHeight) {
+      if (translationY != -toolbarHeight) {
         if (currentTabTranslationY == 0) {
           // animation would be too slow
           if (toolbar.getAnimation() != null) {
             toolbar.getAnimation().cancel();
           }
-          toolbar.setTranslationY(-appBarHeight);
+          toolbar.setTranslationY(-toolbarHeight);
         } else {
-          animateYTranslation(toolbar, -appBarHeight, 30);
+          animateYTranslation(toolbar, -toolbarHeight, 30);
         }
       }
     }

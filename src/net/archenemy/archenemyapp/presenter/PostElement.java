@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.facebook.internal.ImageRequest;
 
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.Date;
 
@@ -24,7 +25,12 @@ import java.util.Date;
  * @author chiljagossow
  * 
  */
-public class PostElement implements FeedElement {
+public class PostElement implements FeedElement, Serializable {
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "PostViewHolder";

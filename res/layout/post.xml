@@ -1,9 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp" >
+    android:orientation="vertical" >
 
     <FrameLayout
         android:id="@+id/placeholder"
@@ -15,9 +13,11 @@
         android:id="@+id/post"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_medium"
+        android:layout_marginRight="@dimen/margin_medium"
         android:background="@drawable/box"
         android:elevation="8dp"
-        android:padding="4dp" >
+        android:padding="@dimen/margin_medium" >
 
         <ImageView
             android:id="@+id/imageView"
@@ -53,14 +53,14 @@
             android:layout_height="48dp"
             android:layout_alignBottom="@+id/imageView"
             android:layout_alignParentRight="true"
-            android:padding="12dp"
+            android:padding="16dp"
             android:src="@drawable/ic_action_expand" />
 
         <net.archenemy.archenemyapp.view.RobotoFont
             android:id="@+id/messageView"
             style="@style/Post"
             android:layout_below="@+id/imageView"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/margin_large"
             android:maxWidth="380dp"
             android:visibility="gone" />
 
@@ -77,7 +77,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/messageView"
             android:background="?android:attr/selectableItemBackground"
-            android:padding="12dp"
+            android:padding="16dp"
             android:src="@drawable/ic_action_collapse"
             android:visibility="gone" />
     </RelativeLayout>

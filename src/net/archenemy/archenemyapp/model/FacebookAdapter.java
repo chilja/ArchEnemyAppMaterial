@@ -26,7 +26,7 @@ import java.util.Locale;
 
 /**
  * <p>
- * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API,
+ * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API and
  * parses response.
  * </p>
  * 
@@ -70,15 +70,6 @@ public class FacebookAdapter implements ProviderAdapter {
 
   protected static final String TAG = "FacebookAdapter";
 
-  // Activity code to flag an incoming activity result is due
-  // to a new permissions request
-  public static final int REAUTH_ACTIVITY_CODE = 100;
-
-  // / List of additional write permissions being requested
-  public static final List<String> PERMISSIONS = Arrays.asList("publish_actions", "public_profile");
-  // Redirect URL for authentication errors requiring a user action
-  public static final Uri FACEBOOK_URL = Uri.parse("http://m.facebook.com");
-
   // JSON Node names
   private static final String TAG_DATA = "data";
   private static final String TAG_MESSAGE = "message";
@@ -95,7 +86,7 @@ public class FacebookAdapter implements ProviderAdapter {
    * 
    * @param timestamp
    *          String formatted as yyyy-MM-dd'T'hh:mm:ss+ZZZ
-   * @return Date Date object
+   * @return Date parsed from string
    */
   public static Date getDate(String timestamp) {
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZ", Locale.US);
@@ -109,9 +100,7 @@ public class FacebookAdapter implements ProviderAdapter {
     return date;
   }
 
-  // flag for pending reauthorization request
-  private boolean pendingPublishReauthorization = false;
-
+  // singleton
   private static FacebookAdapter facebookAdapter;
 
   /**
@@ -152,7 +141,7 @@ public class FacebookAdapter implements ProviderAdapter {
   }
 
   /**
-   * Checks if Facebook is enabled.
+   * Checks whether Facebook is enabled.
    */
   @Override
   public boolean isEnabled() {
@@ -177,19 +166,10 @@ public class FacebookAdapter implements ProviderAdapter {
   }
 
   /**
-   * Checks for a pending publish action.
-   * 
-   * @return
-   */
-  public boolean isPendingPublish() {
-    return pendingPublishReauthorization;
-  }
-
-  /**
    * Starts log in process.
    * 
    * @param context
-   *          Context for log in widget
+   *          Context for log in widget.
    */
   public void logIn(Context context) {
     // widget to perform login
@@ -212,9 +192,9 @@ public class FacebookAdapter implements ProviderAdapter {
    * Makes a feed request to the Facebook Graph API.
    * 
    * @param Callback
-   *          FeedCallback to be called when response arrives
+   *          FeedCallback to be called when response arrives.
    * @param userId
-   *          Facebook user Id
+   *          Facebook user Id for whom feed should be requested.
    */
   public void makeFeedRequest(final FeedCallback callback, final String userId) {
     final Session session = Session.getActiveSession();
@@ -314,9 +294,9 @@ public class FacebookAdapter implements ProviderAdapter {
     }
   }
 
-  public void setPendingPublish(boolean pendingPublishReauthorization) {
-    this.pendingPublishReauthorization = pendingPublishReauthorization;
-  }
+//  public void setPendingPublish(boolean pendingPublishReauthorization) {
+//    this.pendingPublishReauthorization = pendingPublishReauthorization;
+//  }
 
   private ArrayList<Post> parseJson(JSONObject jsonObj, String userId) {
 
