@@ -69,7 +69,7 @@ public class BitmapUtility {
       if (imageView != null) {
         imageView.setImageBitmap(bitmap);
       }
-      addBitmapToMemoryCache(resId.toString() + "W" + reqWidth + "H" + reqHeight , bitmap);
+      addBitmapToMemoryCache(resId.toString() + "W" + reqWidth + "H" + reqHeight, bitmap);
       tasks.remove(this);
     }
   }
@@ -223,7 +223,7 @@ public class BitmapUtility {
       int reqWidth, int reqHeight) {
     // check cache
     // use width and height as part of key to enforce relaoding when resizing
-    final Bitmap bitmap = getBitmapFromMemCache(resId.toString() + "W" + reqWidth + "H" + reqHeight );
+    final Bitmap bitmap = getBitmapFromMemCache(resId.toString() + "W" + reqWidth + "H" + reqHeight);
     if (bitmap != null) {
       imageView.setImageBitmap(bitmap);
       return;

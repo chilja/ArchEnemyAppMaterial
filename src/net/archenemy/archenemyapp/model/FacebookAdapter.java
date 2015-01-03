@@ -1,7 +1,6 @@
 package net.archenemy.archenemyapp.model;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import com.facebook.FacebookRequestError;
@@ -19,15 +18,13 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
  * <p>
- * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API and
- * parses response.
+ * Adapter for the Facebook SDK: Logs in and out, makes calls to the Graph API
+ * and parses response.
  * </p>
  * 
  * @author chiljagossow
@@ -80,6 +77,9 @@ public class FacebookAdapter implements ProviderAdapter {
   private static final String TAG_DATE = "created_time";
   private static final String TAG_FROM = "from";
 
+  // singleton
+  private static FacebookAdapter facebookAdapter;
+
   /**
    * Parses String containing a timestamp formatted as yyyy-MM-dd'T'hh:mm:ssZZZ
    * using Locale.US. Adds time zone offset.
@@ -99,9 +99,6 @@ public class FacebookAdapter implements ProviderAdapter {
     }
     return date;
   }
-
-  // singleton
-  private static FacebookAdapter facebookAdapter;
 
   /**
    * Returns singleton, creates instance if needed.
@@ -294,9 +291,9 @@ public class FacebookAdapter implements ProviderAdapter {
     }
   }
 
-//  public void setPendingPublish(boolean pendingPublishReauthorization) {
-//    this.pendingPublishReauthorization = pendingPublishReauthorization;
-//  }
+  // public void setPendingPublish(boolean pendingPublishReauthorization) {
+  // this.pendingPublishReauthorization = pendingPublishReauthorization;
+  // }
 
   private ArrayList<Post> parseJson(JSONObject jsonObj, String userId) {
 

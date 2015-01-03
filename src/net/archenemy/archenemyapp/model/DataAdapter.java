@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class DataAdapter {
 
   public static final String TAG = "DataAdapter";
-  
+
   private static DataAdapter dataAdapter;
 
   private static ArrayList<SocialMediaUser> socialMediaUsers;

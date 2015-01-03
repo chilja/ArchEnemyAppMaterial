@@ -666,7 +666,7 @@ public class MainActivity extends FacebookActivity implements
   }
 
   private void showFragment(BaseFragment fragment, boolean addToBackStack) {
-    if (isResumed && fragment != null) {
+    if (isResumed && (fragment != null)) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
       transaction.replace(R.id.fragmentContainer, fragment, fragment.getTAG());
       transaction.show(fragment);

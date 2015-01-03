@@ -27,11 +27,6 @@ import java.util.Date;
  */
 public class PostElement implements FeedElement, Serializable {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1L;
-
   public static class ViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "PostViewHolder";
 
@@ -169,6 +164,11 @@ public class PostElement implements FeedElement, Serializable {
       postLayout.setVisibility(View.VISIBLE);
     }
   }
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   private Post post;
   private boolean isPlaceholder = false;

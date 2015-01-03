@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+
 import com.facebook.FacebookRequestError;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -20,7 +21,7 @@ import com.facebook.UiLifecycleHelper;
 
 public abstract class FacebookActivity extends ActionBarActivity implements
     FacebookAdapter.OnFacebookLoginListener {
-  
+
   // Redirect URL for authentication errors requiring a user action
   public static final Uri FACEBOOK_URL = Uri.parse("http://m.facebook.com");
 

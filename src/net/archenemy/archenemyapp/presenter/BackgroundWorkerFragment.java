@@ -24,8 +24,8 @@ import twitter4j.User;
 import java.util.ArrayList;
 
 /**
- * Retained fragment without UI for the handling of background tasks, e.g. user and feed
- * requests from providers.
+ * Retained fragment without UI for the handling of background tasks, e.g. user
+ * and feed requests from providers.
  * 
  * @author chiljagossow
  * 
@@ -36,8 +36,9 @@ public class BackgroundWorkerFragment extends Fragment implements TwitterAdapter
 
   /**
    * Callbacks for feed requests and log in process.
+   * 
    * @author chiljagossow
-   *
+   * 
    */
   public static interface ProviderRequestCallback {
     public void onFacebookFeedReceived();

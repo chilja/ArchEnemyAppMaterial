@@ -25,11 +25,6 @@ import java.util.Date;
  */
 public class TweetElement implements FeedElement, Serializable {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1L;
-
   public static class ViewHolder extends RecyclerView.ViewHolder {
 
     private TextView messageView;
@@ -125,6 +120,11 @@ public class TweetElement implements FeedElement, Serializable {
       tweet.setVisibility(View.VISIBLE);
     }
   }
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   private Tweet tweet;
   private boolean isPlaceholder = false;
