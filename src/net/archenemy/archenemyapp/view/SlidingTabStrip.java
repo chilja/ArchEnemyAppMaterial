@@ -1,3 +1,19 @@
+/**
+ * Copyright 2014-present Chilja Gossow.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.archenemy.archenemyapp.view;
 
 import android.content.Context;
@@ -8,8 +24,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 /**
- * Tab indicator that slides
- * 
+ * Sliding tab indicator.
  */
 
 class SlidingTabStrip extends LinearLayout {
@@ -18,11 +33,10 @@ class SlidingTabStrip extends LinearLayout {
 
   private final int indicatorHeight;
   private final Paint indicatorPaint;
+  private int indicatorColor;
 
   private int selectedPosition;
   private float selectionOffset;
-
-  private int indicatorColor;
 
   public SlidingTabStrip(Context context) {
     this(context, null);
@@ -48,17 +62,14 @@ class SlidingTabStrip extends LinearLayout {
       int left = selectedTab.getLeft();
       int right = selectedTab.getRight();
 
-      if ((selectionOffset > 0f) && (selectedPosition < (getChildCount() - 1))) {
-
-        // Draw the indicator
+      if ((selectionOffset > 0F) && (selectedPosition < (getChildCount() - 1))) {
         View nextTab = getChildAt(selectedPosition + 1);
-        left = (int) ((selectionOffset * nextTab.getLeft()) + ((1.0f - selectionOffset) * left));
-        right = (int) ((selectionOffset * nextTab.getRight()) + ((1.0f - selectionOffset) * right));
+        left = (int) ((selectionOffset * nextTab.getLeft()) + ((1.0F - selectionOffset) * left));
+        right = (int) ((selectionOffset * nextTab.getRight()) + ((1.0F - selectionOffset) * right));
       }
 
       canvas.drawRect(left, height - indicatorHeight, right, height, indicatorPaint);
     }
-
   }
 
   void onViewPagerPageChanged(int position, float positionOffset) {

@@ -18,10 +18,9 @@
         android:layout_marginBottom="@dimen/margin_medium"
         android:layout_marginLeft="@dimen/margin_medium"
         android:layout_marginRight="@dimen/margin_medium"
-        android:background="@drawable/box"
+        android:background="@color/primary_dark"
         android:elevation="8dp"
-        android:minHeight="72dp"
-        android:padding="1dp" >
+        android:minHeight="72dp" >
 
         <ImageView
             android:id="@+id/imageView"

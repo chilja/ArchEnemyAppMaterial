@@ -19,7 +19,8 @@
                 android:id="@+id/headerImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop" >
+                android:scaleType="centerCrop"
+                android:src="@drawable/band_preview" >
             </ImageView>
         </LinearLayout>
 
