@@ -93,7 +93,6 @@ public class BackgroundWorkerFragment extends Fragment implements TwitterAdapter
   private boolean pendingTwitterUserRequest = false;
   private boolean pendingFacebookUserRequest = false;
   private boolean pendingTwitterFeedRequest = false;
-
   private boolean pendingFacebookFeedRequest = false;
 
   private BackgroundWorkerFragment() {}
